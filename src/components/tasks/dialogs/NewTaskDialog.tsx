@@ -19,7 +19,15 @@ import { Trash } from 'lucide-react';
 import DeleteDialog from '@/components/utils/DeleteDialog';
 
 interface INewTaskDialogProps {
-  refreshTaskColumns: () => void;
+  submitTask: (
+    bodyData: NewTaskType,
+    options?: {
+      taskId?: number;
+      columnId?: number | null;
+      pageName?: string | null;
+    },
+  ) => Promise<boolean>;
+  deleteItem?: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
   children: React.ReactNode;
   data?: TaskSelect | null;
   columnId?: number | null;
@@ -27,7 +35,8 @@ interface INewTaskDialogProps {
 }
 
 const NewTaskDialog = ({
-  refreshTaskColumns,
+  submitTask,
+  deleteItem,
   children,
   data = null,
   columnId = null,
@@ -40,27 +49,15 @@ const NewTaskDialog = ({
   });
 
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
-    try {
-      const requestBody: NewTaskType = { ...bodyData, id: data?.id };
+    const success = await submitTask(bodyData, {
+      taskId: data?.id,
+      columnId,
+      pageName,
+    });
 
-      if (columnId !== null) {
-        requestBody.columnId = columnId;
-      }
-      if (pageName !== null) {
-        requestBody.pageName = pageName;
-      }
-
-      const response = await fetch('/api/tasks', {
-        method: data ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
-      if (!response.ok) throw new Error('Failed to create task');
+    if (success) {
       reset();
-      refreshTaskColumns();
       setIsOpen(false);
-    } catch (e) {
-      console.error('Error creating task :', e);
     }
   };
 
@@ -95,13 +92,16 @@ const NewTaskDialog = ({
             </div>
           </div>
           <DialogFooter>
-            {data && (
+            {data && deleteItem && (
               <DeleteDialog
                 id={data.id}
-                route="/api/tasks"
+                type="tasks"
                 title="Delete this task ?"
                 message="Are you sure you want to delete this task ? This action cannot be undone."
-                onSuccess={refreshTaskColumns}
+                deleteItem={deleteItem}
+                onSuccess={() => {
+                  setIsOpen(false);
+                }}
               >
                 <Button className="bg-transparent border-red-900/50 border-2 p-2 hover:bg-transparent hover:border-red-900">
                   <Trash color="#AA0000" size={20} />

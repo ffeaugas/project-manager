@@ -19,17 +19,20 @@ import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
 
 interface INewColumnDialogProps {
-  refreshTaskColumns: () => void;
+  submitColumn: (
+    bodyData: NewColumnType,
+    options?: {
+      columnId?: number;
+    },
+  ) => Promise<boolean>;
   data?: TaskColumnWithTasks | null;
   children: React.ReactNode;
-  pageName: string;
 }
 
 const NewColumnDialog = ({
-  refreshTaskColumns,
+  submitColumn,
   data = null,
   children,
-  pageName,
 }: INewColumnDialogProps) => {
   const {
     register,
@@ -50,24 +53,13 @@ const NewColumnDialog = ({
   const selectedColor = watch('color');
 
   const onSubmit: SubmitHandler<NewColumnType> = async (bodyData) => {
-    try {
-      const url = `/api/task-columns?page=${encodeURIComponent(pageName)}`;
+    const success = await submitColumn(bodyData, {
+      columnId: data?.id,
+    });
 
-      const response = await fetch(url, {
-        method: data ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...bodyData, id: data?.id }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to create column');
-      }
-
+    if (success) {
       reset();
-      refreshTaskColumns();
       setIsOpen(false);
-    } catch (e) {
-      console.error('Error creating column:', e);
     }
   };
 

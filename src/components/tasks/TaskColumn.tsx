@@ -1,6 +1,6 @@
 import { GripVertical, Pencil, Trash } from 'lucide-react';
 import TaskCard from './TaskCard';
-import { TaskColumnWithTasks } from './types';
+import { TaskColumnWithTasks, NewTaskType, NewColumnType } from './types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -17,27 +17,56 @@ import NewColumnDialog from './dialogs/NewColumnDialog';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
+  submitTask: (
+    bodyData: NewTaskType,
+    options?: {
+      taskId?: number;
+      columnId?: number | null;
+      pageName?: string | null;
+    },
+  ) => Promise<boolean>;
+  submitColumn: (
+    bodyData: NewColumnType,
+    options?: {
+      columnId?: number;
+    },
+  ) => Promise<boolean>;
+  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
   refreshTaskColumns: () => void;
   pageName: string;
 }
 
-const TaskColumn = ({ data, refreshTaskColumns, pageName }: ITaskColumnProps) => {
+const TaskColumn = ({
+  data,
+  submitTask,
+  submitColumn,
+  deleteItem,
+  refreshTaskColumns,
+  pageName,
+}: ITaskColumnProps) => {
   return (
     <div className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-4 rounded-lg">
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
+        submitColumn={submitColumn}
+        deleteItem={deleteItem}
         refreshTaskColumns={refreshTaskColumns}
         pageName={pageName}
       />
       {data.tasks.length > 0 ? (
         <>
           {data.tasks.map((task) => (
-            <TaskCard key={task.id} data={task} refreshTaskColumns={refreshTaskColumns} />
+            <TaskCard
+              key={task.id}
+              data={task}
+              submitTask={submitTask}
+              deleteItem={deleteItem}
+            />
           ))}
         </>
       ) : (
-        <NewTaskDialog refreshTaskColumns={refreshTaskColumns} columnId={data.id}>
+        <NewTaskDialog submitTask={submitTask} columnId={data.id}>
           <Button
             variant="outline"
             className="flex flex-col justify-center w-full h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
@@ -55,6 +84,13 @@ export default TaskColumn;
 interface IColumnHeaderProps {
   data: TaskColumnWithTasks;
   nbTasks: number;
+  submitColumn: (
+    bodyData: NewColumnType,
+    options?: {
+      columnId?: number;
+    },
+  ) => Promise<boolean>;
+  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
   refreshTaskColumns: () => void;
   pageName: string;
 }
@@ -62,6 +98,8 @@ interface IColumnHeaderProps {
 const ColumnHeader = ({
   data,
   nbTasks,
+  submitColumn,
+  deleteItem,
   refreshTaskColumns,
   pageName,
 }: IColumnHeaderProps) => {
@@ -78,6 +116,8 @@ const ColumnHeader = ({
       </div>
       <ColDropdownMenu
         data={data}
+        submitColumn={submitColumn}
+        deleteItem={deleteItem}
         refreshTaskColumns={refreshTaskColumns}
         pageName={pageName}
       />
@@ -87,12 +127,21 @@ const ColumnHeader = ({
 
 interface IColDropdownMenuProps {
   data: TaskColumnWithTasks;
+  submitColumn: (
+    bodyData: NewColumnType,
+    options?: {
+      columnId?: number;
+    },
+  ) => Promise<boolean>;
+  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
   refreshTaskColumns: () => void;
   pageName: string;
 }
 
 const ColDropdownMenu = ({
   data,
+  submitColumn,
+  deleteItem,
   refreshTaskColumns,
   pageName,
 }: IColDropdownMenuProps) => {
@@ -107,11 +156,7 @@ const ColDropdownMenu = ({
         <DropdownMenuLabel>{data.name}</DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-zinc-700" />
         <DropdownMenuGroup>
-          <NewColumnDialog
-            refreshTaskColumns={refreshTaskColumns}
-            data={data}
-            pageName={pageName}
-          >
+          <NewColumnDialog submitColumn={submitColumn} data={data}>
             <DropdownMenuItem
               className="flex justify-between text-zinc-300"
               onSelect={(event) => event.preventDefault()}
@@ -122,10 +167,10 @@ const ColDropdownMenu = ({
           </NewColumnDialog>
           <DeleteDialog
             id={data.id}
-            route="/api/task-columns"
+            type="task-columns"
             title={`Delete ${data.name} ?`}
             message="Are you sure you want to delete this column? Tasks inside will me removed too. This action cannot be undone."
-            onSuccess={refreshTaskColumns}
+            deleteItem={deleteItem}
           >
             <DropdownMenuItem
               onSelect={(event) => event.preventDefault()}

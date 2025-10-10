@@ -12,34 +12,31 @@ import { useState } from 'react';
 
 interface IDeleteDialogProps {
   id: number;
-  route: string;
+  type: 'task-columns' | 'tasks';
   title: string;
   message: string;
+  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
   onSuccess?: () => void;
   children?: React.ReactNode;
 }
 
 const DeleteDialog = ({
   id,
-  route,
+  type,
   title,
   message,
+  deleteItem,
   onSuccess = () => {},
   children,
 }: IDeleteDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async () => {
-    try {
-      const response = await fetch(route, {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: id }),
-      });
-      if (!response.ok) throw new Error('Failed to create task');
+    const success = await deleteItem(id, type);
+
+    if (success) {
+      setIsOpen(false);
       onSuccess();
-    } catch (e) {
-      console.error('Delete error :', e);
     }
   };
 

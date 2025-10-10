@@ -1,15 +1,24 @@
 import NewTaskDialog from './dialogs/NewTaskDialog';
-import { TaskSelect } from './types';
+import { TaskSelect, NewTaskType } from './types';
 
 interface ITaskCardProps {
   data: TaskSelect;
-  refreshTaskColumns: () => void;
+  submitTask: (
+    bodyData: NewTaskType,
+    options?: {
+      taskId?: number;
+      columnId?: number | null;
+      pageName?: string | null;
+    },
+  ) => Promise<boolean>;
+  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
 }
 
-const TaskCard = ({ data, refreshTaskColumns }: ITaskCardProps) => {
+const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
   return (
     <NewTaskDialog
-      refreshTaskColumns={refreshTaskColumns}
+      submitTask={submitTask}
+      deleteItem={deleteItem}
       data={data}
       columnId={data.columnId}
     >

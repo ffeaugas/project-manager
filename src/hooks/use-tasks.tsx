@@ -1,4 +1,8 @@
-import { TaskColumnWithTasks } from '@/components/tasks/types';
+import {
+  TaskColumnWithTasks,
+  NewTaskType,
+  NewColumnType,
+} from '@/components/tasks/types';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -28,9 +32,103 @@ export const useTasks = (page: string) => {
     [router],
   );
 
+  const submitTask = useCallback(
+    async (
+      bodyData: NewTaskType,
+      options?: {
+        taskId?: number;
+        columnId?: number | null;
+        pageName?: string | null;
+      },
+    ) => {
+      try {
+        const requestBody: NewTaskType = { ...bodyData, id: options?.taskId };
+
+        if (options?.columnId !== null && options?.columnId !== undefined) {
+          requestBody.columnId = options.columnId;
+        }
+        if (options?.pageName !== null && options?.pageName !== undefined) {
+          requestBody.pageName = options.pageName;
+        }
+
+        const response = await fetch('/api/tasks', {
+          method: options?.taskId ? 'PATCH' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) throw new Error('Failed to save task');
+
+        await fetchTaskColumns(page);
+        return true;
+      } catch (e) {
+        console.error('Error saving task:', e);
+        return false;
+      }
+    },
+    [page, fetchTaskColumns],
+  );
+
+  const submitColumn = useCallback(
+    async (
+      bodyData: NewColumnType,
+      options?: {
+        columnId?: number;
+      },
+    ) => {
+      try {
+        const url = `/api/task-columns?page=${encodeURIComponent(page)}`;
+
+        const response = await fetch(url, {
+          method: options?.columnId ? 'PATCH' : 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...bodyData, id: options?.columnId }),
+        });
+
+        if (!response.ok) throw new Error('Failed to save column');
+
+        await fetchTaskColumns(page);
+        return true;
+      } catch (e) {
+        console.error('Error saving column:', e);
+        return false;
+      }
+    },
+    [page, fetchTaskColumns],
+  );
+
+  const deleteItem = useCallback(
+    async (id: number, type: 'task-columns' | 'tasks') => {
+      try {
+        const response = await fetch(`/api/${type}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+
+        if (!response.ok) throw new Error('Failed to delete item');
+
+        await fetchTaskColumns(page);
+        return true;
+      } catch (e) {
+        console.error('Delete error:', e);
+        return false;
+      }
+    },
+    [page, fetchTaskColumns],
+  );
+
   useEffect(() => {
     fetchTaskColumns(page);
   }, [page, fetchTaskColumns]);
 
-  return { taskColumns, isLoading, error, fetchTaskColumns };
+  return {
+    taskColumns,
+    isLoading,
+    error,
+    fetchTaskColumns,
+    submitTask,
+    submitColumn,
+    deleteItem,
+  };
 };
