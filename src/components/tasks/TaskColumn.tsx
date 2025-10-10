@@ -18,15 +18,17 @@ import NewColumnDialog from './dialogs/NewColumnDialog';
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
   refreshTaskColumns: () => void;
+  pageName: string;
 }
 
-const TaskColumn = ({ data, refreshTaskColumns }: ITaskColumnProps) => {
+const TaskColumn = ({ data, refreshTaskColumns, pageName }: ITaskColumnProps) => {
   return (
-    <div className="flex flex-col justify-start-start gap-4 w-[300px]">
+    <div className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-4 rounded-lg">
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
         refreshTaskColumns={refreshTaskColumns}
+        pageName={pageName}
       />
       {data.tasks.length > 0 ? (
         <>
@@ -35,14 +37,12 @@ const TaskColumn = ({ data, refreshTaskColumns }: ITaskColumnProps) => {
           ))}
         </>
       ) : (
-        <NewTaskDialog refreshTaskColumns={refreshTaskColumns}>
+        <NewTaskDialog refreshTaskColumns={refreshTaskColumns} columnId={data.id}>
           <Button
             variant="outline"
-            className="flex flex-col justify-center w-[300px] h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
+            className="flex flex-col justify-center w-full h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
           >
-            Drag and drop tasks here
-            <br />
-            or click to add a new task
+            Click to add a new task
           </Button>
         </NewTaskDialog>
       )}
@@ -56,9 +56,15 @@ interface IColumnHeaderProps {
   data: TaskColumnWithTasks;
   nbTasks: number;
   refreshTaskColumns: () => void;
+  pageName: string;
 }
 
-const ColumnHeader = ({ data, nbTasks, refreshTaskColumns }: IColumnHeaderProps) => {
+const ColumnHeader = ({
+  data,
+  nbTasks,
+  refreshTaskColumns,
+  pageName,
+}: IColumnHeaderProps) => {
   return (
     <div className="flex flex-row justify-between items-center group h-8">
       <div className="flex flex-row gap-4 items-center">
@@ -70,7 +76,11 @@ const ColumnHeader = ({ data, nbTasks, refreshTaskColumns }: IColumnHeaderProps)
           {data.name} <b className="font-normal text-zinc-600 text-sm">({nbTasks})</b>
         </p>
       </div>
-      <ColDropdownMenu data={data} refreshTaskColumns={refreshTaskColumns} />
+      <ColDropdownMenu
+        data={data}
+        refreshTaskColumns={refreshTaskColumns}
+        pageName={pageName}
+      />
     </div>
   );
 };
@@ -78,9 +88,14 @@ const ColumnHeader = ({ data, nbTasks, refreshTaskColumns }: IColumnHeaderProps)
 interface IColDropdownMenuProps {
   data: TaskColumnWithTasks;
   refreshTaskColumns: () => void;
+  pageName: string;
 }
 
-const ColDropdownMenu = ({ data, refreshTaskColumns }: IColDropdownMenuProps) => {
+const ColDropdownMenu = ({
+  data,
+  refreshTaskColumns,
+  pageName,
+}: IColDropdownMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -92,7 +107,11 @@ const ColDropdownMenu = ({ data, refreshTaskColumns }: IColDropdownMenuProps) =>
         <DropdownMenuLabel>{data.name}</DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-zinc-700" />
         <DropdownMenuGroup>
-          <NewColumnDialog refreshTaskColumns={refreshTaskColumns} data={data}>
+          <NewColumnDialog
+            refreshTaskColumns={refreshTaskColumns}
+            data={data}
+            pageName={pageName}
+          >
             <DropdownMenuItem
               className="flex justify-between text-zinc-300"
               onSelect={(event) => event.preventDefault()}
@@ -104,7 +123,7 @@ const ColDropdownMenu = ({ data, refreshTaskColumns }: IColDropdownMenuProps) =>
           <DeleteDialog
             id={data.id}
             route="/api/task-columns"
-            title={`Delete ${name} ?`}
+            title={`Delete ${data.name} ?`}
             message="Are you sure you want to delete this column? Tasks inside will me removed too. This action cannot be undone."
             onSuccess={refreshTaskColumns}
           >

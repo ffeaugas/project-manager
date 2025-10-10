@@ -8,15 +8,29 @@ const prisma = new PrismaClient();
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
-    const pageId = searchParams.get('pageId');
+    const pageName = searchParams.get('page');
 
-    if (!pageId || Number.isNaN(Number(pageId))) {
+    const page = await prisma.page.findFirst({
+      where: {
+        name: {
+          equals: pageName || '',
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (!pageName || !page) {
       return NextResponse.json({ error: 'Invalid request data' }, { status: 400 });
     }
 
     const columns = await prisma.taskColumn.findMany({
       where: {
-        pageId: Number(pageId),
+        page: {
+          name: {
+            equals: pageName,
+            mode: 'insensitive',
+          },
+        },
       },
       select: TaskColumnSelect,
     });
@@ -33,8 +47,28 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = newColumnSchema.parse(body);
 
+    const searchParams = request.nextUrl.searchParams;
+    const pageName = searchParams.get('page');
+
+    if (!pageName) {
+      return NextResponse.json({ error: 'Page name is required' }, { status: 400 });
+    }
+
+    const page = await prisma.page.findFirst({
+      where: {
+        name: {
+          equals: pageName,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (!page) {
+      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    }
+
     await prisma.taskColumn.create({
-      data: { ...validatedData, pageId: 1 },
+      data: { ...validatedData, pageId: page.id },
     });
 
     return NextResponse.json({ status: 201 });
@@ -46,7 +80,7 @@ export async function POST(request: NextRequest) {
       );
     }
     console.error(e);
-    return NextResponse.json({ e: 'Internal server error' }, { status: 500 });
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
@@ -85,6 +119,26 @@ export async function PATCH(request: NextRequest) {
 
     if (!validatedData.id) throw new Error('Id is required');
 
+    const searchParams = request.nextUrl.searchParams;
+    const pageName = searchParams.get('page');
+
+    if (!pageName) {
+      return NextResponse.json({ error: 'Page name is required' }, { status: 400 });
+    }
+
+    const page = await prisma.page.findFirst({
+      where: {
+        name: {
+          equals: pageName,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (!page) {
+      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
+    }
+
     await prisma.taskColumn.update({
       where: {
         id: validatedData.id,
@@ -92,6 +146,7 @@ export async function PATCH(request: NextRequest) {
       data: {
         name: validatedData.name,
         color: validatedData.color,
+        pageId: page.id,
       },
     });
 

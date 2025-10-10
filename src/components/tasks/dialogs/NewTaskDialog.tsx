@@ -22,12 +22,16 @@ interface INewTaskDialogProps {
   refreshTaskColumns: () => void;
   children: React.ReactNode;
   data?: TaskSelect | null;
+  columnId?: number | null;
+  pageName?: string | null;
 }
 
 const NewTaskDialog = ({
   refreshTaskColumns,
   children,
   data = null,
+  columnId = null,
+  pageName = null,
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<NewTaskType>({
@@ -39,11 +43,21 @@ const NewTaskDialog = ({
   });
 
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
+    console.log('BODY DATA:::', bodyData);
     try {
+      const requestBody: any = { ...bodyData, id: data?.id };
+
+      if (columnId !== null) {
+        requestBody.columnId = columnId;
+      }
+      if (pageName !== null) {
+        requestBody.pageName = pageName;
+      }
+
       const response = await fetch('/api/tasks', {
         method: data ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...bodyData, id: data?.id }),
+        body: JSON.stringify(requestBody),
       });
       if (!response.ok) throw new Error('Failed to create task');
       reset();
@@ -62,7 +76,8 @@ const NewTaskDialog = ({
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} task</DialogTitle>
             <DialogDescription>
-              Add a new task and its description. Click save when you&apos;re done.
+              {data ? 'Edit' : 'Add a new'} task and its description. Click save when
+              you&apos;re done.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">

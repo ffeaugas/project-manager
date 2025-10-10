@@ -10,8 +10,43 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = newTaskSchema.parse(body);
 
+    const column = validatedData.columnId
+      ? await prisma.taskColumn.findFirst({
+          where: {
+            id: validatedData.columnId,
+          },
+        })
+      : await prisma.taskColumn.findFirst({
+          where: {
+            page: {
+              name: {
+                equals: validatedData.pageName,
+                mode: 'insensitive',
+              },
+            },
+          },
+        });
+
+    if (!column) throw new Error('Column or page not found');
+
+    const maxOrder = await prisma.task.aggregate({
+      where: {
+        columnId: column.id,
+      },
+      _max: {
+        order: true,
+      },
+    });
+
+    const newOrder = (maxOrder._max.order || 0) + 1;
+
     await prisma.task.create({
-      data: { ...validatedData, columnId: 1 },
+      data: {
+        title: validatedData.title,
+        description: validatedData.description,
+        columnId: column.id,
+        order: newOrder,
+      },
     });
 
     return NextResponse.json({ status: 201 });
@@ -34,14 +69,20 @@ export async function PATCH(request: NextRequest) {
 
     if (!validatedData.id) throw new Error('Id is required');
 
+    const updateData: any = {
+      title: validatedData.title,
+      description: validatedData.description,
+    };
+
+    if (validatedData.columnId !== undefined) {
+      updateData.columnId = validatedData.columnId;
+    }
+
     await prisma.task.update({
       where: {
         id: validatedData.id,
       },
-      data: {
-        title: validatedData.title,
-        description: validatedData.description,
-      },
+      data: updateData,
     });
 
     return NextResponse.json({ status: 200 });

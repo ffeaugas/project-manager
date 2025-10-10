@@ -7,10 +7,14 @@ interface NewTaskForm {
   description: string;
 }
 
-export const newTaskSchema: ZodType<NewTaskForm> = z.object({
+export const newTaskSchema: ZodType<
+  NewTaskForm & { columnId?: number; pageName?: string }
+> = z.object({
   id: z.number().optional(),
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
+  columnId: z.number().optional(),
+  pageName: z.string().optional(),
 });
 
 export type NewTaskType = z.infer<typeof newTaskSchema>;
@@ -29,17 +33,27 @@ export const newColumnSchema: ZodType<NewColumnForm> = z.object({
 
 export type NewColumnType = z.infer<typeof newColumnSchema>;
 
+interface NewPageForm {
+  id?: number;
+  name: string;
+  icon: string;
+}
+
+export const newPageSchema: ZodType<NewPageForm> = z.object({
+  id: z.number().optional(),
+  name: z.string().min(1, 'Name is required'),
+  icon: z.string().min(1, 'Icon is required'),
+});
+
+export type NewPageType = z.infer<typeof newPageSchema>;
+
 export const TaskColumnSelect = {
   id: true,
   name: true,
   color: true,
   tasks: {
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      columnId: true,
-    },
+    select: { id: true, title: true, description: true, columnId: true, order: true },
+    orderBy: { order: 'asc' as const },
   },
 };
 

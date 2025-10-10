@@ -16,45 +16,58 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { newColumnSchema, NewColumnType, TaskColumnWithTasks } from '../types';
 import { useState } from 'react';
+import { HexColorPicker } from 'react-colorful';
 
 interface INewColumnDialogProps {
   refreshTaskColumns: () => void;
   data?: TaskColumnWithTasks | null;
   children: React.ReactNode;
+  pageName: string;
 }
 
 const NewColumnDialog = ({
   refreshTaskColumns,
   data = null,
   children,
+  pageName,
 }: INewColumnDialogProps) => {
   const {
     register,
     handleSubmit,
     reset,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<NewColumnType>({
     defaultValues: {
       name: data?.name || '',
-      color: data?.color || '',
+      color: data?.color || '#3B82F6',
     },
     resolver: zodResolver(newColumnSchema),
   });
   const [isOpen, setIsOpen] = useState(false);
 
+  const selectedColor = watch('color');
+
   const onSubmit: SubmitHandler<NewColumnType> = async (bodyData) => {
     try {
-      const response = await fetch('/api/task-columns', {
+      const url = `/api/task-columns?page=${encodeURIComponent(pageName)}`;
+
+      const response = await fetch(url, {
         method: data ? 'PATCH' : 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ...bodyData, id: data?.id }),
       });
-      if (!response.ok) throw new Error('Failed to create task');
+
+      if (!response.ok) {
+        throw new Error('Failed to create column');
+      }
+
       reset();
       refreshTaskColumns();
       setIsOpen(false);
     } catch (e) {
-      console.error('Error creating task :', e);
+      console.error('Error creating column:', e);
     }
   };
 
@@ -80,7 +93,26 @@ const NewColumnDialog = ({
               <Label htmlFor="color" className="text-right">
                 Color
               </Label>
-              <Input {...register('color')} id="color" className="col-span-3" />
+              <div className="col-span-3 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-8 h-8 rounded border border-gray-600"
+                    style={{ backgroundColor: selectedColor }}
+                  />
+                  <Input
+                    {...register('color')}
+                    id="color"
+                    className="flex-1"
+                    placeholder="#3B82F6"
+                  />
+                </div>
+                <div className="flex justify-center">
+                  <HexColorPicker
+                    color={selectedColor}
+                    onChange={(color) => setValue('color', color)}
+                  />
+                </div>
+              </div>
             </div>
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             {errors.color && <span className="text-red-500">{errors.color.message}</span>}

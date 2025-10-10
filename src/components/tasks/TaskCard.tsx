@@ -8,8 +8,15 @@ interface ITaskCardProps {
 
 const TaskCard = ({ data, refreshTaskColumns }: ITaskCardProps) => {
   return (
-    <NewTaskDialog refreshTaskColumns={refreshTaskColumns} data={data}>
-      <div className="flex flex-col rounded-lg p-4 bg-zinc-700 min-h-[100px] max-h-[200px] justify-center shadow-xl cursor-pointer">
+    <NewTaskDialog
+      refreshTaskColumns={refreshTaskColumns}
+      data={data}
+      columnId={data.columnId}
+    >
+      <div
+        data-task-card
+        className="flex flex-col rounded-lg p-4 bg-zinc-700 min-h-[100px] max-h-[200px] justify-center shadow-xl cursor-pointer transition-opacity"
+      >
         <p className="text-md font-bold text-white">{data.title}</p>
         <p className="text-sm text-slate-100 break-words line-clamp-3">
           {data.description}
