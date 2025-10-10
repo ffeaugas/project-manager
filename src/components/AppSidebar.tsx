@@ -60,7 +60,7 @@ const getIconComponent = (iconName: string): LucideIcon => {
     drum: Drum,
   };
 
-  return iconMap[iconName.toLowerCase()] || Home; // Default to Home if icon not found
+  return iconMap[iconName.toLowerCase()] || Home;
 };
 
 const AppSidebar = () => {
@@ -71,12 +71,13 @@ const AppSidebar = () => {
       const response = await fetch('/api/pages');
       const data = await response.json();
 
-      // Convert the API data to SidebarItem format
-      const sidebarItems: SidebarItem[] = data.map((page: any) => ({
-        name: page.name,
-        url: `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
-        icon: getIconComponent(page.icon),
-      }));
+      const sidebarItems: SidebarItem[] = data.map(
+        (page: { name: string; icon: string }) => ({
+          name: page.name,
+          url: `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
+          icon: getIconComponent(page.icon),
+        }),
+      );
 
       setItems(sidebarItems);
     };

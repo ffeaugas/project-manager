@@ -35,17 +35,13 @@ const NewTaskDialog = ({
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<NewTaskType>({
-    defaultValues: {
-      title: data?.title || '',
-      description: data?.description || '',
-    },
+    defaultValues: { title: data?.title || '', description: data?.description || '' },
     resolver: zodResolver(newTaskSchema),
   });
 
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
-    console.log('BODY DATA:::', bodyData);
     try {
-      const requestBody: any = { ...bodyData, id: data?.id };
+      const requestBody: NewTaskType = { ...bodyData, id: data?.id };
 
       if (columnId !== null) {
         requestBody.columnId = columnId;

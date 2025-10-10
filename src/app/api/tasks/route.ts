@@ -69,7 +69,11 @@ export async function PATCH(request: NextRequest) {
 
     if (!validatedData.id) throw new Error('Id is required');
 
-    const updateData: any = {
+    const updateData: {
+      title: string;
+      description: string;
+      columnId?: number;
+    } = {
       title: validatedData.title,
       description: validatedData.description,
     };

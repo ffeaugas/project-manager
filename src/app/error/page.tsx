@@ -10,10 +10,10 @@ export default function ErrorPage() {
     <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-900 text-white p-4">
       <div className="text-center space-y-6">
         <h1 className="text-6xl font-bold text-red-500">Erreur</h1>
-        <h2 className="text-2xl font-semibold">Une erreur s'est produite</h2>
+        <h2 className="text-2xl font-semibold">Une erreur s&apos;est produite</h2>
         <p className="text-gray-400 max-w-md">
-          Désolé, une erreur inattendue s'est produite lors de l'opération. Veuillez
-          réessayer ou contacter l'administrateur si le problème persiste.
+          Désolé, une erreur inattendue s&apos;est produite lors de l&apos;opération.
+          Veuillez réessayer ou contacter l&apos;administrateur si le problème persiste.
         </p>
         <div className="space-x-4">
           <Button
