@@ -15,6 +15,11 @@ interface ITaskCardProps {
 }
 
 const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
+  const date = new Date(data.createdAt);
+  const daysAgo = Math.floor(
+    (new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
   return (
     <NewTaskDialog
       submitTask={submitTask}
@@ -24,12 +29,15 @@ const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
     >
       <div
         data-task-card
-        className="flex flex-col rounded-lg p-4 bg-zinc-700 min-h-[100px] max-h-[200px] justify-center shadow-xl cursor-pointer transition-opacity"
+        className="flex flex-col rounded-md gap-2 px-2 py-2 bg-zinc-800 min-h-[100px] max-h-[200px] shadow-xl cursor-pointer transition-opacity justify-between"
       >
-        <p className="text-md font-bold text-white">{data.title}</p>
-        <p className="text-sm text-slate-100 break-words line-clamp-3">
-          {data.description}
-        </p>
+        <div className="flex flex-col px-2">
+          <p className="text-sm font-bold text-white">{data.title}</p>
+          <p className="text-sm text-slate-100 break-words line-clamp-3">
+            {data.description}
+          </p>
+        </div>
+        <p className="text-xs text-slate-400 text-right">{daysAgo} d ago</p>
       </div>
     </NewTaskDialog>
   );

@@ -23,7 +23,7 @@ const TaskBody = ({ page }: { page: string }) => {
     <div className="flex flex-col h-full max-h-screen">
       <TaskHeader submitTask={submitTask} pageName={page} />
       <div className="flex-1 overflow-auto">
-        <div className="flex flex-row gap-6 p-6 min-w-fit h-full">
+        <div className="flex flex-row gap-3 p-4 min-w-fit h-full">
           {taskColumns.map((col) => (
             <TaskColumn
               key={col.id}
@@ -38,7 +38,7 @@ const TaskBody = ({ page }: { page: string }) => {
           <NewColumnDialog submitColumn={submitColumn}>
             <Button
               variant="outline"
-              className="flex flex-col justify-center w-[300px] h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-xl mt-12"
+              className="flex flex-col justify-center w-[300px] h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-xl m-1 mt-[3.25rem]"
             >
               Add Column
             </Button>

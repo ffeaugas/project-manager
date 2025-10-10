@@ -45,7 +45,7 @@ const TaskColumn = ({
   pageName,
 }: ITaskColumnProps) => {
   return (
-    <div className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-4 rounded-lg">
+    <div className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-black/10">
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
@@ -54,27 +54,22 @@ const TaskColumn = ({
         refreshTaskColumns={refreshTaskColumns}
         pageName={pageName}
       />
-      {data.tasks.length > 0 ? (
-        <>
-          {data.tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              data={task}
-              submitTask={submitTask}
-              deleteItem={deleteItem}
-            />
-          ))}
-        </>
-      ) : (
-        <NewTaskDialog submitTask={submitTask} columnId={data.id}>
-          <Button
-            variant="outline"
-            className="flex flex-col justify-center w-full h-[150px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
-          >
-            Click to add a new task
-          </Button>
-        </NewTaskDialog>
-      )}
+      {data.tasks.map((task) => (
+        <TaskCard
+          key={task.id}
+          data={task}
+          submitTask={submitTask}
+          deleteItem={deleteItem}
+        />
+      ))}
+      <NewTaskDialog submitTask={submitTask} columnId={data.id}>
+        <Button
+          variant="outline"
+          className="flex flex-col justify-center w-full h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
+        >
+          Click to add a new task
+        </Button>
+      </NewTaskDialog>
     </div>
   );
 };

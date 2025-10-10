@@ -52,7 +52,14 @@ export const TaskColumnSelect = {
   name: true,
   color: true,
   tasks: {
-    select: { id: true, title: true, description: true, columnId: true, order: true },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      columnId: true,
+      order: true,
+      createdAt: true,
+    },
     orderBy: { order: 'asc' as const },
   },
 };
