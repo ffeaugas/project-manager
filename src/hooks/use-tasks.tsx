@@ -3,6 +3,7 @@ import {
   NewTaskType,
   NewColumnType,
 } from '@/components/tasks/types';
+import { DragEndEvent } from '@dnd-kit/core';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -118,6 +119,19 @@ export const useTasks = (page: string) => {
     [page, fetchTaskColumns],
   );
 
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    const tasks = taskColumns.flatMap((column) => column.tasks);
+    const activeTask = tasks.find((task) => task.id === active.id);
+    if (over && activeTask && activeTask.columnId !== over.id) {
+      console.log(`drag task ${activeTask.title} to column ${over.id}`);
+      submitTask(activeTask, {
+        taskId: activeTask.id,
+        columnId: Number(over.id),
+      });
+    }
+  };
+
   useEffect(() => {
     fetchTaskColumns(page);
   }, [page, fetchTaskColumns]);
@@ -130,5 +144,6 @@ export const useTasks = (page: string) => {
     submitTask,
     submitColumn,
     deleteItem,
+    handleDragEnd,
   };
 };

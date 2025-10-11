@@ -6,6 +6,7 @@ import NewColumnDialog from './dialogs/NewColumnDialog';
 import { Spinner } from '../ui/spinner';
 import { Button } from '../ui/button';
 import { useTasks } from '@/hooks/use-tasks';
+import { DndContext } from '@dnd-kit/core';
 
 const TaskBody = ({ page }: { page: string }) => {
   const {
@@ -15,6 +16,7 @@ const TaskBody = ({ page }: { page: string }) => {
     submitTask,
     submitColumn,
     deleteItem,
+    handleDragEnd,
   } = useTasks(page);
 
   if (isLoading) return <Spinner size="large" />;
@@ -24,17 +26,19 @@ const TaskBody = ({ page }: { page: string }) => {
       <TaskHeader submitTask={submitTask} pageName={page} />
       <div className="flex-1 overflow-auto">
         <div className="flex flex-row gap-3 p-4 min-w-fit h-full">
-          {taskColumns.map((col) => (
-            <TaskColumn
-              key={col.id}
-              data={col}
-              submitTask={submitTask}
-              submitColumn={submitColumn}
-              deleteItem={deleteItem}
-              refreshTaskColumns={() => fetchTaskColumns(page)}
-              pageName={page}
-            />
-          ))}
+          <DndContext onDragEnd={handleDragEnd}>
+            {taskColumns.map((col) => (
+              <TaskColumn
+                key={col.id}
+                data={col}
+                submitTask={submitTask}
+                submitColumn={submitColumn}
+                deleteItem={deleteItem}
+                refreshTaskColumns={() => fetchTaskColumns(page)}
+                pageName={page}
+              />
+            ))}
+          </DndContext>
           <NewColumnDialog submitColumn={submitColumn}>
             <Button
               variant="outline"

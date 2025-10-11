@@ -14,6 +14,7 @@ import {
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import DeleteDialog from '../utils/DeleteDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
+import { useDroppable } from '@dnd-kit/core';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
@@ -44,8 +45,16 @@ const TaskColumn = ({
   refreshTaskColumns,
   pageName,
 }: ITaskColumnProps) => {
+  const { isOver, setNodeRef } = useDroppable({ id: data.id });
+
   return (
-    <div className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-black/10">
+    <div
+      ref={setNodeRef}
+      style={{
+        backgroundColor: isOver ? 'red' : '',
+      }}
+      className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-black/10"
+    >
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
