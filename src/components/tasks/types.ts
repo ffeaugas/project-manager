@@ -51,6 +51,7 @@ export const TaskColumnSelect = {
   id: true,
   name: true,
   color: true,
+  order: true,
   tasks: {
     select: {
       id: true,

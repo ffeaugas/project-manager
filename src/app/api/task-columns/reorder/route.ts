@@ -6,30 +6,22 @@ const prisma = new PrismaClient();
 export async function POST(request: NextRequest) {
   const { type, activeColumnId, overColumnId } = await request.json();
 
-  if (type === 'column') {
-    return reOrderColumn(activeColumnId, overColumnId);
-  }
-}
-
-const reOrderColumn = async (activeId: number, overId: number) => {
   const activeColumn = await prisma.taskColumn.findFirst({
-    where: { id: activeId },
+    where: { id: activeColumnId },
   });
 
   const overColumn = await prisma.taskColumn.findFirst({
-    where: { id: overId },
+    where: { id: overColumnId },
   });
 
   if (!activeColumn || !overColumn) {
     throw new Error('Column not found');
   }
 
-  // Store original orders before making any updates
   const originalActiveOrder = activeColumn.order;
   const originalOverOrder = overColumn.order;
 
   if (originalOverOrder > originalActiveOrder) {
-    // Moving right: decrement columns between original position and target
     await prisma.taskColumn.updateMany({
       where: {
         pageId: overColumn.pageId,
@@ -41,7 +33,6 @@ const reOrderColumn = async (activeId: number, overId: number) => {
       data: { order: { decrement: 1 } },
     });
   } else {
-    // Moving left: increment columns between target and original position
     await prisma.taskColumn.updateMany({
       where: {
         pageId: overColumn.pageId,
@@ -54,11 +45,10 @@ const reOrderColumn = async (activeId: number, overId: number) => {
     });
   }
 
-  // Finally, update the active column to its new position
   await prisma.taskColumn.update({
-    where: { id: activeId },
+    where: { id: activeColumnId },
     data: { order: originalOverOrder },
   });
 
   return NextResponse.json({ status: 200 });
-};
+}

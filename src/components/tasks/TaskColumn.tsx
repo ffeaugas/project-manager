@@ -16,6 +16,8 @@ import DeleteDialog from '../utils/DeleteDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
 import { useDroppable } from '@dnd-kit/core';
 import { cn } from '@/lib/utils';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
@@ -37,15 +39,30 @@ interface ITaskColumnProps {
 }
 
 const TaskColumn = ({ data, submitTask, submitColumn, deleteItem }: ITaskColumnProps) => {
-  const { isOver, setNodeRef } = useDroppable({ id: data.id });
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
+    useSortable({
+      id: data.id,
+      data: {
+        type: 'column',
+        column: data,
+      },
+    });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
-        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-black/10',
-        isOver && 'bg/black/50',
+        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-zinc-900',
+        isDragging && 'opacity-20',
       )}
+      style={style}
+      {...attributes}
+      {...listeners}
     >
       <ColumnHeader
         data={data}

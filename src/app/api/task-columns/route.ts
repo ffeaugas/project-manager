@@ -33,6 +33,7 @@ export async function GET(request: NextRequest) {
         },
       },
       select: TaskColumnSelect,
+      orderBy: { order: 'asc' },
     });
 
     return NextResponse.json(columns);
@@ -67,8 +68,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Page not found' }, { status: 404 });
     }
 
+    const columnCount = await prisma.taskColumn.count({
+      where: { pageId: page.id },
+    });
+
     await prisma.taskColumn.create({
-      data: { ...validatedData, pageId: page.id },
+      data: { ...validatedData, pageId: page.id, order: columnCount },
     });
 
     return NextResponse.json({ status: 201 });

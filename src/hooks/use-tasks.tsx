@@ -4,13 +4,14 @@ import {
   NewColumnType,
   TaskSelect,
 } from '@/components/tasks/types';
-import { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
+import { DragEndEvent, DragStartEvent, Over, Active } from '@dnd-kit/core';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useTasks = (page: string) => {
   const [taskColumns, setTaskColumns] = useState<TaskColumnWithTasks[]>([]);
   const [overlayTask, setOverlayTask] = useState<TaskSelect | null>(null);
+  const [overlayColumn, setOverlayColumn] = useState<TaskColumnWithTasks | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
   const router = useRouter();
@@ -25,6 +26,7 @@ export const useTasks = (page: string) => {
         }
         const data = await response.json();
         setTaskColumns(data);
+        console.log('fetchTaskColumns', data); //TO_REMOVE
       } catch {
         router.push('/error');
         return;
@@ -121,25 +123,41 @@ export const useTasks = (page: string) => {
     [page, fetchTaskColumns],
   );
 
-  const handleDragEnd = (event: DragEndEvent) => {
-    setOverlayTask(null);
-    const { active, over } = event;
-    const tasks = taskColumns.flatMap((column) => column.tasks);
-    const activeTask = tasks.find((task) => task.id === active.id);
-    if (over && activeTask && activeTask.columnId !== over.id) {
-      console.log(`drag task ${activeTask.title} to column ${over.id}`);
-      submitTask(activeTask, {
-        taskId: activeTask.id,
-        columnId: Number(over.id),
-      });
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    if (active.data.current?.type === 'column') {
+      setOverlayColumn(active.data.current.column);
     }
   };
 
-  const handleDragStart = (event: DragStartEvent) => {
-    const { active } = event;
-    const tasks = taskColumns.flatMap((column) => column.tasks);
-    const activeTask = tasks.find((task) => task.id === active.id);
-    activeTask && setOverlayTask(activeTask);
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (!over) return;
+
+    if (active.data.current?.type === 'column') {
+      reOrderColumn(active, over);
+    }
+
+    setOverlayColumn(null);
+    setOverlayTask(null);
+  };
+
+  const reOrderColumn = async (active: Active, over: Over) => {
+    const activeColumnId = active.id;
+    const overColumnId = over.id;
+    console.log('reOrderColumn', activeColumnId, overColumnId);
+
+    if (activeColumnId === overColumnId) return;
+
+    const response = await fetch('/api/task-columns/reorder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ type: 'column', activeColumnId, overColumnId }),
+    });
+
+    if (!response.ok) throw new Error('Failed to reorder column');
+    await fetchTaskColumns(page);
   };
 
   useEffect(() => {
@@ -157,5 +175,6 @@ export const useTasks = (page: string) => {
     handleDragStart,
     handleDragEnd,
     overlayTask,
+    overlayColumn,
   };
 };

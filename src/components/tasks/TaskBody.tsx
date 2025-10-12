@@ -14,6 +14,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
+import { SortableContext } from '@dnd-kit/sortable';
 
 const TaskBody = ({ page }: { page: string }) => {
   const {
@@ -25,7 +26,10 @@ const TaskBody = ({ page }: { page: string }) => {
     handleDragStart,
     handleDragEnd,
     overlayTask,
+    overlayColumn,
   } = useTasks(page);
+
+  const columnIds = taskColumns.map((col) => col.id);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -47,16 +51,28 @@ const TaskBody = ({ page }: { page: string }) => {
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
           >
-            {taskColumns.map((col) => (
-              <TaskColumn
-                key={col.id}
-                data={col}
-                submitTask={submitTask}
-                submitColumn={submitColumn}
-                deleteItem={deleteItem}
-              />
-            ))}
+            <SortableContext items={columnIds}>
+              {taskColumns.map((col) => (
+                <TaskColumn
+                  key={col.id}
+                  data={col}
+                  submitTask={submitTask}
+                  submitColumn={submitColumn}
+                  deleteItem={deleteItem}
+                />
+              ))}
+            </SortableContext>
             <DragOverlay>
+              {overlayColumn ? (
+                <TaskColumn
+                  data={overlayColumn}
+                  submitTask={submitTask}
+                  submitColumn={submitColumn}
+                  deleteItem={deleteItem}
+                />
+              ) : null}
+            </DragOverlay>
+            {/* <DragOverlay>
               {overlayTask ? (
                 <TaskCard
                   data={overlayTask}
@@ -64,7 +80,7 @@ const TaskBody = ({ page }: { page: string }) => {
                   deleteItem={deleteItem}
                 />
               ) : null}
-            </DragOverlay>
+            </DragOverlay> */}
           </DndContext>
           <NewColumnDialog submitColumn={submitColumn}>
             <Button
