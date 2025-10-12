@@ -6,13 +6,19 @@ import NewColumnDialog from './dialogs/NewColumnDialog';
 import { Spinner } from '../ui/spinner';
 import { Button } from '../ui/button';
 import { useTasks } from '@/hooks/use-tasks';
-import { DndContext, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import TaskCard from './TaskCard';
 
 const TaskBody = ({ page }: { page: string }) => {
   const {
     taskColumns,
     isLoading,
-    fetchTaskColumns,
     submitTask,
     submitColumn,
     deleteItem,
@@ -47,10 +53,18 @@ const TaskBody = ({ page }: { page: string }) => {
                 data={col}
                 submitTask={submitTask}
                 submitColumn={submitColumn}
-                overlayTask={overlayTask}
                 deleteItem={deleteItem}
               />
             ))}
+            <DragOverlay>
+              {overlayTask ? (
+                <TaskCard
+                  data={overlayTask}
+                  submitTask={submitTask}
+                  deleteItem={deleteItem}
+                />
+              ) : null}
+            </DragOverlay>
           </DndContext>
           <NewColumnDialog submitColumn={submitColumn}>
             <Button

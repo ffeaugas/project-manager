@@ -14,7 +14,7 @@ import {
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import DeleteDialog from '../utils/DeleteDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
-import { DragOverlay, useDroppable } from '@dnd-kit/core';
+import { useDroppable } from '@dnd-kit/core';
 import { cn } from '@/lib/utils';
 
 interface ITaskColumnProps {
@@ -34,16 +34,9 @@ interface ITaskColumnProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
-  overlayTask: TaskSelect | null;
 }
 
-const TaskColumn = ({
-  data,
-  submitTask,
-  submitColumn,
-  deleteItem,
-  overlayTask,
-}: ITaskColumnProps) => {
+const TaskColumn = ({ data, submitTask, submitColumn, deleteItem }: ITaskColumnProps) => {
   const { isOver, setNodeRef } = useDroppable({ id: data.id });
 
   return (
@@ -68,16 +61,6 @@ const TaskColumn = ({
           deleteItem={deleteItem}
         />
       ))}
-      {/* {overlayTask && !data.tasks.some((task) => task.id === overlayTask.id) && (
-        <DragOverlay>
-          <TaskCard
-            key={overlayTask.id}
-            data={overlayTask}
-            submitTask={submitTask}
-            deleteItem={deleteItem}
-          />
-        </DragOverlay>
-      )} */}
       <NewTaskDialog submitTask={submitTask} columnId={data.id}>
         <Button
           variant="outline"

@@ -1,6 +1,7 @@
 import { useDraggable } from '@dnd-kit/core';
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import { TaskSelect, NewTaskType } from './types';
+import { cn } from '@/lib/utils';
 
 interface ITaskCardProps {
   data: TaskSelect;
@@ -16,7 +17,7 @@ interface ITaskCardProps {
 }
 
 const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
-  const { attributes, listeners, setNodeRef, transform } = useDraggable({
+  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: data.id,
   });
 
@@ -34,17 +35,13 @@ const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
     >
       <div
         ref={setNodeRef}
-        style={
-          transform
-            ? {
-                transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-              }
-            : undefined
-        }
         {...listeners}
         {...attributes}
         data-task-card
-        className="flex flex-col rounded-md gap-2 px-2 py-2 bg-zinc-800 min-h-[100px] max-h-[200px] shadow-xl cursor-pointer transition-opacity justify-between"
+        className={cn(
+          'flex flex-col rounded-md gap-2 px-2 py-2 bg-zinc-800 min-h-[100px] max-h-[200px] shadow-xl cursor-pointer transition-opacity justify-between',
+          isDragging && 'opacity-20',
+        )}
       >
         <div className="flex flex-col px-2">
           <p className="text-sm font-bold text-white break-words line-clamp-2">
