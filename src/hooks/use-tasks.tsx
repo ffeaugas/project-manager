@@ -2,13 +2,15 @@ import {
   TaskColumnWithTasks,
   NewTaskType,
   NewColumnType,
+  TaskSelect,
 } from '@/components/tasks/types';
-import { DragEndEvent } from '@dnd-kit/core';
+import { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useTasks = (page: string) => {
   const [taskColumns, setTaskColumns] = useState<TaskColumnWithTasks[]>([]);
+  const [overlayTask, setOverlayTask] = useState<TaskSelect | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
   const router = useRouter();
@@ -120,6 +122,7 @@ export const useTasks = (page: string) => {
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
+    setOverlayTask(null);
     const { active, over } = event;
     const tasks = taskColumns.flatMap((column) => column.tasks);
     const activeTask = tasks.find((task) => task.id === active.id);
@@ -130,6 +133,13 @@ export const useTasks = (page: string) => {
         columnId: Number(over.id),
       });
     }
+  };
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    const tasks = taskColumns.flatMap((column) => column.tasks);
+    const activeTask = tasks.find((task) => task.id === active.id);
+    activeTask && setOverlayTask(activeTask);
   };
 
   useEffect(() => {
@@ -144,6 +154,8 @@ export const useTasks = (page: string) => {
     submitTask,
     submitColumn,
     deleteItem,
+    handleDragStart,
     handleDragEnd,
+    overlayTask,
   };
 };

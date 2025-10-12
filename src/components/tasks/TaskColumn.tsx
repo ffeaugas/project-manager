@@ -1,6 +1,6 @@
 import { GripVertical, Pencil, Trash } from 'lucide-react';
 import TaskCard from './TaskCard';
-import { TaskColumnWithTasks, NewTaskType, NewColumnType } from './types';
+import { TaskColumnWithTasks, NewTaskType, NewColumnType, TaskSelect } from './types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -14,7 +14,8 @@ import {
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import DeleteDialog from '../utils/DeleteDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
-import { useDroppable } from '@dnd-kit/core';
+import { DragOverlay, useDroppable } from '@dnd-kit/core';
+import { cn } from '@/lib/utils';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
@@ -33,8 +34,7 @@ interface ITaskColumnProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
-  refreshTaskColumns: () => void;
-  pageName: string;
+  overlayTask: TaskSelect | null;
 }
 
 const TaskColumn = ({
@@ -42,26 +42,23 @@ const TaskColumn = ({
   submitTask,
   submitColumn,
   deleteItem,
-  refreshTaskColumns,
-  pageName,
+  overlayTask,
 }: ITaskColumnProps) => {
   const { isOver, setNodeRef } = useDroppable({ id: data.id });
 
   return (
     <div
       ref={setNodeRef}
-      style={{
-        backgroundColor: isOver ? 'red' : '',
-      }}
-      className="flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-black/10"
+      className={cn(
+        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-black/10',
+        isOver && 'bg/black/50',
+      )}
     >
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
         submitColumn={submitColumn}
         deleteItem={deleteItem}
-        refreshTaskColumns={refreshTaskColumns}
-        pageName={pageName}
       />
       {data.tasks.map((task) => (
         <TaskCard
@@ -71,6 +68,16 @@ const TaskColumn = ({
           deleteItem={deleteItem}
         />
       ))}
+      {/* {overlayTask && !data.tasks.some((task) => task.id === overlayTask.id) && (
+        <DragOverlay>
+          <TaskCard
+            key={overlayTask.id}
+            data={overlayTask}
+            submitTask={submitTask}
+            deleteItem={deleteItem}
+          />
+        </DragOverlay>
+      )} */}
       <NewTaskDialog submitTask={submitTask} columnId={data.id}>
         <Button
           variant="outline"
@@ -95,8 +102,6 @@ interface IColumnHeaderProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
-  refreshTaskColumns: () => void;
-  pageName: string;
 }
 
 const ColumnHeader = ({
@@ -104,8 +109,6 @@ const ColumnHeader = ({
   nbTasks,
   submitColumn,
   deleteItem,
-  refreshTaskColumns,
-  pageName,
 }: IColumnHeaderProps) => {
   return (
     <div className="flex flex-row justify-between items-center group h-8">
@@ -118,13 +121,7 @@ const ColumnHeader = ({
           {data.name} <b className="font-normal text-zinc-600 text-sm">({nbTasks})</b>
         </p>
       </div>
-      <ColDropdownMenu
-        data={data}
-        submitColumn={submitColumn}
-        deleteItem={deleteItem}
-        refreshTaskColumns={refreshTaskColumns}
-        pageName={pageName}
-      />
+      <ColDropdownMenu data={data} submitColumn={submitColumn} deleteItem={deleteItem} />
     </div>
   );
 };
@@ -138,17 +135,9 @@ interface IColDropdownMenuProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
-  refreshTaskColumns: () => void;
-  pageName: string;
 }
 
-const ColDropdownMenu = ({
-  data,
-  submitColumn,
-  deleteItem,
-  refreshTaskColumns,
-  pageName,
-}: IColDropdownMenuProps) => {
+const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
