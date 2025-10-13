@@ -5,6 +5,7 @@ import {
   TaskSelect,
 } from '@/components/tasks/types';
 import { DragEndEvent, DragStartEvent, Over, Active } from '@dnd-kit/core';
+import { arrayMove } from '@dnd-kit/sortable';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -149,6 +150,11 @@ export const useTasks = (page: string) => {
     console.log('reOrderColumn', activeColumnId, overColumnId);
 
     if (activeColumnId === overColumnId) return;
+
+    const oldIndex = taskColumns.findIndex((column) => column.id === activeColumnId);
+    const newIndex = taskColumns.findIndex((column) => column.id === overColumnId);
+    const newTaskColumns = arrayMove(taskColumns, oldIndex, newIndex);
+    setTaskColumns(newTaskColumns);
 
     const response = await fetch('/api/task-columns/reorder', {
       method: 'POST',
