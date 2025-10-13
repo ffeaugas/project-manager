@@ -2,6 +2,8 @@ import { useDraggable } from '@dnd-kit/core';
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import { TaskSelect, NewTaskType } from './types';
 import { cn } from '@/lib/utils';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface ITaskCardProps {
   data: TaskSelect;
@@ -17,9 +19,19 @@ interface ITaskCardProps {
 }
 
 const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
-  const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
-    id: data.id,
-  });
+  const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
+    useSortable({
+      id: data.id,
+      data: {
+        type: 'task',
+        task: data,
+      },
+    });
+
+  const style = {
+    transition,
+    transform: CSS.Transform.toString(transform),
+  };
 
   const date = new Date(data.createdAt);
   const daysAgo = Math.floor(
@@ -35,6 +47,7 @@ const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
     >
       <div
         ref={setNodeRef}
+        style={style}
         {...listeners}
         {...attributes}
         data-task-card

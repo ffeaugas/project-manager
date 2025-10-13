@@ -15,21 +15,24 @@ import {
 } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
+import { TaskColumnWithTasks } from './types';
 
 const TaskBody = ({ page }: { page: string }) => {
   const {
-    taskColumns,
+    columns,
+    tasks,
     isLoading,
     submitTask,
     submitColumn,
     deleteItem,
     handleDragStart,
     handleDragEnd,
+    handleDragOver,
     overlayTask,
     overlayColumn,
   } = useTasks(page);
 
-  const columnIds = taskColumns.map((col) => col.id);
+  const columnIds = columns.map((col: TaskColumnWithTasks) => col.id);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -50,12 +53,14 @@ const TaskBody = ({ page }: { page: string }) => {
             sensors={sensors}
             onDragStart={handleDragStart}
             onDragEnd={handleDragEnd}
+            onDragOver={handleDragOver}
           >
             <SortableContext items={columnIds}>
-              {taskColumns.map((col) => (
+              {columns.map((col) => (
                 <TaskColumn
                   key={col.id}
                   data={col}
+                  tasks={tasks.filter((task) => task.columnId === col.id)}
                   submitTask={submitTask}
                   submitColumn={submitColumn}
                   deleteItem={deleteItem}
@@ -66,13 +71,12 @@ const TaskBody = ({ page }: { page: string }) => {
               {overlayColumn ? (
                 <TaskColumn
                   data={overlayColumn}
+                  tasks={tasks.filter((task) => task.columnId === overlayColumn.id)}
                   submitTask={submitTask}
                   submitColumn={submitColumn}
                   deleteItem={deleteItem}
                 />
               ) : null}
-            </DragOverlay>
-            {/* <DragOverlay>
               {overlayTask ? (
                 <TaskCard
                   data={overlayTask}
@@ -80,7 +84,7 @@ const TaskBody = ({ page }: { page: string }) => {
                   deleteItem={deleteItem}
                 />
               ) : null}
-            </DragOverlay> */}
+            </DragOverlay>
           </DndContext>
           <NewColumnDialog submitColumn={submitColumn}>
             <Button

@@ -46,6 +46,7 @@ export async function POST(request: NextRequest) {
         description: validatedData.description,
         columnId: column.id,
         order: newOrder,
+        pageId: column.pageId,
       },
     });
 

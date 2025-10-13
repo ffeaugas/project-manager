@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
-  const { type, activeColumnId, overColumnId } = await request.json();
+  const { activeColumnId, overColumnId } = await request.json();
 
   const activeColumn = await prisma.taskColumn.findFirst({
     where: { id: activeColumnId },

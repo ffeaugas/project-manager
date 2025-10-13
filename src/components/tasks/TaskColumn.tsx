@@ -14,13 +14,13 @@ import {
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import DeleteDialog from '../utils/DeleteDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
-import { useDroppable } from '@dnd-kit/core';
 import { cn } from '@/lib/utils';
-import { useSortable } from '@dnd-kit/sortable';
+import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
+  tasks: TaskSelect[];
   submitTask: (
     bodyData: NewTaskType,
     options?: {
@@ -38,7 +38,13 @@ interface ITaskColumnProps {
   deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
 }
 
-const TaskColumn = ({ data, submitTask, submitColumn, deleteItem }: ITaskColumnProps) => {
+const TaskColumn = ({
+  data,
+  tasks,
+  submitTask,
+  submitColumn,
+  deleteItem,
+}: ITaskColumnProps) => {
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
     useSortable({
       id: data.id,
@@ -61,23 +67,25 @@ const TaskColumn = ({ data, submitTask, submitColumn, deleteItem }: ITaskColumnP
         isDragging && 'opacity-20',
       )}
       style={style}
-      {...attributes}
-      {...listeners}
     >
       <ColumnHeader
         data={data}
         nbTasks={data.tasks.length}
         submitColumn={submitColumn}
         deleteItem={deleteItem}
+        dragAttributes={attributes}
+        dragListeners={listeners}
       />
-      {data.tasks.map((task) => (
-        <TaskCard
-          key={task.id}
-          data={task}
-          submitTask={submitTask}
-          deleteItem={deleteItem}
-        />
-      ))}
+      <SortableContext items={data.tasks.map((task) => task.id)}>
+        {data.tasks.map((task) => (
+          <TaskCard
+            key={task.id}
+            data={task}
+            submitTask={submitTask}
+            deleteItem={deleteItem}
+          />
+        ))}
+      </SortableContext>
       <NewTaskDialog submitTask={submitTask} columnId={data.id}>
         <Button
           variant="outline"
@@ -102,6 +110,8 @@ interface IColumnHeaderProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  dragAttributes?: any;
+  dragListeners?: any;
 }
 
 const ColumnHeader = ({
@@ -109,9 +119,15 @@ const ColumnHeader = ({
   nbTasks,
   submitColumn,
   deleteItem,
+  dragAttributes,
+  dragListeners,
 }: IColumnHeaderProps) => {
   return (
-    <div className="flex flex-row justify-between items-center group h-8">
+    <div
+      className="flex flex-row justify-between items-center group h-8"
+      {...dragAttributes}
+      {...dragListeners}
+    >
       <div className="flex flex-row gap-4 items-center">
         <div
           className="size-4 rounded-full"
