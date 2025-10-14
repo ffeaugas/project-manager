@@ -18,6 +18,10 @@ import {
   Drum,
   Plus,
   LucideIcon,
+  CheckSquare,
+  Folder,
+  ChevronDown,
+  ChevronRight,
 } from 'lucide-react';
 
 import {
@@ -30,10 +34,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from './ui/sidebar';
 import { Button } from './ui/button';
-import NewPageDialog from './tasks/dialogs/NewPageDialog';
 import { useEffect, useState } from 'react';
+import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
 
 interface SidebarItem {
   name: string;
@@ -64,34 +71,35 @@ const getIconComponent = (iconName: string): LucideIcon => {
 };
 
 const AppSidebar = () => {
-  const [items, setItems] = useState<SidebarItem[]>([]);
+  const [projects, setProjects] = useState<SidebarItem[]>([]);
+  const [projectsExpanded, setProjectsExpanded] = useState(true);
 
   useEffect(() => {
-    const fetchItems = async () => {
-      const response = await fetch('/api/pages');
+    const fetchProjects = async () => {
+      const response = await fetch('/api/projects');
       const data = await response.json();
 
-      const sidebarItems: SidebarItem[] = data.map(
-        (page: { name: string; icon: string }) => ({
-          name: page.name,
-          url: `/${page.name.toLowerCase().replace(/\s+/g, '-')}`,
-          icon: getIconComponent(page.icon),
+      const projectItems: SidebarItem[] = data.map(
+        (project: { name: string; description: string }) => ({
+          name: project.name,
+          url: `/${project.name.toLowerCase().replace(/\s+/g, '-')}`,
+          description: getIconComponent(project.description),
         }),
       );
 
-      setItems(sidebarItems);
+      setProjects(projectItems);
     };
 
-    fetchItems();
+    fetchProjects();
   }, []);
 
   const onSuccess = (name: string, icon: string) => {
-    const newItem: SidebarItem = {
+    const newProject: SidebarItem = {
       name: name,
       url: `/${name.toLowerCase().replace(/\s+/g, '-')}`,
       icon: getIconComponent(icon),
     };
-    setItems([...items, newItem]);
+    setProjects([...projects, newProject]);
   };
 
   return (
@@ -101,27 +109,54 @@ const AppSidebar = () => {
           <SidebarGroupLabel className="text-slate-200">FranciTask</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
-                <SidebarMenuItem key={item.name}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.name}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <a href="/todo">
+                    <CheckSquare />
+                    <span>Todo</span>
+                  </a>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={() => setProjectsExpanded(!projectsExpanded)}
+                  className="cursor-pointer"
+                >
+                  <Folder />
+                  <span>Projects</span>
+                  {projectsExpanded ? (
+                    <ChevronDown className="ml-auto" size={16} />
+                  ) : (
+                    <ChevronRight className="ml-auto" size={16} />
+                  )}
+                </SidebarMenuButton>
+                {projectsExpanded && (
+                  <SidebarMenuSub>
+                    {projects.map((project) => (
+                      <SidebarMenuSubItem key={project.name}>
+                        <SidebarMenuSubButton asChild>
+                          <a href={`/project/${project.url}`}>
+                            <Home />
+                            <span>{project.name}</span>
+                          </a>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                )}
+              </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="bg-zinc-800">
-        <NewPageDialog onSuccess={onSuccess}>
+        <NewProjectDialog onSuccess={onSuccess}>
           <Button className="w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
             <Plus size={16} className="mr-2" />
-            New Page
+            New Projet
           </Button>
-        </NewPageDialog>
+        </NewProjectDialog>
       </SidebarFooter>
     </Sidebar>
   );

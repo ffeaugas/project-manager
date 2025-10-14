@@ -13,7 +13,7 @@ import { DialogFooter, DialogHeader } from '../../ui/dialog';
 import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { newTaskSchema, NewTaskType, TaskSelect } from '../types';
+import { EntityType, newTaskSchema, NewTaskType, TaskSelect } from '../types';
 import { useState } from 'react';
 import { Trash } from 'lucide-react';
 import DeleteDialog from '@/components/utils/DeleteDialog';
@@ -27,7 +27,7 @@ interface INewTaskDialogProps {
       pageName?: string | null;
     },
   ) => Promise<boolean>;
-  deleteItem?: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  deleteItem?: (id: number, type: EntityType) => Promise<boolean>;
   children: React.ReactNode;
   data?: TaskSelect | null;
   columnId?: number | null;

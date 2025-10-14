@@ -7,6 +7,13 @@ interface NewTaskForm {
   description: string;
 }
 
+export type EntityType =
+  | 'task-columns'
+  | 'tasks'
+  | 'pages'
+  | 'projects'
+  | 'project-cards';
+
 export const newTaskSchema: ZodType<
   NewTaskForm & { columnId?: number; pageName?: string }
 > = z.object({
@@ -46,6 +53,20 @@ export const newPageSchema: ZodType<NewPageForm> = z.object({
 });
 
 export type NewPageType = z.infer<typeof newPageSchema>;
+
+interface NewProjectForm {
+  id?: number;
+  name: string;
+  description: string;
+}
+
+export const newProjectSchema: ZodType<NewProjectForm> = z.object({
+  id: z.number().optional(),
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+
+export type NewProjectType = z.infer<typeof newProjectSchema>;
 
 export const TaskColumnSelect = {
   id: true,

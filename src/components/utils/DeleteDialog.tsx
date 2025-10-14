@@ -9,13 +9,14 @@ import {
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { useState } from 'react';
+import { EntityType } from '../tasks/types';
 
 interface IDeleteDialogProps {
   id: number;
-  type: 'task-columns' | 'tasks';
+  type: 'task-columns' | 'tasks' | 'project-cards';
   title: string;
   message: string;
-  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
   onSuccess?: () => void;
   children?: React.ReactNode;
 }
