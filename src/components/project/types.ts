@@ -5,7 +5,8 @@ interface NewProjectCardForm {
   id?: number;
   name: string;
   description: string;
-  imageUrl: string;
+  image?: File;
+  projectId?: number;
 }
 
 export const newProjectCardSchema: ZodType<NewProjectCardForm & { projectId?: number }> =
@@ -13,8 +14,19 @@ export const newProjectCardSchema: ZodType<NewProjectCardForm & { projectId?: nu
     id: z.number().optional(),
     name: z.string().min(1, 'Name is required'),
     description: z.string().min(1, 'Description is required'),
-    imageUrl: z.string().min(1, 'Image is required'),
     projectId: z.number().optional(),
+    image: z
+      .instanceof(File)
+      .refine(
+        (file) => file.size <= 5 * 1024 * 1024,
+        "La taille de l'image ne doit pas dépasser 5MB",
+      )
+      .refine(
+        (file) =>
+          ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type),
+        'Format accepté: JPG, PNG ou WebP',
+      )
+      .optional(),
   });
 
 export type NewProjectCardType = z.infer<typeof newProjectCardSchema>;
@@ -31,3 +43,12 @@ export const ProjectCardSelect = {
 export type ProjectCardSelect = Prisma.ProjectCardGetPayload<{
   select: typeof ProjectCardSelect;
 }>;
+
+export const ProjectSelect = {
+  id: true,
+  name: true,
+  description: true,
+  projectCards: {
+    select: ProjectCardSelect,
+  },
+};

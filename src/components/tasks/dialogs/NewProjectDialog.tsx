@@ -20,14 +20,9 @@ import { useState } from 'react';
 interface INewProjectDialogProps {
   data?: { id: number; name: string; description: string } | null;
   children: React.ReactNode;
-  onSuccess: (name: string, description: string) => void;
 }
 
-const NewProjectDialog = ({
-  data = null,
-  children,
-  onSuccess,
-}: INewProjectDialogProps) => {
+const NewProjectDialog = ({ data = null, children }: INewProjectDialogProps) => {
   const {
     register,
     handleSubmit,
@@ -53,7 +48,6 @@ const NewProjectDialog = ({
       if (!response.ok) throw new Error('Failed to create project');
 
       reset();
-      onSuccess(bodyData.name, bodyData.description);
       setIsOpen(false);
     } catch (e) {
       console.error('Error creating project:', e);

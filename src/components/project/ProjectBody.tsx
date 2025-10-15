@@ -8,7 +8,10 @@ const ProjectBody = ({ projectId }: { projectId: string }) => {
 
   return (
     <div className="flex flex-col h-full max-h-screen">
-      <ProjectHeader submitProjectCard={submitProjectCard} />
+      <ProjectHeader
+        submitProjectCard={submitProjectCard}
+        projectId={parseInt(projectId)}
+      />
       <div className="flex-1 overflow-auto"></div>
     </div>
   );

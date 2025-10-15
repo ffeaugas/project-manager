@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { PrismaClient } from '@prisma/client';
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
+import { ProjectSelect } from '@/components/project/types';
 
 const prisma = new PrismaClient();
 
 const newProjectCardSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
-  imageUrl: z.string().min(1, 'Image is required'),
+  imageUrl: z.string().optional(),
   projectId: z.number().min(1, 'Project ID is required'),
 });
 
@@ -15,57 +18,31 @@ const updateProjectCardSchema = z.object({
   id: z.number().min(1, 'Id is required'),
   name: z.string().min(1, 'Name is required').optional(),
   description: z.string().min(1, 'Description is required').optional(),
-  imageUrl: z.string().min(1, 'Image is required').optional(),
+  imageUrl: z.string().optional(),
   projectId: z.number().min(1, 'Project ID is required').optional(),
 });
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
     const projectId = searchParams.get('projectId');
 
-    if (id) {
-      const projectCard = await prisma.projectCard.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-        include: {
-          project: true,
-        },
-      });
-
-      if (!projectCard) {
-        return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
-      }
-
-      return NextResponse.json(projectCard, { status: 200 });
-    } else if (projectId) {
-      const projectCards = await prisma.projectCard.findMany({
-        where: {
-          projectId: parseInt(projectId),
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          project: true,
-        },
-      });
-
-      return NextResponse.json(projectCards, { status: 200 });
-    } else {
-      const projectCards = await prisma.projectCard.findMany({
-        orderBy: {
-          createdAt: 'desc',
-        },
-        include: {
-          project: true,
-        },
-      });
-
-      return NextResponse.json(projectCards, { status: 200 });
+    if (!projectId) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
     }
+
+    const projectCards = await prisma.project.findUnique({
+      where: {
+        id: parseInt(projectId),
+      },
+      select: ProjectSelect,
+    });
+
+    if (!projectCards) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(projectCards, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -74,8 +51,39 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const validatedData = newProjectCardSchema.parse(body);
+    const formData = await request.formData();
+
+    const name = formData.get('name') as string;
+    const description = formData.get('description') as string;
+    const projectId = formData.get('projectId') as string;
+    const imageFile = formData.get('image') as File | null;
+
+    let imageUrl: string | undefined = undefined;
+
+    // Handle image upload if present
+    if (imageFile) {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      // Generate unique filename
+      const timestamp = Date.now();
+      const fileExtension = imageFile.name.split('.').pop();
+      const filename = `project-${projectId}-card-${timestamp}.${fileExtension}`;
+
+      // Save to public/upload directory
+      const uploadDir = join(process.cwd(), 'public', 'upload');
+      const filepath = join(uploadDir, filename);
+
+      await writeFile(filepath, buffer);
+      imageUrl = `/upload/${filename}`;
+    }
+
+    const validatedData = newProjectCardSchema.parse({
+      name,
+      description,
+      projectId: parseInt(projectId),
+      imageUrl,
+    });
 
     const project = await prisma.project.findUnique({
       where: {
@@ -91,7 +99,7 @@ export async function POST(request: NextRequest) {
       data: {
         name: validatedData.name,
         description: validatedData.description,
-        imageUrl: validatedData.imageUrl,
+        ...(validatedData.imageUrl && { imageUrl: validatedData.imageUrl }),
         projectId: validatedData.projectId,
       },
       include: {
@@ -115,17 +123,51 @@ export async function POST(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const body = await request.json();
-    const validatedData = updateProjectCardSchema.parse(body);
+    const formData = await body.formData();
+
+    const id = formData.get('id') as string;
+    const name = formData.get('name') as string | null;
+    const description = formData.get('description') as string | null;
+    const projectId = formData.get('projectId') as string | null;
+    const imageFile = formData.get('image') as File | null;
 
     const existingProjectCard = await prisma.projectCard.findUnique({
       where: {
-        id: validatedData.id,
+        id: parseInt(id),
       },
     });
 
     if (!existingProjectCard) {
       return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
     }
+
+    let imageUrl: string | undefined = undefined;
+
+    // Handle image upload if present
+    if (imageFile && imageFile.size > 0) {
+      const bytes = await imageFile.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+
+      // Generate unique filename
+      const timestamp = Date.now();
+      const fileExtension = imageFile.name.split('.').pop();
+      const filename = `project-${projectId || existingProjectCard.projectId}-card-${timestamp}.${fileExtension}`;
+
+      // Save to public/upload directory
+      const uploadDir = join(process.cwd(), 'public', 'upload');
+      const filepath = join(uploadDir, filename);
+
+      await writeFile(filepath, buffer);
+      imageUrl = `/upload/${filename}`;
+    }
+
+    const validatedData = updateProjectCardSchema.parse({
+      id: parseInt(id),
+      name: name || undefined,
+      description: description || undefined,
+      projectId: projectId ? parseInt(projectId) : undefined,
+      imageUrl: imageUrl || undefined,
+    });
 
     if (validatedData.projectId !== undefined) {
       const project = await prisma.project.findUnique({

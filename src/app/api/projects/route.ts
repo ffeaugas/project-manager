@@ -20,30 +20,13 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
-    if (id) {
-      const project = await prisma.project.findUnique({
-        where: {
-          id: parseInt(id),
-        },
-        include: {
-          projectCards: true,
-        },
-      });
+    const projects = await prisma.project.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
-      if (!project) {
-        return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-      }
-
-      return NextResponse.json(project, { status: 200 });
-    } else {
-      const projects = await prisma.project.findMany({
-        orderBy: {
-          createdAt: 'desc',
-        },
-      });
-
-      return NextResponse.json(projects, { status: 200 });
-    }
+    return NextResponse.json(projects, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -63,54 +46,6 @@ export async function POST(request: NextRequest) {
     });
 
     return NextResponse.json(newProject, { status: 201 });
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 },
-      );
-    }
-    console.error(error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
-
-export async function PATCH(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const validatedData = updateProjectSchema.parse(body);
-
-    const existingProject = await prisma.project.findUnique({
-      where: {
-        id: validatedData.id,
-      },
-    });
-
-    if (!existingProject) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
-
-    const updateData: {
-      name?: string;
-      description?: string;
-    } = {};
-
-    if (validatedData.name !== undefined) {
-      updateData.name = validatedData.name;
-    }
-
-    if (validatedData.description !== undefined) {
-      updateData.description = validatedData.description;
-    }
-
-    const updatedProject = await prisma.project.update({
-      where: {
-        id: validatedData.id,
-      },
-      data: updateData,
-    });
-
-    return NextResponse.json(updatedProject, { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(

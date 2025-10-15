@@ -4,14 +4,18 @@ import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
 import { NewProjectCardType } from './types';
 
 interface IProjectHeaderProps {
-  submitProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
+  submitProjectCard: (
+    bodyData: NewProjectCardType,
+    options?: { projectCardId?: number; projectId?: number },
+  ) => Promise<boolean>;
+  projectId: number;
 }
 
-const ProjectHeader = ({ submitProjectCard }: IProjectHeaderProps) => {
+const ProjectHeader = ({ submitProjectCard, projectId }: IProjectHeaderProps) => {
   return (
     <div className="flex flex-row p-6 justify-between w-full bg-zinc-800 border-l-[1px] border-b-[1px] border-zinc-700 flex-shrink-0">
       <SidebarTrigger />
-      <NewProjectCardDialog submitProjectCard={submitProjectCard}>
+      <NewProjectCardDialog submitProjectCard={submitProjectCard} projectId={projectId}>
         <Button variant="outline" className="bg-zinc-900">
           Add card
         </Button>

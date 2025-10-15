@@ -44,8 +44,7 @@ import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
 
 interface SidebarItem {
   name: string;
-  url: string;
-  icon: LucideIcon;
+  id: number;
 }
 
 // Icon mapping function
@@ -93,15 +92,6 @@ const AppSidebar = () => {
     fetchProjects();
   }, []);
 
-  const onSuccess = (name: string, icon: string) => {
-    const newProject: SidebarItem = {
-      name: name,
-      url: `/${name.toLowerCase().replace(/\s+/g, '-')}`,
-      icon: getIconComponent(icon),
-    };
-    setProjects([...projects, newProject]);
-  };
-
   return (
     <Sidebar>
       <SidebarContent className="bg-zinc-800 text-slate-200">
@@ -136,7 +126,7 @@ const AppSidebar = () => {
                     {projects.map((project) => (
                       <SidebarMenuSubItem key={project.name}>
                         <SidebarMenuSubButton asChild>
-                          <a href={`/project/${project.url}`}>
+                          <a href={`/project/${project.id}`}>
                             <Home />
                             <span>{project.name}</span>
                           </a>
@@ -151,7 +141,7 @@ const AppSidebar = () => {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter className="bg-zinc-800">
-        <NewProjectDialog onSuccess={onSuccess}>
+        <NewProjectDialog>
           <Button className="w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
             <Plus size={16} className="mr-2" />
             New Projet

@@ -58,29 +58,21 @@ const NewProjectCardDialog = ({
     defaultValues: {
       name: data?.name || '',
       description: data?.description || '',
-      imageUrl: data?.imageUrl || '',
+      image: undefined,
     },
     resolver: zodResolver(newProjectCardSchema),
   });
-  const imageUrl = watch('imageUrl');
+  const image = watch('image');
 
   const handleFileSelect = (file: File | null) => {
     setImageFile(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setValue('imageUrl', reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setValue('imageUrl', '');
-    }
+    setValue('image', file || undefined);
   };
 
-  const onSubmit: SubmitHandler<NewProjectCardType> = async (bodyData) => {
-    const success = await submitProjectCard(bodyData, {
+  const onSubmit: SubmitHandler<NewProjectCardType> = async (formData) => {
+    const success = await submitProjectCard(formData, {
       projectCardId: data?.id,
-      projectId,
+      projectId: projectId,
     });
 
     if (success) {
@@ -126,7 +118,7 @@ const NewProjectCardDialog = ({
                   onFileSelect={handleFileSelect}
                   accept="image/*"
                   maxSize={5}
-                  value={imageUrl || imageFile}
+                  value={data?.imageUrl || imageFile}
                 />
               </div>
             </div>
@@ -134,9 +126,7 @@ const NewProjectCardDialog = ({
             {errors.description && (
               <span className="text-red-500">{errors.description.message}</span>
             )}
-            {errors.imageUrl && (
-              <span className="text-red-500">{errors.imageUrl.message}</span>
-            )}
+            {errors.image && <span className="text-red-500">{errors.image.message}</span>}
           </div>
           <DialogFooter>
             {data && deleteItem && (
