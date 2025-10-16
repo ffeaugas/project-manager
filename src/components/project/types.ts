@@ -52,3 +52,7 @@ export const ProjectSelect = {
     select: ProjectCardSelect,
   },
 };
+
+export type ProjectSelect = Prisma.ProjectGetPayload<{
+  select: typeof ProjectSelect;
+}>;

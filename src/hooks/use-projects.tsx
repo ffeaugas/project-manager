@@ -1,10 +1,16 @@
 'use client';
 
-import { NewProjectCardType, ProjectCardSelect } from '@/components/project/types';
+import {
+  NewProjectCardType,
+  ProjectCardSelect,
+  ProjectSelect,
+} from '@/components/project/types';
 import { useEffect, useState } from 'react';
 
 export const useProjects = (id: string) => {
-  const [project, setProject] = useState<ProjectCardSelect[]>([]);
+  const [project, setProject] = useState<ProjectSelect | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const submitProjectCard = async (
     bodyData: NewProjectCardType,
@@ -59,9 +65,17 @@ export const useProjects = (id: string) => {
   };
 
   const fetchProject = async () => {
-    const response = await fetch(`/api/projects/cards`);
-    const data = await response.json();
-    setProject(data);
+    setIsLoading(true);
+    try {
+      const response = await fetch(`/api/projects/cards?projectId=${id}`);
+      const data = await response.json();
+      setProject(data);
+    } catch (error) {
+      console.error('Error fetching project:', error);
+      setError(error as string);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -70,6 +84,7 @@ export const useProjects = (id: string) => {
 
   return {
     project,
+    isLoading,
     submitProjectCard,
     deleteProjectCard,
   };

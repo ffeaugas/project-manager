@@ -75,18 +75,15 @@ const AppSidebar = () => {
 
   useEffect(() => {
     const fetchProjects = async () => {
-      const response = await fetch('/api/projects');
-      const data = await response.json();
+      try {
+        const response = await fetch('/api/projects');
+        const data = await response.json();
 
-      const projectItems: SidebarItem[] = data.map(
-        (project: { name: string; description: string }) => ({
-          name: project.name,
-          url: `/${project.name.toLowerCase().replace(/\s+/g, '-')}`,
-          description: getIconComponent(project.description),
-        }),
-      );
-
-      setProjects(projectItems);
+        setProjects(Array.isArray(data) ? data : []);
+      } catch (error) {
+        console.error('Failed to fetch projects:', error);
+        setProjects([]);
+      }
     };
 
     fetchProjects();
@@ -144,7 +141,7 @@ const AppSidebar = () => {
         <NewProjectDialog>
           <Button className="w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
             <Plus size={16} className="mr-2" />
-            New Projet
+            New Project
           </Button>
         </NewProjectDialog>
       </SidebarFooter>
