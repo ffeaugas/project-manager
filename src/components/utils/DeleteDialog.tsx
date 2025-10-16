@@ -13,7 +13,7 @@ import { EntityType } from '../tasks/types';
 
 interface IDeleteDialogProps {
   id: number;
-  type: 'task-columns' | 'tasks' | 'project-cards';
+  type: EntityType;
   title: string;
   message: string;
   deleteItem: (id: number, type: EntityType) => Promise<boolean>;

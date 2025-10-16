@@ -37,6 +37,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarSeparator,
 } from './ui/sidebar';
 import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
@@ -94,6 +95,7 @@ const AppSidebar = () => {
       <SidebarContent className="bg-zinc-800 text-slate-200">
         <SidebarGroup>
           <SidebarGroupLabel className="text-slate-200">FranciTask</SidebarGroupLabel>
+          <SidebarSeparator className="bg-zinc-700 my-2" />
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -104,6 +106,7 @@ const AppSidebar = () => {
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              <SidebarSeparator className="bg-zinc-700 my-2" />
 
               <SidebarMenuItem>
                 <SidebarMenuButton
@@ -118,6 +121,7 @@ const AppSidebar = () => {
                     <ChevronRight className="ml-auto" size={16} />
                   )}
                 </SidebarMenuButton>
+
                 {projectsExpanded && (
                   <SidebarMenuSub>
                     {projects.map((project) => (
@@ -130,6 +134,12 @@ const AppSidebar = () => {
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
+                    <NewProjectDialog>
+                      <Button className="mt-4 w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
+                        <Plus size={16} className="mr-2" />
+                        New Project
+                      </Button>
+                    </NewProjectDialog>
                   </SidebarMenuSub>
                 )}
               </SidebarMenuItem>
@@ -137,14 +147,7 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="bg-zinc-800">
-        <NewProjectDialog>
-          <Button className="w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
-            <Plus size={16} className="mr-2" />
-            New Project
-          </Button>
-        </NewProjectDialog>
-      </SidebarFooter>
+      <SidebarFooter className="bg-zinc-800"></SidebarFooter>
     </Sidebar>
   );
 };

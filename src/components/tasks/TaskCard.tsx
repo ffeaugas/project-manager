@@ -1,6 +1,6 @@
 import { useDraggable } from '@dnd-kit/core';
 import NewTaskDialog from './dialogs/NewTaskDialog';
-import { TaskSelect, NewTaskType } from './types';
+import { TaskSelect, NewTaskType, EntityType } from './types';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -15,7 +15,7 @@ interface ITaskCardProps {
       pageName?: string | null;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
 }
 
 const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
