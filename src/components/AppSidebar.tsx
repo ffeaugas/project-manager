@@ -42,6 +42,7 @@ import {
 import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
 import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
+import Link from 'next/link';
 
 interface SidebarItem {
   name: string;
@@ -95,7 +96,13 @@ const AppSidebar = () => {
       <SidebarContent className="bg-zinc-800 text-slate-200">
         <SidebarGroup>
           <SidebarGroupLabel className="text-slate-200">FranciTask</SidebarGroupLabel>
+          <SidebarMenuSubItem key={'signup'}>
+            <SidebarMenuSubButton asChild>
+              <Link href="/auth/signup">Sign Up</Link>
+            </SidebarMenuSubButton>
+          </SidebarMenuSubItem>
           <SidebarSeparator className="bg-zinc-700 my-2" />
+
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -106,8 +113,6 @@ const AppSidebar = () => {
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              <SidebarSeparator className="bg-zinc-700 my-2" />
-
               <SidebarMenuItem>
                 <SidebarMenuButton
                   onClick={() => setProjectsExpanded(!projectsExpanded)}
@@ -127,10 +132,10 @@ const AppSidebar = () => {
                     {projects.map((project) => (
                       <SidebarMenuSubItem key={project.name}>
                         <SidebarMenuSubButton asChild>
-                          <a href={`/project/${project.id}`}>
+                          <Link href={`/project/${project.id}`}>
                             <Home />
                             <span>{project.name}</span>
-                          </a>
+                          </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
