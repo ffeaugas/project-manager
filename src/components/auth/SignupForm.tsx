@@ -42,7 +42,6 @@ export default function SignupForm() {
           router.push('/auth');
         },
         onError: (ctx) => {
-          // display the error message
           alert(ctx.error.message);
         },
       },

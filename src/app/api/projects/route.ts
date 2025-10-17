@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { PrismaClient } from '@prisma/client';
+import { getUser } from '@/lib/auth-server';
 
 const prisma = new PrismaClient();
 
@@ -16,6 +17,11 @@ const updateProjectSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const projects = await prisma.project.findMany({
       orderBy: {

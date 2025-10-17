@@ -37,10 +37,12 @@ interface ICardListProps {
 
 const CardList = ({ cards = [] }: ICardListProps) => {
   return (
-    <div className="flex flex-1 overflow-auto gap-4 p-4 flex-wrap">
-      {cards.map((card) => (
-        <ProjectCard key={card.id} data={card} />
-      ))}
+    <div className="mx-auto flex content-center justify-center w-full">
+      <div className="flex flex-1 overflow-auto gap-4 p-4 flex-wrap">
+        {cards.map((card) => (
+          <ProjectCard key={card.id} data={card} />
+        ))}
+      </div>
     </div>
   );
 };

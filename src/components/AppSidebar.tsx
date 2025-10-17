@@ -38,11 +38,15 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarSeparator,
+  SidebarTrigger,
 } from './ui/sidebar';
 import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
 import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
 import Link from 'next/link';
+import AuthStatus from './auth/Header';
+import { User } from 'better-auth';
+import { Spinner } from './ui/spinner';
 
 interface SidebarItem {
   name: string;
@@ -71,9 +75,13 @@ const getIconComponent = (iconName: string): LucideIcon => {
   return iconMap[iconName.toLowerCase()] || Home;
 };
 
-const AppSidebar = () => {
+const AppSidebar = ({ user }: { user: User | undefined }) => {
   const [projects, setProjects] = useState<SidebarItem[]>([]);
   const [projectsExpanded, setProjectsExpanded] = useState(true);
+
+  if (!user) {
+    return <Spinner />;
+  }
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -92,17 +100,11 @@ const AppSidebar = () => {
   }, []);
 
   return (
-    <Sidebar>
-      <SidebarContent className="bg-zinc-800 text-slate-200">
-        <SidebarGroup>
-          <SidebarGroupLabel className="text-slate-200">FranciTask</SidebarGroupLabel>
-          <SidebarMenuSubItem key={'signup'}>
-            <SidebarMenuSubButton asChild>
-              <Link href="/auth/signup">Sign Up</Link>
-            </SidebarMenuSubButton>
-          </SidebarMenuSubItem>
-          <SidebarSeparator className="bg-zinc-700 my-2" />
+    <Sidebar className="bg-zinc-900 border-[1px] border-zinc-700 text-slate-200">
+      {/* <SidebarTrigger className="absolute -right-10 top-4 z-50" /> */}
 
+      <SidebarContent>
+        <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
@@ -152,7 +154,6 @@ const AppSidebar = () => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="bg-zinc-800"></SidebarFooter>
     </Sidebar>
   );
 };
