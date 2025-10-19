@@ -39,7 +39,7 @@ export default function SignupForm() {
       },
       {
         onSuccess: (response) => {
-          router.push('/auth');
+          router.push('/todo');
         },
         onError: (ctx) => {
           alert(ctx.error.message);
@@ -50,7 +50,12 @@ export default function SignupForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-[400px]">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl"
+      >
+        <h1 className="text-xl font-bold text-center">Sign Up</h1>
+
         <FormField
           control={form.control}
           name="username"
@@ -103,6 +108,15 @@ export default function SignupForm() {
           Sign Up
         </Button>
       </form>
+      <div className="mt-4 text-center text-sm text-zinc-500">
+        {'Already have an account? '}
+        <a
+          href="/auth/signin"
+          className="text-green-400 underline hover:text-green-300 transition-colors"
+        >
+          Sign In
+        </a>
+      </div>
     </Form>
   );
 }

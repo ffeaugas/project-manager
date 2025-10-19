@@ -197,7 +197,6 @@ export const useTasks = (page: string) => {
   const reOrderColumn = async (active: Active, over: Over) => {
     const activeColumnId = active.id;
     const overColumnId = over.id;
-    console.log('reOrderColumn', activeColumnId, overColumnId);
 
     if (activeColumnId === overColumnId) return;
 

@@ -1,17 +1,18 @@
 import { SidebarGroupContent, SidebarGroupLabel, SidebarTrigger } from '../ui/sidebar';
 import Link from 'next/link';
-import { User } from 'better-auth';
 import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
-import { Power, PowerOff } from 'lucide-react';
+import { Power, PowerOff, User as UserIcon } from 'lucide-react';
 import { auth } from '@/lib/auth';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { signOut } from '@/lib/auth-client';
+import SignOutButton from './AuthButton';
+import { User } from 'better-auth';
 
 const Header = ({ userData }: { userData: User | undefined }) => {
   if (!userData)
@@ -23,7 +24,7 @@ const Header = ({ userData }: { userData: User | undefined }) => {
             <Link href="/auth/signup">Sign Up</Link>
           </Button>
           <Button variant="auth">
-            <Link href="/auth/signip">Sign In</Link>
+            <Link href="/auth/signin">Sign In</Link>
           </Button>
         </div>
       </SidebarGroupContent>
@@ -40,19 +41,14 @@ const Header = ({ userData }: { userData: User | undefined }) => {
           <p className="text-slate-200 text-sm font-semibold">{userData.name}</p>
           <Power size={14} />
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="shadow-xl mt-1 flex flex-row gap-2">
-          <Button
-            variant="auth"
-            className="flex flex-row gap-2 items-center"
-            formAction={async () => {
-              'use server';
-              await signOut();
-              redirect('/auth/signin');
-            }}
-          >
-            <span className="text-sm font-semibold">Sign Out</span>
-            <PowerOff size={10} />
+        <DropdownMenuContent className="shadow-xl mt-1 flex flex-col gap-2 bg-zinc-800 p-2 rounded-md">
+          <Button variant="auth" className="flex flex-row justify-between">
+            <Link href="/account" className="text-sm">
+              Account
+            </Link>
+            <UserIcon size={14} />
           </Button>
+          <SignOutButton />
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

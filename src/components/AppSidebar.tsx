@@ -80,6 +80,7 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
 
   if (!user) {
+    console.log('user is undefined');
     return <Spinner />;
   }
 

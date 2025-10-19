@@ -5,6 +5,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import { getUser } from '@/lib/auth-server';
 import Header from '@/components/auth/Header';
+import SignInForm from '@/components/auth/SignInForm';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -33,16 +34,28 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-900 w-full h-screen flex overflow-hidden`}
       >
-        <SidebarProvider>
-          <div className="flex w-full h-full">
-            <AppSidebar user={user} />
-            <main className="flex-1 h-full overflow-hidden">
-              <Header userData={user} />
-              {children}
-            </main>
-          </div>
-        </SidebarProvider>
+        {user ? (
+          <SidebarProvider>
+            <div className="flex w-full h-full">
+              <AppSidebar user={user} />
+              <main className="flex-1 h-full overflow-hidden">
+                <Header userData={user} />
+                {children}
+              </main>
+            </div>
+          </SidebarProvider>
+        ) : (
+          <AuthPage>{children}</AuthPage>
+        )}
       </body>
     </html>
+  );
+}
+
+function AuthPage({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col items-center justify-center h-screen w-full">
+      {children}
+    </div>
   );
 }
