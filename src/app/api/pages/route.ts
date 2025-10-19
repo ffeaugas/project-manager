@@ -1,9 +1,7 @@
 import { newPageSchema } from '@/components/tasks/types';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
-
-const prisma = new PrismaClient();
 
 export async function GET() {
   try {

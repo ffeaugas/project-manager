@@ -13,8 +13,7 @@ interface IProjectHeaderProps {
 
 const ProjectHeader = ({ submitProjectCard, projectId }: IProjectHeaderProps) => {
   return (
-    <div className="flex flex-row p-6 justify-between w-full bg-zinc-800 border-l-[1px] border-b-[1px] border-zinc-700 flex-shrink-0">
-      <SidebarTrigger />
+    <div className="flex flex-row p-4 justify-end w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0">
       <NewProjectCardDialog submitProjectCard={submitProjectCard} projectId={projectId}>
         <Button variant="outline" className="bg-zinc-900">
           Add card

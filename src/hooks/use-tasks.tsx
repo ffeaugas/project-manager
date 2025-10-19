@@ -5,6 +5,7 @@ import {
   NewTaskType,
   NewColumnType,
   TaskSelect,
+  EntityType,
 } from '@/components/tasks/types';
 import { DragEndEvent, DragStartEvent, Over, Active, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
@@ -35,7 +36,6 @@ export const useTasks = (page: string) => {
             .flatMap((column: TaskColumnWithTasks) => column.tasks)
             .sort((a: TaskSelect, b: TaskSelect) => a.order - b.order),
         );
-        console.log('fetchTaskColumns', data); //TO_REMOVE
       } catch {
         router.push('/error');
         return;
@@ -112,7 +112,7 @@ export const useTasks = (page: string) => {
   );
 
   const deleteItem = useCallback(
-    async (id: number, type: 'task-columns' | 'tasks') => {
+    async (id: number, type: EntityType) => {
       try {
         const response = await fetch(`/api/${type}`, {
           method: 'DELETE',

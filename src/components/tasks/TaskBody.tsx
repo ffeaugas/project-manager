@@ -18,6 +18,19 @@ import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from './types';
 
 const TaskBody = ({ page }: { page: string }) => {
+  return (
+    <div className="flex flex-col h-screen max-h-screen w-full">
+      <div className="flex flex-row h-full">
+        <KanbanBoard page={page} />
+        <div className="flex flex-col flex-1 border-l-[1px] border-zinc-700"></div>
+      </div>
+    </div>
+  );
+};
+
+export default TaskBody;
+
+const KanbanBoard = ({ page }: { page: string }) => {
   const {
     columns,
     tasks,
@@ -45,59 +58,55 @@ const TaskBody = ({ page }: { page: string }) => {
   if (isLoading) return <Spinner size="large" />;
 
   return (
-    <div className="flex flex-col h-full max-h-screen">
+    <div className="flex flex-col h-full">
       <TaskHeader submitTask={submitTask} pageName={page} />
-      <div className="flex-1 overflow-auto">
-        <div className="flex flex-row gap-3 p-4 min-w-fit h-full">
-          <DndContext
-            sensors={sensors}
-            onDragStart={handleDragStart}
-            onDragEnd={handleDragEnd}
-            onDragOver={handleDragOver}
+      <div className="flex flex-row gap-3 p-4 min-w-fit h-full">
+        <DndContext
+          sensors={sensors}
+          onDragStart={handleDragStart}
+          onDragEnd={handleDragEnd}
+          onDragOver={handleDragOver}
+        >
+          <SortableContext items={columnIds}>
+            {columns.map((col) => (
+              <TaskColumn
+                key={col.id}
+                data={col}
+                tasks={tasks.filter((task) => task.columnId === col.id)}
+                submitTask={submitTask}
+                submitColumn={submitColumn}
+                deleteItem={deleteItem}
+              />
+            ))}
+          </SortableContext>
+          <DragOverlay>
+            {overlayColumn ? (
+              <TaskColumn
+                data={overlayColumn}
+                tasks={tasks.filter((task) => task.columnId === overlayColumn.id)}
+                submitTask={submitTask}
+                submitColumn={submitColumn}
+                deleteItem={deleteItem}
+              />
+            ) : null}
+            {overlayTask ? (
+              <TaskCard
+                data={overlayTask}
+                submitTask={submitTask}
+                deleteItem={deleteItem}
+              />
+            ) : null}
+          </DragOverlay>
+        </DndContext>
+        <NewColumnDialog submitColumn={submitColumn}>
+          <Button
+            variant="outline"
+            className="flex flex-col justify-center w-[300px] h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-xl m-1 mt-[3.25rem]"
           >
-            <SortableContext items={columnIds}>
-              {columns.map((col) => (
-                <TaskColumn
-                  key={col.id}
-                  data={col}
-                  tasks={tasks.filter((task) => task.columnId === col.id)}
-                  submitTask={submitTask}
-                  submitColumn={submitColumn}
-                  deleteItem={deleteItem}
-                />
-              ))}
-            </SortableContext>
-            <DragOverlay>
-              {overlayColumn ? (
-                <TaskColumn
-                  data={overlayColumn}
-                  tasks={tasks.filter((task) => task.columnId === overlayColumn.id)}
-                  submitTask={submitTask}
-                  submitColumn={submitColumn}
-                  deleteItem={deleteItem}
-                />
-              ) : null}
-              {overlayTask ? (
-                <TaskCard
-                  data={overlayTask}
-                  submitTask={submitTask}
-                  deleteItem={deleteItem}
-                />
-              ) : null}
-            </DragOverlay>
-          </DndContext>
-          <NewColumnDialog submitColumn={submitColumn}>
-            <Button
-              variant="outline"
-              className="flex flex-col justify-center w-[300px] h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-xl m-1 mt-[3.25rem]"
-            >
-              Add Column
-            </Button>
-          </NewColumnDialog>
-        </div>
+            Add Column
+          </Button>
+        </NewColumnDialog>
       </div>
     </div>
   );
 };
-
-export default TaskBody;

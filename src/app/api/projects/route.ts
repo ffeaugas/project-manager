@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth-server';
-
-const prisma = new PrismaClient();
 
 const newProjectSchema = z.object({
   name: z.string().min(1, 'Name is required'),

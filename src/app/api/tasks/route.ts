@@ -1,9 +1,7 @@
 import { newTaskSchema } from '@/components/tasks/types';
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 export async function POST(request: NextRequest) {
   try {

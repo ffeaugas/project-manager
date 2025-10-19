@@ -1,14 +1,17 @@
-import {
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenuSubItem,
-  SidebarMenuSubButton,
-  SidebarSeparator,
-  SidebarTrigger,
-} from '../ui/sidebar';
+import { SidebarGroupContent, SidebarGroupLabel, SidebarTrigger } from '../ui/sidebar';
 import Link from 'next/link';
 import { User } from 'better-auth';
 import { Button } from '../ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@radix-ui/react-dropdown-menu';
+import { Power, PowerOff } from 'lucide-react';
+import { auth } from '@/lib/auth';
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+import { signOut } from '@/lib/auth-client';
 
 const Header = ({ userData }: { userData: User | undefined }) => {
   if (!userData)
@@ -27,14 +30,31 @@ const Header = ({ userData }: { userData: User | undefined }) => {
     );
 
   return (
-    <div className="flex gap-2 flex-row py-2 px-4 items-center justify-between">
+    <div className="flex gap-2 flex-row py-2 px-4 items-center justify-between border-b-[1px] border-zinc-700">
       <SidebarTrigger />
-      <div className="space-x-2 flex flex-row items-center">
-        <p className="text-slate-200 text-sm font-semibold">{userData.name}</p>
-        <Button variant="auth">
-          <Link href="/auth/signout">Sign Out</Link>
-        </Button>
-      </div>
+      <DropdownMenu>
+        <DropdownMenuTrigger
+          className="cursor-pointer space-x-2 flex flex-row items-center
+        border-[1px] border-green-700 bg-zinc-800/30 py-2 px-4 pr-3 rounded-sm gap-2"
+        >
+          <p className="text-slate-200 text-sm font-semibold">{userData.name}</p>
+          <Power size={14} />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="shadow-xl mt-1 flex flex-row gap-2">
+          <Button
+            variant="auth"
+            className="flex flex-row gap-2 items-center"
+            formAction={async () => {
+              'use server';
+              await signOut();
+              redirect('/auth/signin');
+            }}
+          >
+            <span className="text-sm font-semibold">Sign Out</span>
+            <PowerOff size={10} />
+          </Button>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </div>
   );
 };

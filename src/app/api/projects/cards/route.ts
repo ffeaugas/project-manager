@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
-import { PrismaClient } from '@prisma/client';
+import { prisma } from '@/lib/prisma';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { ProjectSelect } from '@/components/project/types';
-
-const prisma = new PrismaClient();
 
 const newProjectCardSchema = z.object({
   name: z.string().min(1, 'Name is required'),
