@@ -98,6 +98,7 @@ const KanbanBoard = ({ page }: { page: string }) => {
                   data={overlayTask}
                   submitTask={submitTask}
                   deleteItem={deleteItem}
+                  archiveItem={archiveItem}
                 />
               ) : null}
             </DragOverlay>

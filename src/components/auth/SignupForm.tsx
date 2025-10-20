@@ -14,10 +14,16 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { signUp } from '@/lib/auth-client';
+import { signIn, signUp } from '@/lib/auth-client';
 import { useRouter } from 'next/navigation';
+import { GithubIcon } from 'lucide-react';
+import { useState } from 'react';
+import { Spinner } from '../ui/spinner';
+
+type ProviderEnum = Parameters<typeof signIn.social>[0]['provider'];
 
 export default function SignupForm() {
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   const form = useForm<SignupFormValues>({
@@ -30,6 +36,7 @@ export default function SignupForm() {
   });
 
   function onSubmit(values: SignupFormValues) {
+    setIsLoading(true);
     console.log(values);
     signUp.email(
       {
@@ -43,80 +50,113 @@ export default function SignupForm() {
         },
         onError: (ctx) => {
           alert(ctx.error.message);
+          setIsLoading(false);
+        },
+      },
+    );
+  }
+
+  async function socialSignIn(provider: ProviderEnum) {
+    if (isLoading) return;
+    setIsLoading(true);
+    signIn.social(
+      {
+        provider,
+      },
+      {
+        onSuccess: () => {
+          window.location.href = '/todo';
+        },
+        onError: (ctx) => {
+          alert(ctx.error.message);
+          setIsLoading(false);
         },
       },
     );
   }
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl"
+    <div className="space-y-6 w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
+          <h1 className="text-xl font-bold text-center">Sign Up</h1>
+
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="Your funny nickname" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="exemple@email.com" {...field} />
+                </FormControl>
+                <FormDescription className="text-xs">
+                  We will never share your email
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="password"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input type="password" placeholder="•••••••••••" {...field} />
+                </FormControl>
+                <FormDescription className="text-xs">
+                  Minimum 8 characters, one lowercase letter, one number
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="flex justify-center w-full">
+            {isLoading ? (
+              <Spinner className="w-fit h-fit" />
+            ) : (
+              <Button type="submit" className="w-full">
+                Sign Up
+              </Button>
+            )}
+          </div>
+        </form>
+        <div className="mt-4 text-center text-sm text-zinc-500">
+          {'Already have an account? '}
+          <a
+            href="/auth/signin"
+            className="text-green-400 underline hover:text-green-300 transition-colors"
+          >
+            Sign In
+          </a>
+        </div>
+      </Form>
+
+      <p className="text-center">or</p>
+      <Button
+        className="bg-zinc-900 text-zinc-400 w-full"
+        onClick={() => socialSignIn('github')}
       >
-        <h1 className="text-xl font-bold text-center">Sign Up</h1>
-
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="Your funny nickname" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email</FormLabel>
-              <FormControl>
-                <Input type="email" placeholder="exemple@email.com" {...field} />
-              </FormControl>
-              <FormDescription className="text-xs">
-                We will never share your email
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Password</FormLabel>
-              <FormControl>
-                <Input type="password" placeholder="•••••••••••" {...field} />
-              </FormControl>
-              <FormDescription className="text-xs">
-                Minimum 8 characters, one lowercase letter, one number
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <Button type="submit" className="w-full">
-          Sign Up
-        </Button>
-      </form>
-      <div className="mt-4 text-center text-sm text-zinc-500">
-        {'Already have an account? '}
-        <a
-          href="/auth/signin"
-          className="text-green-400 underline hover:text-green-300 transition-colors"
-        >
-          Sign In
-        </a>
-      </div>
-    </Form>
+        <GithubIcon className="w-4 h-4" />
+        Sign in with Github
+      </Button>
+    </div>
   );
 }
