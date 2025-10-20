@@ -38,6 +38,7 @@ const KanbanBoard = ({ page }: { page: string }) => {
     submitTask,
     submitColumn,
     deleteItem,
+    archiveItem,
     handleDragStart,
     handleDragEnd,
     handleDragOver,
@@ -77,6 +78,7 @@ const KanbanBoard = ({ page }: { page: string }) => {
                   submitTask={submitTask}
                   submitColumn={submitColumn}
                   deleteItem={deleteItem}
+                  archiveItem={archiveItem}
                 />
               ))}
             </SortableContext>
@@ -88,6 +90,7 @@ const KanbanBoard = ({ page }: { page: string }) => {
                   submitTask={submitTask}
                   submitColumn={submitColumn}
                   deleteItem={deleteItem}
+                  archiveItem={archiveItem}
                 />
               ) : null}
               {overlayTask ? (

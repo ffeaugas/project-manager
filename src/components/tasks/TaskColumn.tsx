@@ -1,6 +1,12 @@
 import { GripVertical, Pencil, Trash } from 'lucide-react';
 import TaskCard from './TaskCard';
-import { TaskColumnWithTasks, NewTaskType, NewColumnType, TaskSelect } from './types';
+import {
+  TaskColumnWithTasks,
+  NewTaskType,
+  NewColumnType,
+  TaskSelect,
+  EntityType,
+} from './types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -12,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import NewTaskDialog from './dialogs/NewTaskDialog';
-import DeleteDialog from '../utils/DeleteDialog';
+import ConfirmDialog from '../utils/ConfirmDialog';
 import NewColumnDialog from './dialogs/NewColumnDialog';
 import { cn } from '@/lib/utils';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
@@ -35,7 +41,8 @@ interface ITaskColumnProps {
       columnId?: number;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
+  archiveItem: (id: number, type: EntityType) => Promise<boolean>;
 }
 
 const TaskColumn = ({
@@ -44,6 +51,7 @@ const TaskColumn = ({
   submitTask,
   submitColumn,
   deleteItem,
+  archiveItem,
 }: ITaskColumnProps) => {
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
     useSortable({
@@ -83,6 +91,7 @@ const TaskColumn = ({
             data={task}
             submitTask={submitTask}
             deleteItem={deleteItem}
+            archiveItem={archiveItem}
           />
         ))}
       </SortableContext>
@@ -109,7 +118,7 @@ interface IColumnHeaderProps {
       columnId?: number;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
   dragAttributes?: any;
   dragListeners?: any;
 }
@@ -150,7 +159,7 @@ interface IColDropdownMenuProps {
       columnId?: number;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: 'task-columns' | 'tasks') => Promise<boolean>;
+  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
 }
 
 const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuProps) => {
@@ -174,12 +183,13 @@ const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuPro
               <Pencil />
             </DropdownMenuItem>
           </NewColumnDialog>
-          <DeleteDialog
+          <ConfirmDialog
             id={data.id}
             type="task-columns"
             title={`Delete ${data.name} ?`}
             message="Are you sure you want to delete this column? Tasks inside will me removed too. This action cannot be undone."
-            deleteItem={deleteItem}
+            action={deleteItem}
+            confirmLabel="Delete"
           >
             <DropdownMenuItem
               onSelect={(event) => event.preventDefault()}
@@ -188,7 +198,7 @@ const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuPro
               Delete
               <Trash />
             </DropdownMenuItem>
-          </DeleteDialog>
+          </ConfirmDialog>
         </DropdownMenuGroup>
       </DropdownMenuContent>
     </DropdownMenu>

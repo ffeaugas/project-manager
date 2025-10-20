@@ -11,29 +11,31 @@ import { Button } from '../ui/button';
 import { useState } from 'react';
 import { EntityType } from '../tasks/types';
 
-interface IDeleteDialogProps {
+interface IConfirmDialogProps {
   id: number;
   type: EntityType;
   title: string;
   message: string;
-  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
+  confirmLabel: string;
+  action: (id: number, type: EntityType) => Promise<boolean>;
   onSuccess?: () => void;
   children?: React.ReactNode;
 }
 
-const DeleteDialog = ({
+const ConfirmDialog = ({
   id,
   type,
   title,
   message,
-  deleteItem,
+  confirmLabel = 'Delete',
+  action,
   onSuccess = () => {},
   children,
-}: IDeleteDialogProps) => {
+}: IConfirmDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async () => {
-    const success = await deleteItem(id, type);
+    const success = await action(id, type);
 
     if (success) {
       setIsOpen(false);
@@ -57,11 +59,11 @@ const DeleteDialog = ({
           <Button variant="secondary" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={handleDelete}>Delete</Button>
+          <Button onClick={handleDelete}>{confirmLabel}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
 };
 
-export default DeleteDialog;
+export default ConfirmDialog;

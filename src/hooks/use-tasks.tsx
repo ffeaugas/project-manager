@@ -132,6 +132,27 @@ export const useTasks = (page: string) => {
     [page, fetchTaskColumns],
   );
 
+  const archiveItem = useCallback(
+    async (id: number, type: EntityType) => {
+      try {
+        const response = await fetch(`/api/${type}/archive`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+
+        if (!response.ok) throw new Error('Failed to archive item');
+
+        await fetchTaskColumns(page);
+        return true;
+      } catch (e) {
+        console.error('Archive error:', e);
+        return false;
+      }
+    },
+    [page, fetchTaskColumns],
+  );
+
   const handleDragOver = (event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
@@ -272,6 +293,7 @@ export const useTasks = (page: string) => {
     submitTask,
     submitColumn,
     deleteItem,
+    archiveItem,
     handleDragStart,
     handleDragOver,
     handleDragEnd,

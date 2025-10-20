@@ -21,7 +21,7 @@ import {
 } from '../types';
 import { useState } from 'react';
 import { Trash } from 'lucide-react';
-import DeleteDialog from '@/components/utils/DeleteDialog';
+import ConfirmDialog from '../../utils/ConfirmDialog';
 import type { EntityType } from '@/components/tasks/types';
 
 interface INewProjectCardDialogProps {
@@ -130,12 +130,13 @@ const NewProjectCardDialog = ({
           </div>
           <DialogFooter>
             {data && deleteItem && (
-              <DeleteDialog
+              <ConfirmDialog
                 id={data.id}
                 type="project-cards"
                 title="Delete this project card?"
                 message="Are you sure you want to delete this project card? This action cannot be undone."
-                deleteItem={deleteItem}
+                confirmLabel="Delete"
+                action={deleteItem}
                 onSuccess={() => {
                   setIsOpen(false);
                 }}
@@ -143,7 +144,7 @@ const NewProjectCardDialog = ({
                 <Button className="bg-transparent border-red-900/50 border-2 p-2 hover:bg-transparent hover:border-red-900">
                   <Trash color="#AA0000" size={20} />
                 </Button>
-              </DeleteDialog>
+              </ConfirmDialog>
             )}
             <Button type="submit">Save{!data && ' project card'}</Button>
           </DialogFooter>

@@ -12,13 +12,14 @@ model Task {
   id          Int        @id @default(autoincrement())
   title       String
   description String
-  columnId    Int        @map("column_id")
-  column      TaskColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  columnId    Int?        @map("column_id")
+  column      TaskColumn? @relation(fields: [columnId], references: [id], onDelete: Cascade)
   order       Int        @default(0)
 
   pageId Int  @map("page_id")
   page   Page @relation(fields: [pageId], references: [id], onDelete: Cascade)
 
+  archivedAt DateTime? @db.Timestamptz @map("archived_at")
   createdAt DateTime @default(now()) @db.Timestamptz @map("created_at")
   updatedAt DateTime @updatedAt @db.Timestamp @map("updated_at")
 

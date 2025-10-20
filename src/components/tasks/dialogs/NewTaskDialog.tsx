@@ -15,8 +15,8 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { EntityType, newTaskSchema, NewTaskType, TaskSelect } from '../types';
 import { useState } from 'react';
-import { Trash } from 'lucide-react';
-import DeleteDialog from '@/components/utils/DeleteDialog';
+import { Archive, Trash } from 'lucide-react';
+import ConfirmDialog from '../../utils/ConfirmDialog';
 
 interface INewTaskDialogProps {
   submitTask: (
@@ -28,6 +28,7 @@ interface INewTaskDialogProps {
     },
   ) => Promise<boolean>;
   deleteItem?: (id: number, type: EntityType) => Promise<boolean>;
+  archiveItem?: (id: number, type: EntityType) => Promise<boolean>;
   children: React.ReactNode;
   data?: TaskSelect | null;
   columnId?: number | null;
@@ -41,6 +42,7 @@ const NewTaskDialog = ({
   data = null,
   columnId = null,
   pageName = null,
+  archiveItem,
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { register, handleSubmit, reset } = useForm<NewTaskType>({
@@ -92,21 +94,39 @@ const NewTaskDialog = ({
             </div>
           </div>
           <DialogFooter>
-            {data && deleteItem && (
-              <DeleteDialog
-                id={data.id}
-                type="tasks"
-                title="Delete this task ?"
-                message="Are you sure you want to delete this task ? This action cannot be undone."
-                deleteItem={deleteItem}
-                onSuccess={() => {
-                  setIsOpen(false);
-                }}
-              >
-                <Button className="bg-transparent border-red-900/50 border-2 p-2 hover:bg-transparent hover:border-red-900">
-                  <Trash color="#AA0000" size={20} />
-                </Button>
-              </DeleteDialog>
+            {data && deleteItem && archiveItem && (
+              <>
+                <ConfirmDialog
+                  id={data.id}
+                  type="tasks"
+                  title="Archive this task ?"
+                  message="Are you sure you want to archive this task ? You will be able to find it in the archived tasks section."
+                  confirmLabel="Archive"
+                  action={archiveItem}
+                  onSuccess={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <Button className="bg-transparent border-zinc-500/50 border-2 p-2 hover:bg-transparent hover:border-zinc-500">
+                    <Archive color="#737373" size={20} />
+                  </Button>
+                </ConfirmDialog>
+                <ConfirmDialog
+                  id={data.id}
+                  type="tasks"
+                  title="Archive this task ?"
+                  message="Are you sure you want to archive this task ? You will be able to find it in the archived tasks section."
+                  confirmLabel="Archive"
+                  action={archiveItem}
+                  onSuccess={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <Button className="bg-transparent border-red-900/50 border-2 p-2 hover:bg-transparent hover:border-red-900">
+                    <Trash color="#AA0000" size={20} />
+                  </Button>
+                </ConfirmDialog>
+              </>
             )}
             <Button type="submit">Save{!data && ' task'}</Button>
           </DialogFooter>

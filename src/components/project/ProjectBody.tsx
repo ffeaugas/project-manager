@@ -3,8 +3,10 @@
 import { useProjects } from '@/hooks/use-projects';
 import ProjectHeader from './ProjectHeader';
 import { Spinner } from '../ui/spinner';
-import { ProjectCardSelect } from './types';
+import { NewProjectCardType, ProjectCardSelect } from './types';
 import Image from 'next/image';
+import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
+import { SubmitHandler } from 'react-hook-form';
 
 interface IProjectBodyProps {
   projectId: string;
@@ -23,7 +25,11 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
       {isLoading || !project ? (
         <Spinner size="large" />
       ) : (
-        <CardList cards={project.projectCards} />
+        <CardList
+          cards={project.projectCards}
+          submitProjectCard={submitProjectCard}
+          projectId={parseInt(projectId)}
+        />
       )}
     </div>
   );
@@ -33,15 +39,22 @@ export default ProjectBody;
 
 interface ICardListProps {
   cards: ProjectCardSelect[];
+  submitProjectCard: (
+    bodyData: NewProjectCardType,
+    options?: { projectCardId?: number; projectId?: number },
+  ) => Promise<boolean>;
+  projectId: number;
 }
 
-const CardList = ({ cards = [] }: ICardListProps) => {
+const CardList = ({ cards = [], submitProjectCard, projectId }: ICardListProps) => {
   return (
     <div className="mx-auto flex content-center justify-center w-full">
       <div className="flex flex-1 overflow-auto gap-4 p-4 flex-wrap">
-        {cards.map((card) => (
-          <ProjectCard key={card.id} data={card} />
-        ))}
+        {cards.length > 0 ? (
+          cards.map((card) => <ProjectCard key={card.id} data={card} />)
+        ) : (
+          <EmptyCard submitProjectCard={submitProjectCard} projectId={projectId} />
+        )}
       </div>
     </div>
   );
@@ -70,5 +83,26 @@ const ProjectCard = ({ data }: { data: ProjectCardSelect }) => {
         </p>
       </div>
     </div>
+  );
+};
+
+interface IEmptyCardProps {
+  submitProjectCard: (
+    bodyData: NewProjectCardType,
+    options?: { projectCardId?: number; projectId?: number },
+  ) => Promise<boolean>;
+  projectId: number;
+}
+
+const EmptyCard = ({ submitProjectCard, projectId }: IEmptyCardProps) => {
+  return (
+    <NewProjectCardDialog submitProjectCard={submitProjectCard} projectId={projectId}>
+      <div
+        className="rounded-md w-[300px] h-[300px] flex flex-col justify-center items-center overflow-hidden
+      bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-lg cursor-pointer"
+      >
+        <p className="text-zinc-400">ajouter une carte</p>
+      </div>
+    </NewProjectCardDialog>
   );
 };

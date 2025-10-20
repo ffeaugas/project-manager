@@ -16,9 +16,10 @@ interface ITaskCardProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: EntityType) => Promise<boolean>;
+  archiveItem: (id: number, type: EntityType) => Promise<boolean>;
 }
 
-const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
+const TaskCard = ({ data, submitTask, deleteItem, archiveItem }: ITaskCardProps) => {
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
     useSortable({
       id: data.id,
@@ -42,6 +43,7 @@ const TaskCard = ({ data, submitTask, deleteItem }: ITaskCardProps) => {
     <NewTaskDialog
       submitTask={submitTask}
       deleteItem={deleteItem}
+      archiveItem={archiveItem}
       data={data}
       columnId={data.columnId}
     >
