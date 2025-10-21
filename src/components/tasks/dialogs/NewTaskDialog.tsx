@@ -17,6 +17,7 @@ import { EntityType, newTaskSchema, NewTaskType, TaskSelect } from '../types';
 import { useState } from 'react';
 import { Archive, Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
+import { toast } from 'sonner';
 
 interface INewTaskDialogProps {
   submitTask: (
@@ -60,6 +61,10 @@ const NewTaskDialog = ({
     if (success) {
       reset();
       setIsOpen(false);
+    } else {
+      toast.error(
+        'An error occurred. Please try again or contact support if the problem persists.',
+      );
     }
   };
 
@@ -114,10 +119,10 @@ const NewTaskDialog = ({
                 <ConfirmDialog
                   id={data.id}
                   type="tasks"
-                  title="Archive this task ?"
-                  message="Are you sure you want to archive this task ? You will be able to find it in the archived tasks section."
-                  confirmLabel="Archive"
-                  action={archiveItem}
+                  title="Delete this task ?"
+                  message="Are you sure you want to delete this task ? This action cannot be undone."
+                  confirmLabel="Delete"
+                  action={deleteItem}
                   onSuccess={() => {
                     setIsOpen(false);
                   }}

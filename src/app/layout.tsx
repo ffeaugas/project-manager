@@ -6,6 +6,7 @@ import AppSidebar from '@/components/AppSidebar';
 import { getUser } from '@/lib/auth-server';
 import Header from '@/components/auth/Header';
 import SignInForm from '@/components/auth/SignInForm';
+import { Toaster } from 'sonner';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -41,6 +42,7 @@ export default async function RootLayout({
               <main className="flex-1 h-full overflow-hidden">
                 <Header userData={user} />
                 {children}
+                <Toaster />
               </main>
             </div>
           </SidebarProvider>

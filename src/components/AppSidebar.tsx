@@ -47,6 +47,7 @@ import Link from 'next/link';
 import AuthStatus from './auth/Header';
 import { User } from 'better-auth';
 import { Spinner } from './ui/spinner';
+import { toast } from 'sonner';
 
 interface SidebarItem {
   name: string;
@@ -80,7 +81,7 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
 
   if (!user) {
-    console.log('user is undefined');
+    toast.error('Problem logging in');
     return <Spinner />;
   }
 
