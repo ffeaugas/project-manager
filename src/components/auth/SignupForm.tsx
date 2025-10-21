@@ -46,7 +46,7 @@ export default function SignupForm() {
       },
       {
         onSuccess: (response) => {
-          window.location.href = '/todo';
+          window.location.href = '/auth/email-verification';
         },
         onError: (ctx) => {
           alert(ctx.error.message);

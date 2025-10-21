@@ -1,9 +1,9 @@
-interface IEmailTemplateProps {
+interface IResetPasswordEmailTemplateProps {
   name: string;
   url: string;
 }
 
-const EmailTemplate = ({ name, url }: IEmailTemplateProps) => {
+const ResetPasswordEmailTemplate = ({ name, url }: IResetPasswordEmailTemplateProps) => {
   return (
     <div
       style={{
@@ -108,4 +108,4 @@ const EmailTemplate = ({ name, url }: IEmailTemplateProps) => {
   );
 };
 
-export default EmailTemplate;
+export default ResetPasswordEmailTemplate;
