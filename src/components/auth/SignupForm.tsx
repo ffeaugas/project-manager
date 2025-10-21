@@ -46,7 +46,7 @@ export default function SignupForm() {
       },
       {
         onSuccess: (response) => {
-          router.push('/todo');
+          window.location.href = '/todo';
         },
         onError: (ctx) => {
           alert(ctx.error.message);

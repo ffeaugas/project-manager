@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { Spinner } from '../ui/spinner';
 import { GithubIcon } from 'lucide-react';
 import { signIn } from '@/lib/auth-client';
+import Link from 'next/link';
 
 type ProviderEnum = Parameters<typeof signIn.social>[0]['provider'];
 
@@ -89,7 +90,15 @@ const SignInForm = () => {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <div className="flex justify-between items-center">
+                  <FormLabel>Password</FormLabel>
+                  <Link
+                    className="text-xs text-gray-400 hover:text-zinc-400 transition-colors"
+                    href="/auth/forgot-password"
+                  >
+                    Forgot your password?
+                  </Link>
+                </div>
                 <FormControl>
                   <Input type="password" placeholder="•••••••••••" {...field} />
                 </FormControl>
