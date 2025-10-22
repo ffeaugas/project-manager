@@ -40,6 +40,9 @@ const SignInForm = () => {
           window.location.href = '/todo';
         },
         onError: (ctx) => {
+          if (ctx.error.code === 'EMAIL_NOT_VERIFIED') {
+            router.push(`/auth/email-verification-resend?email=${values.email}`);
+          }
           alert(ctx.error.message);
           setIsLoading(false);
         },
