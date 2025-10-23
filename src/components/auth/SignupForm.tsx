@@ -65,7 +65,7 @@ export default function SignupForm() {
       },
       {
         onSuccess: () => {
-          window.location.href = '/todo';
+          window.location.href = '/home';
         },
         onError: (ctx) => {
           alert(ctx.error.message);

@@ -12,6 +12,7 @@ import { Spinner } from '../ui/spinner';
 import { GithubIcon } from 'lucide-react';
 import { signIn } from '@/lib/auth-client';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 type ProviderEnum = Parameters<typeof signIn.social>[0]['provider'];
 
@@ -37,13 +38,13 @@ const SignInForm = () => {
       },
       {
         onSuccess: () => {
-          window.location.href = '/todo';
+          window.location.href = '/home';
         },
         onError: (ctx) => {
           if (ctx.error.code === 'EMAIL_NOT_VERIFIED') {
             router.push(`/auth/email-verification-resend?email=${values.email}`);
           }
-          alert(ctx.error.message);
+          toast.error(ctx.error.message);
           setIsLoading(false);
         },
       },
@@ -59,10 +60,10 @@ const SignInForm = () => {
       },
       {
         onSuccess: () => {
-          window.location.href = '/todo';
+          window.location.href = '/home';
         },
         onError: (ctx) => {
-          alert(ctx.error.message);
+          toast.error(ctx.error.message);
           setIsLoading(false);
         },
       },

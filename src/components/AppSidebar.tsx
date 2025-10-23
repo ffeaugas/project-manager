@@ -111,9 +111,9 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <a href="/todo">
+                  <a href="/home">
                     <CheckSquare />
-                    <span>Todo</span>
+                    <span>Home</span>
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
