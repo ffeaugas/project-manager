@@ -12,7 +12,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-export const useTasks = (page: string) => {
+export const useTasks = () => {
   const [columns, setColumns] = useState<TaskColumnWithTasks[]>([]);
   const [tasks, setTasks] = useState<TaskSelect[]>([]);
   const [overlayTask, setOverlayTask] = useState<TaskSelect | null>(null);
@@ -21,30 +21,27 @@ export const useTasks = (page: string) => {
   const [error] = useState<string | null>(null);
   const router = useRouter();
 
-  const fetchTaskColumns = useCallback(
-    async (page: string) => {
-      try {
-        const response = await fetch(`/api/task-columns/?page=${page}`);
-        if (!response.ok) {
-          router.push('/error');
-          return;
-        }
-        const data = await response.json();
-        setColumns(data);
-        setTasks(
-          data
-            .flatMap((column: TaskColumnWithTasks) => column.tasks)
-            .sort((a: TaskSelect, b: TaskSelect) => a.order - b.order),
-        );
-      } catch {
+  const fetchTaskColumns = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/task-columns/`);
+      if (!response.ok) {
         router.push('/error');
         return;
-      } finally {
-        setIsLoading(false);
       }
-    },
-    [router],
-  );
+      const data = await response.json();
+      setColumns(data);
+      setTasks(
+        data
+          .flatMap((column: TaskColumnWithTasks) => column.tasks)
+          .sort((a: TaskSelect, b: TaskSelect) => a.order - b.order),
+      );
+    } catch {
+      router.push('/error');
+      return;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [router]);
 
   const submitTask = useCallback(
     async (
@@ -52,7 +49,6 @@ export const useTasks = (page: string) => {
       options?: {
         taskId?: number;
         columnId?: number | null;
-        pageName?: string | null;
       },
     ) => {
       try {
@@ -60,9 +56,6 @@ export const useTasks = (page: string) => {
 
         if (options?.columnId !== null && options?.columnId !== undefined) {
           requestBody.columnId = options.columnId;
-        }
-        if (options?.pageName !== null && options?.pageName !== undefined) {
-          requestBody.pageName = options.pageName;
         }
 
         const response = await fetch('/api/tasks', {
@@ -73,14 +66,14 @@ export const useTasks = (page: string) => {
 
         if (!response.ok) throw new Error('Failed to save task');
 
-        await fetchTaskColumns(page);
+        await fetchTaskColumns();
         return true;
       } catch (e) {
         console.error('Error saving task:', e);
         return false;
       }
     },
-    [page, fetchTaskColumns],
+    [fetchTaskColumns],
   );
 
   const submitColumn = useCallback(
@@ -91,7 +84,7 @@ export const useTasks = (page: string) => {
       },
     ) => {
       try {
-        const url = `/api/task-columns?page=${encodeURIComponent(page)}`;
+        const url = `/api/task-columns`;
 
         const response = await fetch(url, {
           method: options?.columnId ? 'PATCH' : 'POST',
@@ -101,14 +94,14 @@ export const useTasks = (page: string) => {
 
         if (!response.ok) throw new Error('Failed to save column');
 
-        await fetchTaskColumns(page);
+        await fetchTaskColumns();
         return true;
       } catch (e) {
         console.error('Error saving column:', e);
         return false;
       }
     },
-    [page, fetchTaskColumns],
+    [fetchTaskColumns],
   );
 
   const deleteItem = useCallback(
@@ -122,14 +115,14 @@ export const useTasks = (page: string) => {
 
         if (!response.ok) throw new Error('Failed to delete item');
 
-        await fetchTaskColumns(page);
+        await fetchTaskColumns();
         return true;
       } catch (e) {
         console.error('Delete error:', e);
         return false;
       }
     },
-    [page, fetchTaskColumns],
+    [fetchTaskColumns],
   );
 
   const archiveItem = useCallback(
@@ -143,14 +136,14 @@ export const useTasks = (page: string) => {
 
         if (!response.ok) throw new Error('Failed to archive item');
 
-        await fetchTaskColumns(page);
+        await fetchTaskColumns();
         return true;
       } catch (e) {
         console.error('Archive error:', e);
         return false;
       }
     },
-    [page, fetchTaskColumns],
+    [fetchTaskColumns],
   );
 
   const handleDragOver = (event: DragOverEvent) => {
@@ -233,7 +226,7 @@ export const useTasks = (page: string) => {
     });
 
     if (!response.ok) throw new Error('Failed to reorder column');
-    await fetchTaskColumns(page);
+    await fetchTaskColumns();
   };
 
   const reOrderTask = async (active: Active, over: Over) => {
@@ -277,12 +270,12 @@ export const useTasks = (page: string) => {
     }
 
     if (!response.ok) throw new Error('Failed to reorder task');
-    await fetchTaskColumns(page);
+    await fetchTaskColumns();
   };
 
   useEffect(() => {
-    fetchTaskColumns(page);
-  }, [page, fetchTaskColumns]);
+    fetchTaskColumns();
+  }, [fetchTaskColumns]);
 
   return {
     columns,

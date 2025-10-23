@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { getUser } from '@/lib/auth-server';
 import { writeFile } from 'fs/promises';
 import { join } from 'path';
 import { ProjectSelect } from '@/components/project/types';
@@ -21,6 +22,11 @@ const updateProjectCardSchema = z.object({
 });
 
 export async function GET(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const { searchParams } = new URL(request.url);
     const projectId = searchParams.get('projectId');
@@ -32,6 +38,7 @@ export async function GET(request: NextRequest) {
     const projectCards = await prisma.project.findUnique({
       where: {
         id: parseInt(projectId),
+        userId: user.id,
       },
       select: ProjectSelect,
     });
@@ -48,6 +55,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const formData = await request.formData();
 
@@ -86,6 +98,7 @@ export async function POST(request: NextRequest) {
     const project = await prisma.project.findUnique({
       where: {
         id: validatedData.projectId,
+        userId: user.id,
       },
     });
 
@@ -119,6 +132,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function PATCH(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const formData = await body.formData();
@@ -133,10 +151,18 @@ export async function PATCH(request: NextRequest) {
       where: {
         id: parseInt(id),
       },
+      include: {
+        project: true,
+      },
     });
 
     if (!existingProjectCard) {
       return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
+    }
+
+    // Check if the user owns the project that contains this card
+    if (existingProjectCard.project.userId !== user.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     let imageUrl: string | undefined = undefined;
@@ -171,6 +197,7 @@ export async function PATCH(request: NextRequest) {
       const project = await prisma.project.findUnique({
         where: {
           id: validatedData.projectId,
+          userId: user.id,
         },
       });
 
@@ -226,6 +253,11 @@ export async function PATCH(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const validatedData = z
@@ -238,10 +270,18 @@ export async function DELETE(request: NextRequest) {
       where: {
         id: validatedData.id,
       },
+      include: {
+        project: true,
+      },
     });
 
     if (!existingProjectCard) {
       return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
+    }
+
+    // Check if the user owns the project that contains this card
+    if (existingProjectCard.project.userId !== user.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
     await prisma.projectCard.delete({

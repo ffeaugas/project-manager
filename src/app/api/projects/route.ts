@@ -22,6 +22,9 @@ export async function GET(request: NextRequest) {
 
   try {
     const projects = await prisma.project.findMany({
+      where: {
+        userId: user.id,
+      },
       orderBy: {
         createdAt: 'desc',
       },
@@ -35,6 +38,11 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const validatedData = newProjectSchema.parse(body);
@@ -43,6 +51,7 @@ export async function POST(request: NextRequest) {
       data: {
         name: validatedData.name,
         description: validatedData.description,
+        userId: user.id,
       },
     });
 
@@ -60,6 +69,11 @@ export async function POST(request: NextRequest) {
 }
 
 export async function DELETE(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const validatedData = z
@@ -71,6 +85,7 @@ export async function DELETE(request: NextRequest) {
     const existingProject = await prisma.project.findUnique({
       where: {
         id: validatedData.id,
+        userId: user.id,
       },
     });
 

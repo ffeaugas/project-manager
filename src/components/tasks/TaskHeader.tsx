@@ -16,16 +16,14 @@ interface ITaskHeaderProps {
     options?: {
       taskId?: number;
       columnId?: number | null;
-      pageName?: string | null;
     },
   ) => Promise<boolean>;
-  pageName: string;
 }
 
-const TaskHeader = ({ submitTask, pageName }: ITaskHeaderProps) => {
+const TaskHeader = ({ submitTask }: ITaskHeaderProps) => {
   return (
     <div className="flex flex-row p-4 justify-end w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
-      <NewTaskDialog submitTask={submitTask} pageName={pageName}>
+      <NewTaskDialog submitTask={submitTask}>
         <Button variant="outline" className="bg-zinc-900">
           Add task
         </Button>

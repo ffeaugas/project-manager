@@ -17,11 +17,11 @@ import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from './types';
 
-const TaskBody = ({ page }: { page: string }) => {
+const TaskBody = () => {
   return (
     <div className="flex flex-col h-screen max-h-screen w-full">
       <div className="flex flex-row h-full">
-        <KanbanBoard page={page} />
+        <KanbanBoard />
         <div className="min-w-[300px] flex flex-col border-l-[1px] border-zinc-700"></div>
       </div>
     </div>
@@ -30,7 +30,7 @@ const TaskBody = ({ page }: { page: string }) => {
 
 export default TaskBody;
 
-const KanbanBoard = ({ page }: { page: string }) => {
+const KanbanBoard = () => {
   const {
     columns,
     tasks,
@@ -44,7 +44,7 @@ const KanbanBoard = ({ page }: { page: string }) => {
     handleDragOver,
     overlayTask,
     overlayColumn,
-  } = useTasks(page);
+  } = useTasks();
 
   const columnIds = columns.map((col: TaskColumnWithTasks) => col.id);
 
@@ -60,7 +60,7 @@ const KanbanBoard = ({ page }: { page: string }) => {
 
   return (
     <div className="flex flex-col h-full flex-1 max-w-[75%]">
-      <TaskHeader submitTask={submitTask} pageName={page} />
+      <TaskHeader submitTask={submitTask} />
       <div className="overflow-y-scroll">
         <div className="flex flex-row gap-3 p-4 min-w-fit">
           <DndContext

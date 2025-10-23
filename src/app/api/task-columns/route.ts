@@ -2,33 +2,19 @@ import { newColumnSchema, TaskColumnSelect } from '@/components/tasks/types';
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
+import { getUser } from '@/lib/auth-server';
 
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const pageName = searchParams.get('page');
+    const user = await getUser();
 
-    const page = await prisma.page.findFirst({
-      where: {
-        name: {
-          equals: pageName || '',
-          mode: 'insensitive',
-        },
-      },
-    });
-
-    if (!pageName || !page) {
-      return NextResponse.json({ error: 'Invalid request data' }, { status: 400 });
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const columns = await prisma.taskColumn.findMany({
       where: {
-        page: {
-          name: {
-            equals: pageName,
-            mode: 'insensitive',
-          },
-        },
+        userId: user.id,
       },
       select: TaskColumnSelect,
       orderBy: { order: 'asc' },
@@ -43,35 +29,25 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const validatedData = newColumnSchema.parse(body);
 
-    const searchParams = request.nextUrl.searchParams;
-    const pageName = searchParams.get('page');
-
-    if (!pageName) {
-      return NextResponse.json({ error: 'Page name is required' }, { status: 400 });
-    }
-
-    const page = await prisma.page.findFirst({
-      where: {
-        name: {
-          equals: pageName,
-          mode: 'insensitive',
-        },
-      },
-    });
-
-    if (!page) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
-    }
-
     const columnCount = await prisma.taskColumn.count({
-      where: { pageId: page.id },
+      where: { userId: user.id },
     });
 
     await prisma.taskColumn.create({
-      data: { ...validatedData, pageId: page.id, order: columnCount },
+      data: {
+        ...validatedData,
+        userId: user.id,
+        order: columnCount,
+      },
     });
 
     return NextResponse.json({ status: 201 });
@@ -117,39 +93,25 @@ export async function DELETE(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   try {
+    const user = await getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const validatedData = newColumnSchema.parse(body);
 
     if (!validatedData.id) throw new Error('Id is required');
 
-    const searchParams = request.nextUrl.searchParams;
-    const pageName = searchParams.get('page');
-
-    if (!pageName) {
-      return NextResponse.json({ error: 'Page name is required' }, { status: 400 });
-    }
-
-    const page = await prisma.page.findFirst({
-      where: {
-        name: {
-          equals: pageName,
-          mode: 'insensitive',
-        },
-      },
-    });
-
-    if (!page) {
-      return NextResponse.json({ error: 'Page not found' }, { status: 404 });
-    }
-
     await prisma.taskColumn.update({
       where: {
         id: validatedData.id,
+        userId: user.id, // Ensure user can only update their own columns
       },
       data: {
         name: validatedData.name,
         color: validatedData.color,
-        pageId: page.id,
       },
     });
 

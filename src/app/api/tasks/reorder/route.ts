@@ -36,7 +36,6 @@ export async function POST(request: NextRequest) {
         await prisma.task.updateMany({
           where: {
             columnId: activeTask.columnId,
-            pageId: activeTask.pageId,
             order: {
               gt: originalActiveOrder,
               lte: originalOverOrder,
@@ -49,7 +48,6 @@ export async function POST(request: NextRequest) {
         await prisma.task.updateMany({
           where: {
             columnId: activeTask.columnId,
-            pageId: activeTask.pageId,
             order: {
               gte: originalOverOrder,
               lt: originalActiveOrder,
@@ -64,7 +62,6 @@ export async function POST(request: NextRequest) {
       await prisma.task.updateMany({
         where: {
           columnId: activeTask.columnId,
-          pageId: activeTask.pageId,
           order: {
             gt: originalActiveOrder,
           },
@@ -76,7 +73,6 @@ export async function POST(request: NextRequest) {
       await prisma.task.updateMany({
         where: {
           columnId: overTask.columnId,
-          pageId: overTask.pageId,
           order: {
             gte: originalOverOrder,
           },

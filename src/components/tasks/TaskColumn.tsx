@@ -32,7 +32,6 @@ interface ITaskColumnProps {
     options?: {
       taskId?: number;
       columnId?: number | null;
-      pageName?: string | null;
     },
   ) => Promise<boolean>;
   submitColumn: (

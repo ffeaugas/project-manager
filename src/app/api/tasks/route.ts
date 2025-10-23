@@ -2,30 +2,31 @@ import { newTaskSchema } from '@/components/tasks/types';
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
+import { getUser } from '@/lib/auth-server';
 
 export async function POST(request: NextRequest) {
   try {
+    const user = await getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const validatedData = newTaskSchema.parse(body);
 
-    const column = validatedData.columnId
-      ? await prisma.taskColumn.findFirst({
-          where: {
-            id: validatedData.columnId,
-          },
-        })
-      : await prisma.taskColumn.findFirst({
-          where: {
-            page: {
-              name: {
-                equals: validatedData.pageName,
-                mode: 'insensitive',
-              },
-            },
-          },
-        });
+    if (!validatedData.columnId) {
+      return NextResponse.json({ error: 'Column ID is required' }, { status: 400 });
+    }
 
-    if (!column) throw new Error('Column or page not found');
+    const column = await prisma.taskColumn.findFirst({
+      where: {
+        id: validatedData.columnId,
+        userId: user.id, // Ensure user can only create tasks in their own columns
+      },
+    });
+
+    if (!column) throw new Error('Column not found');
 
     const maxOrder = await prisma.task.aggregate({
       where: {
@@ -44,7 +45,6 @@ export async function POST(request: NextRequest) {
         description: validatedData.description,
         columnId: column.id,
         order: newOrder,
-        pageId: column.pageId,
       },
     });
 

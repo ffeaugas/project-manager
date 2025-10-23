@@ -18,27 +18,23 @@ import {
   Drum,
   Plus,
   LucideIcon,
-  CheckSquare,
   Folder,
   ChevronDown,
   ChevronRight,
+  HomeIcon,
 } from 'lucide-react';
 
 import {
   Sidebar,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-  SidebarSeparator,
-  SidebarTrigger,
 } from './ui/sidebar';
 import { Button } from './ui/button';
 import { useEffect, useState } from 'react';
@@ -112,7 +108,7 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a href="/home">
-                    <CheckSquare />
+                    <HomeIcon />
                     <span>Home</span>
                   </a>
                 </SidebarMenuButton>

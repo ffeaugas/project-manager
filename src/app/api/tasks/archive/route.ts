@@ -1,9 +1,16 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import z, { ZodError } from 'zod';
+import { getUser } from '@/lib/auth-server';
 
 export async function PATCH(request: NextRequest) {
   try {
+    const user = await getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const validatedData = z
       .object({
@@ -12,6 +19,20 @@ export async function PATCH(request: NextRequest) {
       .parse(body);
 
     if (!validatedData.id) throw new Error('Id is required');
+
+    // First check if the task belongs to the user
+    const task = await prisma.task.findFirst({
+      where: {
+        id: validatedData.id,
+        column: {
+          userId: user.id,
+        },
+      },
+    });
+
+    if (!task) {
+      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
+    }
 
     await prisma.task.update({
       where: {

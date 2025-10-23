@@ -25,7 +25,6 @@ interface INewTaskDialogProps {
     options?: {
       taskId?: number;
       columnId?: number | null;
-      pageName?: string | null;
     },
   ) => Promise<boolean>;
   deleteItem?: (id: number, type: EntityType) => Promise<boolean>;
@@ -33,7 +32,6 @@ interface INewTaskDialogProps {
   children: React.ReactNode;
   data?: TaskSelect | null;
   columnId?: number | null;
-  pageName?: string | null;
 }
 
 const NewTaskDialog = ({
@@ -42,7 +40,6 @@ const NewTaskDialog = ({
   children,
   data = null,
   columnId = null,
-  pageName = null,
   archiveItem,
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +52,6 @@ const NewTaskDialog = ({
     const success = await submitTask(bodyData, {
       taskId: data?.id,
       columnId,
-      pageName,
     });
 
     if (success) {

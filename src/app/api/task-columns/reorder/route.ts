@@ -1,52 +1,70 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getUser } from '@/lib/auth-server';
 
 export async function POST(request: NextRequest) {
-  const { activeColumnId, overColumnId } = await request.json();
+  try {
+    const user = await getUser();
 
-  const activeColumn = await prisma.taskColumn.findFirst({
-    where: { id: activeColumnId },
-  });
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
-  const overColumn = await prisma.taskColumn.findFirst({
-    where: { id: overColumnId },
-  });
+    const { activeColumnId, overColumnId } = await request.json();
 
-  if (!activeColumn || !overColumn) {
-    throw new Error('Column not found');
-  }
-
-  const originalActiveOrder = activeColumn.order;
-  const originalOverOrder = overColumn.order;
-
-  if (originalOverOrder > originalActiveOrder) {
-    await prisma.taskColumn.updateMany({
+    const activeColumn = await prisma.taskColumn.findFirst({
       where: {
-        pageId: overColumn.pageId,
-        order: {
-          gt: originalActiveOrder,
-          lte: originalOverOrder,
-        },
+        id: activeColumnId,
+        userId: user.id, // Ensure user can only reorder their own columns
       },
-      data: { order: { decrement: 1 } },
     });
-  } else {
-    await prisma.taskColumn.updateMany({
+
+    const overColumn = await prisma.taskColumn.findFirst({
       where: {
-        pageId: overColumn.pageId,
-        order: {
-          gte: originalOverOrder,
-          lt: originalActiveOrder,
-        },
+        id: overColumnId,
+        userId: user.id, // Ensure user can only reorder their own columns
       },
-      data: { order: { increment: 1 } },
     });
+
+    if (!activeColumn || !overColumn) {
+      return NextResponse.json({ error: 'Column not found' }, { status: 404 });
+    }
+
+    const originalActiveOrder = activeColumn.order;
+    const originalOverOrder = overColumn.order;
+
+    if (originalOverOrder > originalActiveOrder) {
+      await prisma.taskColumn.updateMany({
+        where: {
+          userId: user.id,
+          order: {
+            gt: originalActiveOrder,
+            lte: originalOverOrder,
+          },
+        },
+        data: { order: { decrement: 1 } },
+      });
+    } else {
+      await prisma.taskColumn.updateMany({
+        where: {
+          userId: user.id,
+          order: {
+            gte: originalOverOrder,
+            lt: originalActiveOrder,
+          },
+        },
+        data: { order: { increment: 1 } },
+      });
+    }
+
+    await prisma.taskColumn.update({
+      where: { id: activeColumnId },
+      data: { order: originalOverOrder },
+    });
+
+    return NextResponse.json({ status: 200 });
+  } catch (error) {
+    console.error('Error reordering columns:', error);
+    return NextResponse.json({ error: 'Failed to reorder columns' }, { status: 500 });
   }
-
-  await prisma.taskColumn.update({
-    where: { id: activeColumnId },
-    data: { order: originalOverOrder },
-  });
-
-  return NextResponse.json({ status: 200 });
 }
