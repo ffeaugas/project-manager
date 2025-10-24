@@ -35,9 +35,18 @@ export const ProjectCardSelect = {
   id: true,
   name: true,
   description: true,
-  imageUrl: true,
   projectId: true,
   createdAt: true,
+  images: {
+    select: {
+      id: true,
+      size: true,
+      mimeType: true,
+      originalName: true,
+      storageKey: true,
+      createdAt: true,
+    },
+  },
 };
 
 export type ProjectCardSelect = Prisma.ProjectCardGetPayload<{

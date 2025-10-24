@@ -44,6 +44,7 @@ import AuthStatus from './auth/Header';
 import { User } from 'better-auth';
 import { Spinner } from './ui/spinner';
 import { toast } from 'sonner';
+import { useProjects } from '@/hooks/use-projects';
 
 interface SidebarItem {
   name: string;
@@ -73,29 +74,13 @@ const getIconComponent = (iconName: string): LucideIcon => {
 };
 
 const AppSidebar = ({ user }: { user: User | undefined }) => {
-  const [projects, setProjects] = useState<SidebarItem[]>([]);
   const [projectsExpanded, setProjectsExpanded] = useState(true);
+  const { projects, isLoading, error, submitProject } = useProjects();
 
   if (!user) {
     toast.error('Problem logging in');
     return <Spinner />;
   }
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch('/api/projects');
-        const data = await response.json();
-
-        setProjects(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error('Failed to fetch projects:', error);
-        setProjects([]);
-      }
-    };
-
-    fetchProjects();
-  }, []);
 
   return (
     <Sidebar className="bg-zinc-900 border-[1px] border-zinc-700 text-slate-200">
@@ -139,7 +124,7 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>
                     ))}
-                    <NewProjectDialog>
+                    <NewProjectDialog submitProject={submitProject}>
                       <Button className="mt-4 w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
                         <Plus size={16} className="mr-2" />
                         New Project

@@ -16,13 +16,19 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { newProjectSchema, NewProjectType } from '../types';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 interface INewProjectDialogProps {
   data?: { id: number; name: string; description: string } | null;
+  submitProject: (bodyData: NewProjectType, projectId?: number) => Promise<boolean>;
   children: React.ReactNode;
 }
 
-const NewProjectDialog = ({ data = null, children }: INewProjectDialogProps) => {
+const NewProjectDialog = ({
+  data = null,
+  submitProject,
+  children,
+}: INewProjectDialogProps) => {
   const {
     register,
     handleSubmit,
@@ -36,19 +42,14 @@ const NewProjectDialog = ({ data = null, children }: INewProjectDialogProps) => 
     resolver: zodResolver(newProjectSchema),
   });
   const [isOpen, setIsOpen] = useState(false);
+  const router = useRouter();
 
   const onSubmit: SubmitHandler<NewProjectType> = async (bodyData) => {
     try {
-      const requestBody = data ? { ...bodyData, id: data.id } : bodyData;
-      const response = await fetch('/api/projects', {
-        method: data ? 'PATCH' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
-      });
-      if (!response.ok) throw new Error('Failed to create project');
-
+      const projectId = await submitProject(bodyData, data?.id);
       reset();
       setIsOpen(false);
+      router.push(`/project/${projectId}`);
     } catch (e) {
       console.error('Error creating project:', e);
     }

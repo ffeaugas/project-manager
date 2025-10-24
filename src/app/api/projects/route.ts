@@ -53,9 +53,59 @@ export async function POST(request: NextRequest) {
         description: validatedData.description,
         userId: user.id,
       },
+      select: {
+        id: true,
+      },
     });
 
-    return NextResponse.json(newProject, { status: 201 });
+    return NextResponse.json({ id: newProject.id }, { status: 201 });
+  } catch (error) {
+    if (error instanceof ZodError) {
+      return NextResponse.json(
+        { error: 'Invalid request data', details: error.errors },
+        { status: 400 },
+      );
+    }
+    console.error(error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  const user = await getUser();
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    const body = await request.json();
+    const validatedData = updateProjectSchema.parse(body);
+
+    const existingProject = await prisma.project.findUnique({
+      where: {
+        id: validatedData.id,
+        userId: user.id,
+      },
+    });
+
+    if (!existingProject) {
+      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
+    }
+
+    const updatedProject = await prisma.project.update({
+      where: {
+        id: validatedData.id,
+      },
+      data: {
+        name: validatedData.name,
+        description: validatedData.description,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return NextResponse.json({ id: updatedProject.id }, { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(

@@ -13,8 +13,16 @@ interface IProjectBodyProps {
 }
 
 const ProjectBody = ({ projectId }: IProjectBodyProps) => {
-  const { project, isLoading, submitProjectCard, deleteProjectCard } =
+  const { project, isLoading, submitProjectCard, deleteProjectCard, error } =
     useProjects(projectId);
+
+  if (error) {
+    return (
+      <div className="text-red-500 w-full h-screen flex items-center justify-center">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col h-full max-h-screen">
@@ -60,13 +68,15 @@ const CardList = ({ cards = [], submitProjectCard, projectId }: ICardListProps) 
   );
 };
 
-const ProjectCard = ({ data }: { data: ProjectCardSelect }) => {
+const ProjectCard = ({ data }: { data: any }) => {
+  const firstImage = data.images?.[0];
+
   return (
     <div className="bg-zinc-800 rounded-md w-[300px] h-[300px] flex flex-col overflow-hidden justify-start">
-      {data.imageUrl && (
+      {firstImage && (
         <div className="w-full h-[70%] overflow-hidden relative">
           <Image
-            src={data.imageUrl}
+            src={firstImage.url}
             alt={data.name}
             fill
             className="object-cover"

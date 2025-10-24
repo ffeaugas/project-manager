@@ -2,14 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth-server';
-import { writeFile } from 'fs/promises';
-import { join } from 'path';
 import { ProjectSelect } from '@/components/project/types';
+import { s3UploadFile, getS3Url } from '@/lib/s3';
 
 const newProjectCardSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
-  imageUrl: z.string().optional(),
   projectId: z.number().min(1, 'Project ID is required'),
 });
 
@@ -17,7 +15,6 @@ const updateProjectCardSchema = z.object({
   id: z.number().min(1, 'Id is required'),
   name: z.string().min(1, 'Name is required').optional(),
   description: z.string().min(1, 'Description is required').optional(),
-  imageUrl: z.string().optional(),
   projectId: z.number().min(1, 'Project ID is required').optional(),
 });
 
@@ -47,7 +44,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    return NextResponse.json(projectCards, { status: 200 });
+    const projectWithUrls = {
+      ...projectCards,
+      projectCards: projectCards.projectCards.map((card) => ({
+        ...card,
+        images: card.images.map((image) => ({
+          ...image,
+          url: getS3Url(image.storageKey),
+        })),
+      })),
+    };
+
+    return NextResponse.json(projectWithUrls, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -68,31 +76,10 @@ export async function POST(request: NextRequest) {
     const projectId = formData.get('projectId') as string;
     const imageFile = formData.get('image') as File | null;
 
-    let imageUrl: string | undefined = undefined;
-
-    // Handle image upload if present
-    if (imageFile) {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      // Generate unique filename
-      const timestamp = Date.now();
-      const fileExtension = imageFile.name.split('.').pop();
-      const filename = `project-${projectId}-card-${timestamp}.${fileExtension}`;
-
-      // Save to public/upload directory
-      const uploadDir = join(process.cwd(), 'public', 'upload');
-      const filepath = join(uploadDir, filename);
-
-      await writeFile(filepath, buffer);
-      imageUrl = `/upload/${filename}`;
-    }
-
     const validatedData = newProjectCardSchema.parse({
       name,
       description,
       projectId: parseInt(projectId),
-      imageUrl,
     });
 
     const project = await prisma.project.findUnique({
@@ -106,19 +93,52 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
+    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File too large' }, { status: 400 });
+    }
+
     const newProjectCard = await prisma.projectCard.create({
       data: {
         name: validatedData.name,
         description: validatedData.description,
-        ...(validatedData.imageUrl && { imageUrl: validatedData.imageUrl }),
         projectId: validatedData.projectId,
-      },
-      include: {
-        project: true,
       },
     });
 
-    return NextResponse.json(newProjectCard, { status: 201 });
+    if (imageFile) {
+      const storageKey = await s3UploadFile({
+        file: imageFile,
+        prefix: `${user.id}/projects/${projectId}/project-cards/`,
+      });
+
+      await prisma.image.create({
+        data: {
+          size: imageFile.size,
+          mimeType: imageFile.type,
+          originalName: imageFile.name,
+          storageKey: storageKey,
+          projectCardId: newProjectCard.id,
+        },
+      });
+    }
+
+    const completeProjectCard = await prisma.projectCard.findUnique({
+      where: { id: newProjectCard.id },
+      include: {
+        project: true,
+        images: true,
+      },
+    });
+
+    const newProjectCardWithUrls = {
+      ...completeProjectCard,
+      images: completeProjectCard!.images.map((image) => ({
+        ...image,
+        url: getS3Url(image.storageKey),
+      })),
+    };
+
+    return NextResponse.json(newProjectCardWithUrls, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
@@ -138,8 +158,7 @@ export async function PATCH(request: NextRequest) {
   }
 
   try {
-    const body = await request.json();
-    const formData = await body.formData();
+    const formData = await request.formData();
 
     const id = formData.get('id') as string;
     const name = formData.get('name') as string | null;
@@ -153,6 +172,7 @@ export async function PATCH(request: NextRequest) {
       },
       include: {
         project: true,
+        images: true,
       },
     });
 
@@ -160,29 +180,8 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
     }
 
-    // Check if the user owns the project that contains this card
     if (existingProjectCard.project.userId !== user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
-    let imageUrl: string | undefined = undefined;
-
-    // Handle image upload if present
-    if (imageFile && imageFile.size > 0) {
-      const bytes = await imageFile.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
-      // Generate unique filename
-      const timestamp = Date.now();
-      const fileExtension = imageFile.name.split('.').pop();
-      const filename = `project-${projectId || existingProjectCard.projectId}-card-${timestamp}.${fileExtension}`;
-
-      // Save to public/upload directory
-      const uploadDir = join(process.cwd(), 'public', 'upload');
-      const filepath = join(uploadDir, filename);
-
-      await writeFile(filepath, buffer);
-      imageUrl = `/upload/${filename}`;
     }
 
     const validatedData = updateProjectCardSchema.parse({
@@ -190,7 +189,6 @@ export async function PATCH(request: NextRequest) {
       name: name || undefined,
       description: description || undefined,
       projectId: projectId ? parseInt(projectId) : undefined,
-      imageUrl: imageUrl || undefined,
     });
 
     if (validatedData.projectId !== undefined) {
@@ -206,10 +204,13 @@ export async function PATCH(request: NextRequest) {
       }
     }
 
+    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ error: 'File too large' }, { status: 400 });
+    }
+
     const updateData: {
       name?: string;
       description?: string;
-      imageUrl?: string;
       projectId?: number;
     } = {};
 
@@ -219,10 +220,6 @@ export async function PATCH(request: NextRequest) {
 
     if (validatedData.description !== undefined) {
       updateData.description = validatedData.description;
-    }
-
-    if (validatedData.imageUrl !== undefined) {
-      updateData.imageUrl = validatedData.imageUrl;
     }
 
     if (validatedData.projectId !== undefined) {
@@ -236,10 +233,52 @@ export async function PATCH(request: NextRequest) {
       data: updateData,
       include: {
         project: true,
+        images: true,
       },
     });
 
-    return NextResponse.json(updatedProjectCard, { status: 200 });
+    if (imageFile && imageFile.size > 0) {
+      await prisma.image.deleteMany({
+        where: {
+          projectCardId: existingProjectCard.id,
+        },
+      });
+
+      const storageKey = await s3UploadFile({
+        file: imageFile,
+        prefix: `${user.id}/projects/${validatedData.projectId || existingProjectCard.projectId}/project-cards/`,
+      });
+
+      await prisma.image.create({
+        data: {
+          size: imageFile.size,
+          mimeType: imageFile.type,
+          originalName: imageFile.name,
+          storageKey: storageKey,
+          projectCardId: existingProjectCard.id,
+        },
+      });
+    }
+
+    const finalProjectCard = await prisma.projectCard.findUnique({
+      where: {
+        id: validatedData.id,
+      },
+      include: {
+        project: true,
+        images: true,
+      },
+    });
+
+    const finalProjectCardWithUrls = {
+      ...finalProjectCard,
+      images: finalProjectCard!.images.map((image) => ({
+        ...image,
+        url: getS3Url(image.storageKey),
+      })),
+    };
+
+    return NextResponse.json(finalProjectCardWithUrls, { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
@@ -272,6 +311,7 @@ export async function DELETE(request: NextRequest) {
       },
       include: {
         project: true,
+        images: true,
       },
     });
 
@@ -279,7 +319,6 @@ export async function DELETE(request: NextRequest) {
       return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
     }
 
-    // Check if the user owns the project that contains this card
     if (existingProjectCard.project.userId !== user.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
@@ -291,7 +330,10 @@ export async function DELETE(request: NextRequest) {
     });
 
     return NextResponse.json(
-      { message: 'Project card deleted successfully' },
+      {
+        message: 'Project card and associated images deleted successfully',
+        deletedImagesCount: existingProjectCard.images.length,
+      },
       { status: 200 },
     );
   } catch (error) {

@@ -7,7 +7,8 @@ import {
 } from '@/components/project/types';
 import { useEffect, useState } from 'react';
 
-export const useProjects = (id: string) => {
+export const useProjects = (id?: string) => {
+  const [projects, setProjects] = useState<ProjectSelect[]>([]);
   const [project, setProject] = useState<ProjectSelect | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -64,11 +65,38 @@ export const useProjects = (id: string) => {
     return true;
   };
 
+  const submitProject = async (
+    bodyData: { name: string; description: string },
+    projectId?: number,
+  ) => {
+    try {
+      const requestBody = projectId ? { ...bodyData, id: projectId } : bodyData;
+      const response = await fetch('/api/projects', {
+        method: projectId ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestBody),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to create project');
+      }
+      const data = await response.json();
+      await fetchProjects();
+      return data.id;
+    } catch (e) {
+      console.error('Error creating project:', e);
+      throw e;
+    }
+  };
+
   const fetchProject = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/projects/cards?projectId=${id}`);
       const data = await response.json();
+      if (!response.ok) {
+        setError(data.error);
+        return;
+      }
       setProject(data);
     } catch (error) {
       console.error('Error fetching project:', error);
@@ -78,14 +106,26 @@ export const useProjects = (id: string) => {
     }
   };
 
+  const fetchProjects = async () => {
+    const response = await fetch('/api/projects');
+    const data = await response.json();
+    setProjects(data);
+  };
+
   useEffect(() => {
-    fetchProject();
+    fetchProjects();
+    if (id) {
+      fetchProject();
+    }
   }, [id]);
 
   return {
     project,
+    projects,
     isLoading,
     submitProjectCard,
     deleteProjectCard,
+    submitProject,
+    error,
   };
 };
