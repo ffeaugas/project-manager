@@ -58,14 +58,18 @@ const CardList = ({ cards = [], submitProjectCard, projectId }: ICardListProps) 
     <div className="mx-auto flex content-center justify-center w-full">
       <div className="flex flex-1 overflow-auto gap-4 p-4 flex-wrap">
         {cards.length > 0 ? (
-          cards.map((card) => (
-            <ProjectCard
-              key={card.id}
-              data={card}
-              submitProjectCard={submitProjectCard}
-              projectId={projectId}
-            />
-          ))
+          cards
+            .sort(
+              (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+            )
+            .map((card) => (
+              <ProjectCard
+                key={card.id}
+                data={card}
+                submitProjectCard={submitProjectCard}
+                projectId={projectId}
+              />
+            ))
         ) : (
           <EmptyCard submitProjectCard={submitProjectCard} projectId={projectId} />
         )}

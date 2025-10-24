@@ -29,7 +29,6 @@ export async function createProjectCard(
   userId: string,
   imageFile?: File | null,
 ) {
-  // Vérifier que le projet existe et appartient à l'utilisateur
   const project = await prisma.project.findUnique({
     where: { id: data.projectId, userId },
   });
