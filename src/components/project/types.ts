@@ -65,3 +65,15 @@ export const ProjectSelect = {
 export type ProjectSelect = Prisma.ProjectGetPayload<{
   select: typeof ProjectSelect;
 }>;
+
+export type ProjectWithUrls = Omit<ProjectSelect, 'projectCards'> & {
+  projectCards: Array<
+    Omit<ProjectCardSelect, 'images'> & {
+      images: Array<
+        Omit<ProjectCardSelect['images'][0], 'url'> & {
+          url: string;
+        }
+      >;
+    }
+  >;
+};

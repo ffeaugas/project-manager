@@ -1,22 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z, ZodError } from 'zod';
-import { prisma } from '@/lib/prisma';
+import { ZodError } from 'zod';
 import { getUser } from '@/lib/auth-server';
-import { ProjectSelect } from '@/components/project/types';
-import { s3UploadFile, getS3Url } from '@/lib/s3';
-
-const newProjectCardSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().min(1, 'Description is required'),
-  projectId: z.number().min(1, 'Project ID is required'),
-});
-
-const updateProjectCardSchema = z.object({
-  id: z.number().min(1, 'Id is required'),
-  name: z.string().min(1, 'Name is required').optional(),
-  description: z.string().min(1, 'Description is required').optional(),
-  projectId: z.number().min(1, 'Project ID is required').optional(),
-});
+import {
+  getProjectWithCards,
+  createProjectCard,
+  updateProjectCard,
+  deleteProjectCard,
+} from './service';
+import { parseFormData, toUpdateData } from './utils';
+import {
+  NewProjectCardSchema,
+  UpdateProjectCardSchema,
+  DeleteProjectCardSchema,
+} from './types';
 
 export async function GET(request: NextRequest) {
   const user = await getUser();
@@ -25,37 +21,19 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const { searchParams } = new URL(request.url);
-    const projectId = searchParams.get('projectId');
+    const projectId = request.nextUrl.searchParams.get('projectId');
 
     if (!projectId) {
       return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
     }
 
-    const projectCards = await prisma.project.findUnique({
-      where: {
-        id: parseInt(projectId),
-        userId: user.id,
-      },
-      select: ProjectSelect,
-    });
+    const project = await getProjectWithCards(parseInt(projectId), user.id);
 
-    if (!projectCards) {
+    if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    const projectWithUrls = {
-      ...projectCards,
-      projectCards: projectCards.projectCards.map((card) => ({
-        ...card,
-        images: card.images.map((image) => ({
-          ...image,
-          url: getS3Url(image.storageKey),
-        })),
-      })),
-    };
-
-    return NextResponse.json(projectWithUrls, { status: 200 });
+    return NextResponse.json(project, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -70,75 +48,17 @@ export async function POST(request: NextRequest) {
 
   try {
     const formData = await request.formData();
+    const { name, description, projectId, imageFile } = parseFormData(formData);
 
-    const name = formData.get('name') as string;
-    const description = formData.get('description') as string;
-    const projectId = formData.get('projectId') as string;
-    const imageFile = formData.get('image') as File | null;
-
-    const validatedData = newProjectCardSchema.parse({
+    const validatedData = NewProjectCardSchema.parse({
       name,
       description,
-      projectId: parseInt(projectId),
+      projectId: parseInt(projectId!),
     });
 
-    const project = await prisma.project.findUnique({
-      where: {
-        id: validatedData.projectId,
-        userId: user.id,
-      },
-    });
+    const projectCard = await createProjectCard(validatedData, user.id, imageFile);
 
-    if (!project) {
-      return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-    }
-
-    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large' }, { status: 400 });
-    }
-
-    const newProjectCard = await prisma.projectCard.create({
-      data: {
-        name: validatedData.name,
-        description: validatedData.description,
-        projectId: validatedData.projectId,
-      },
-    });
-
-    if (imageFile) {
-      const storageKey = await s3UploadFile({
-        file: imageFile,
-        prefix: `${user.id}/projects/${projectId}/project-cards/`,
-      });
-
-      await prisma.image.create({
-        data: {
-          size: imageFile.size,
-          mimeType: imageFile.type,
-          originalName: imageFile.name,
-          storageKey: storageKey,
-          projectCardId: newProjectCard.id,
-        },
-      });
-    }
-
-    const completeProjectCard = await prisma.projectCard.findUnique({
-      where: { id: newProjectCard.id },
-      include: {
-        project: true,
-        images: true,
-      },
-    });
-
-    const newProjectCardWithUrls = {
-      ...completeProjectCard,
-      images: completeProjectCard!.images.map((image) => ({
-        ...image,
-        url: getS3Url(image.storageKey),
-      })),
-    };
-
-    return NextResponse.json(newProjectCardWithUrls, { status: 201 });
+    return NextResponse.json(projectCard, { status: 201 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
@@ -146,6 +66,19 @@ export async function POST(request: NextRequest) {
         { status: 400 },
       );
     }
+
+    if (error instanceof Error) {
+      const statusMap: Record<string, number> = {
+        'Project not found': 404,
+        'File too large': 400,
+      };
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: statusMap[error.message] || 500 },
+      );
+    }
+
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -159,126 +92,19 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const formData = await request.formData();
+    const raw = parseFormData(formData);
+    const data = toUpdateData(raw as any);
 
-    const id = formData.get('id') as string;
-    const name = formData.get('name') as string | null;
-    const description = formData.get('description') as string | null;
-    const projectId = formData.get('projectId') as string | null;
-    const imageFile = formData.get('image') as File | null;
+    const validatedData = UpdateProjectCardSchema.parse(data);
 
-    const existingProjectCard = await prisma.projectCard.findUnique({
-      where: {
-        id: parseInt(id),
-      },
-      include: {
-        project: true,
-        images: true,
-      },
-    });
+    const projectCard = await updateProjectCard(
+      validatedData.id,
+      validatedData,
+      user.id,
+      raw.imageFile,
+    );
 
-    if (!existingProjectCard) {
-      return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
-    }
-
-    if (existingProjectCard.project.userId !== user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
-    const validatedData = updateProjectCardSchema.parse({
-      id: parseInt(id),
-      name: name || undefined,
-      description: description || undefined,
-      projectId: projectId ? parseInt(projectId) : undefined,
-    });
-
-    if (validatedData.projectId !== undefined) {
-      const project = await prisma.project.findUnique({
-        where: {
-          id: validatedData.projectId,
-          userId: user.id,
-        },
-      });
-
-      if (!project) {
-        return NextResponse.json({ error: 'Project not found' }, { status: 404 });
-      }
-    }
-
-    if (imageFile && imageFile.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'File too large' }, { status: 400 });
-    }
-
-    const updateData: {
-      name?: string;
-      description?: string;
-      projectId?: number;
-    } = {};
-
-    if (validatedData.name !== undefined) {
-      updateData.name = validatedData.name;
-    }
-
-    if (validatedData.description !== undefined) {
-      updateData.description = validatedData.description;
-    }
-
-    if (validatedData.projectId !== undefined) {
-      updateData.projectId = validatedData.projectId;
-    }
-
-    const updatedProjectCard = await prisma.projectCard.update({
-      where: {
-        id: validatedData.id,
-      },
-      data: updateData,
-      include: {
-        project: true,
-        images: true,
-      },
-    });
-
-    if (imageFile && imageFile.size > 0) {
-      await prisma.image.deleteMany({
-        where: {
-          projectCardId: existingProjectCard.id,
-        },
-      });
-
-      const storageKey = await s3UploadFile({
-        file: imageFile,
-        prefix: `${user.id}/projects/${validatedData.projectId || existingProjectCard.projectId}/project-cards/`,
-      });
-
-      await prisma.image.create({
-        data: {
-          size: imageFile.size,
-          mimeType: imageFile.type,
-          originalName: imageFile.name,
-          storageKey: storageKey,
-          projectCardId: existingProjectCard.id,
-        },
-      });
-    }
-
-    const finalProjectCard = await prisma.projectCard.findUnique({
-      where: {
-        id: validatedData.id,
-      },
-      include: {
-        project: true,
-        images: true,
-      },
-    });
-
-    const finalProjectCardWithUrls = {
-      ...finalProjectCard,
-      images: finalProjectCard!.images.map((image) => ({
-        ...image,
-        url: getS3Url(image.storageKey),
-      })),
-    };
-
-    return NextResponse.json(finalProjectCardWithUrls, { status: 200 });
+    return NextResponse.json(projectCard, { status: 200 });
   } catch (error) {
     if (error instanceof ZodError) {
       return NextResponse.json(
@@ -286,6 +112,21 @@ export async function PATCH(request: NextRequest) {
         { status: 400 },
       );
     }
+
+    if (error instanceof Error) {
+      const statusMap: Record<string, number> = {
+        'Project card not found': 404,
+        'Project not found': 404,
+        Unauthorized: 403,
+        'File too large': 400,
+      };
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: statusMap[error.message] || 500 },
+      );
+    }
+
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -299,40 +140,14 @@ export async function DELETE(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const validatedData = z
-      .object({
-        id: z.number().min(1, 'Id is required'),
-      })
-      .parse(body);
+    const validatedData = DeleteProjectCardSchema.parse(body);
 
-    const existingProjectCard = await prisma.projectCard.findUnique({
-      where: {
-        id: validatedData.id,
-      },
-      include: {
-        project: true,
-        images: true,
-      },
-    });
-
-    if (!existingProjectCard) {
-      return NextResponse.json({ error: 'Project card not found' }, { status: 404 });
-    }
-
-    if (existingProjectCard.project.userId !== user.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-    }
-
-    await prisma.projectCard.delete({
-      where: {
-        id: validatedData.id,
-      },
-    });
+    const result = await deleteProjectCard(validatedData.id, user.id);
 
     return NextResponse.json(
       {
         message: 'Project card and associated images deleted successfully',
-        deletedImagesCount: existingProjectCard.images.length,
+        deletedImagesCount: result.deletedImagesCount,
       },
       { status: 200 },
     );
@@ -343,6 +158,19 @@ export async function DELETE(request: NextRequest) {
         { status: 400 },
       );
     }
+
+    if (error instanceof Error) {
+      const statusMap: Record<string, number> = {
+        'Project card not found': 404,
+        Unauthorized: 403,
+      };
+
+      return NextResponse.json(
+        { error: error.message },
+        { status: statusMap[error.message] || 500 },
+      );
+    }
+
     console.error(error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

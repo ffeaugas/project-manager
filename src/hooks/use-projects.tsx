@@ -2,14 +2,14 @@
 
 import {
   NewProjectCardType,
-  ProjectCardSelect,
   ProjectSelect,
+  ProjectWithUrls,
 } from '@/components/project/types';
 import { useEffect, useState } from 'react';
 
 export const useProjects = (id?: string) => {
   const [projects, setProjects] = useState<ProjectSelect[]>([]);
-  const [project, setProject] = useState<ProjectSelect | null>(null);
+  const [project, setProject] = useState<ProjectWithUrls | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

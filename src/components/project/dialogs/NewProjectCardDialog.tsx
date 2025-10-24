@@ -14,11 +14,7 @@ import { Label } from '../../ui/label';
 import { Dropzone } from '../../ui/dropzone';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  newProjectCardSchema,
-  type NewProjectCardType,
-  type ProjectCardSelect,
-} from '../types';
+import { newProjectCardSchema, ProjectWithUrls, type NewProjectCardType } from '../types';
 import { useState } from 'react';
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
@@ -34,7 +30,7 @@ interface INewProjectCardDialogProps {
   ) => Promise<boolean>;
   deleteItem?: (id: number, type: EntityType) => Promise<boolean>;
   children: React.ReactNode;
-  data?: ProjectCardSelect | null;
+  data?: ProjectWithUrls['projectCards'][0] | null;
   projectId?: number;
 }
 
@@ -118,7 +114,7 @@ const NewProjectCardDialog = ({
                   onFileSelect={handleFileSelect}
                   accept="image/*"
                   maxSize={5}
-                  value={data?.imageUrl || imageFile}
+                  value={data?.images?.[0]?.url || imageFile}
                 />
               </div>
             </div>
