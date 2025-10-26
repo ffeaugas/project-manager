@@ -34,11 +34,6 @@ export const useProjects = (id?: string) => {
       formData.append('id', options.projectCardId.toString());
     }
 
-    console.log('FormData contents:');
-    for (const [key, value] of formData.entries()) {
-      console.log(key, value);
-    }
-
     const response = await fetch(`/api/projects/cards`, {
       method,
       body: formData,
@@ -62,6 +57,17 @@ export const useProjects = (id?: string) => {
 
     if (!response.ok) throw new Error('Failed to delete project card');
     await fetchProject();
+    return true;
+  };
+
+  const deleteProject = async (id: number) => {
+    const response = await fetch(`/api/projects`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    });
+    if (!response.ok) throw new Error('Failed to delete project');
+    await fetchProjects();
     return true;
   };
 
@@ -125,6 +131,7 @@ export const useProjects = (id?: string) => {
     isLoading,
     submitProjectCard,
     deleteProjectCard,
+    deleteProject,
     submitProject,
     error,
   };

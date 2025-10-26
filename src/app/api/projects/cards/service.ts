@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { s3UploadFile, getS3Url } from '@/lib/s3';
+import { s3UploadFile, s3DeleteFolder } from '@/lib/s3';
 import { ProjectSelect } from '@/components/project/types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
@@ -18,7 +18,7 @@ export async function getProjectWithCards(projectId: number, userId: string) {
       ...card,
       images: card.images.map((image) => ({
         ...image,
-        url: getS3Url(image.storageKey),
+        url: `${process.env.R2_URL}/${image.storageKey}`,
       })),
     })),
   };
@@ -52,7 +52,7 @@ export async function createProjectCard(
   if (imageFile) {
     const storageKey = await s3UploadFile({
       file: imageFile,
-      prefix: `${userId}/projects/${data.projectId}/project-cards/`,
+      prefix: `${userId}/projects/${data.projectId}/project-cards/${projectCard.id}/`,
     });
 
     await prisma.image.create({
@@ -114,7 +114,7 @@ export async function updateProjectCard(
 
     const storageKey = await s3UploadFile({
       file: imageFile,
-      prefix: `${userId}/projects/${data.projectId || existingCard.projectId}/project-cards/`,
+      prefix: `${userId}/projects/${data.projectId || existingCard.projectId}/project-cards/${id}/`,
     });
 
     await prisma.image.create({
@@ -145,6 +145,10 @@ export async function deleteProjectCard(id: number, userId: string) {
     throw new Error('Unauthorized');
   }
 
+  await s3DeleteFolder(
+    `${userId}/projects/${existingCard.projectId}/project-cards/${id}/`,
+  );
+
   await prisma.projectCard.delete({
     where: { id },
   });
@@ -164,7 +168,7 @@ async function getProjectCardWithUrls(id: number) {
     ...card,
     images: card.images.map((image) => ({
       ...image,
-      url: getS3Url(image.storageKey),
+      url: `${process.env.R2_URL}/${image.storageKey}`,
     })),
   };
 }

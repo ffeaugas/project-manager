@@ -25,10 +25,6 @@ export async function POST(request: NextRequest) {
     const originalOverOrder = overTask.order;
     const sameColumn = activeTask.columnId === overTask.columnId;
 
-    console.log('originalActiveOrder', originalActiveOrder);
-    console.log('originalOverOrder', originalOverOrder);
-    console.log('sameColumn', sameColumn);
-
     if (sameColumn) {
       // Moving within the same column
       if (originalOverOrder > originalActiveOrder) {

@@ -8,15 +8,22 @@ interface IProjectCardProps {
     bodyData: NewProjectCardType,
     options?: { projectCardId?: number; projectId?: number },
   ) => Promise<boolean>;
+  deleteProjectCard: (id: number) => Promise<boolean>;
   projectId: number;
 }
 
-const ProjectCard = ({ data, submitProjectCard, projectId }: IProjectCardProps) => {
+const ProjectCard = ({
+  data,
+  submitProjectCard,
+  deleteProjectCard,
+  projectId,
+}: IProjectCardProps) => {
   const firstImage = data.images?.[0];
 
   return (
     <NewProjectCardDialog
       submitProjectCard={submitProjectCard}
+      deleteProjectCard={deleteProjectCard}
       projectId={projectId}
       data={data}
     >

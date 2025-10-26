@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
 import { getUser } from '@/lib/auth-server';
+import { s3DeleteFolder } from '@/lib/s3';
 
 const newProjectSchema = z.object({
   name: z.string().min(1, 'Name is required'),
@@ -137,11 +138,16 @@ export async function DELETE(request: NextRequest) {
         id: validatedData.id,
         userId: user.id,
       },
+      select: {
+        id: true,
+      },
     });
 
     if (!existingProject) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
+
+    await s3DeleteFolder(`${user.id}/projects/${validatedData.id}/`);
 
     await prisma.project.delete({
       where: {

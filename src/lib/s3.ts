@@ -1,4 +1,11 @@
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  PutObjectCommand,
+  DeleteObjectCommand,
+  ListObjectsV2Command,
+  ListObjectsV2CommandOutput,
+  DeleteObjectsCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 
 export const s3 = new S3Client({
   region: 'auto',
@@ -29,6 +36,46 @@ export async function s3UploadFile(params: { file: File; prefix: string }) {
   return key;
 }
 
-export function getS3Url(storageKey: string) {
-  return `${process.env.R2_URL}/${process.env.AWS_S3_BUCKET_NAME}/${storageKey}`;
+export async function s3DeleteFile(storageKey: string) {
+  const deleteParams = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME || '',
+    Key: storageKey,
+  };
+
+  const command = new DeleteObjectCommand(deleteParams);
+  await s3.send(command);
+}
+
+export async function s3DeleteFolder(folder: string) {
+  let continuationToken: string | undefined;
+
+  do {
+    const command = new ListObjectsV2Command({
+      Bucket: process.env.AWS_S3_BUCKET_NAME || '',
+      Prefix: folder,
+      ContinuationToken: continuationToken,
+    });
+
+    const listResponse: ListObjectsV2CommandOutput = (await s3.send(
+      command,
+    )) as ListObjectsV2CommandOutput;
+
+    if (listResponse.Contents && listResponse.Contents.length > 0) {
+      const objectsToDelete = listResponse.Contents.filter(
+        (obj) => obj.Key !== undefined,
+      ).map((obj) => ({ Key: obj.Key! }));
+
+      const deleteCommand = new DeleteObjectsCommand({
+        Bucket: process.env.AWS_S3_BUCKET_NAME || '',
+        Delete: {
+          Objects: objectsToDelete,
+          Quiet: true,
+        },
+      });
+
+      await s3.send(deleteCommand);
+    }
+
+    continuationToken = listResponse.NextContinuationToken;
+  } while (continuationToken);
 }

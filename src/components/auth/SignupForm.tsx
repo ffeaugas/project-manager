@@ -37,7 +37,6 @@ export default function SignupForm() {
 
   function onSubmit(values: SignupFormValues) {
     setIsLoading(true);
-    console.log(values);
     signUp.email(
       {
         name: values.username,

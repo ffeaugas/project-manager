@@ -12,8 +12,14 @@ interface IProjectBodyProps {
 }
 
 const ProjectBody = ({ projectId }: IProjectBodyProps) => {
-  const { project, isLoading, submitProjectCard, deleteProjectCard, error } =
-    useProjects(projectId);
+  const {
+    project,
+    isLoading,
+    submitProjectCard,
+    deleteProject,
+    deleteProjectCard,
+    error,
+  } = useProjects(projectId);
 
   if (error) {
     return (
@@ -23,21 +29,23 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
     );
   }
 
+  if (isLoading || !project) {
+    return <Spinner size="large" />;
+  }
+
   return (
     <div className="flex flex-col h-full max-h-screen">
       <ProjectHeader
         submitProjectCard={submitProjectCard}
+        project={project}
+        deleteProject={deleteProject}
+      />
+      <CardList
+        cards={project.projectCards}
+        submitProjectCard={submitProjectCard}
+        deleteProjectCard={deleteProjectCard}
         projectId={parseInt(projectId)}
       />
-      {isLoading || !project ? (
-        <Spinner size="large" />
-      ) : (
-        <CardList
-          cards={project.projectCards}
-          submitProjectCard={submitProjectCard}
-          projectId={parseInt(projectId)}
-        />
-      )}
     </div>
   );
 };
@@ -50,10 +58,16 @@ interface ICardListProps {
     bodyData: NewProjectCardType,
     options?: { projectCardId?: number; projectId?: number },
   ) => Promise<boolean>;
+  deleteProjectCard: (id: number) => Promise<boolean>;
   projectId: number;
 }
 
-const CardList = ({ cards = [], submitProjectCard, projectId }: ICardListProps) => {
+const CardList = ({
+  cards = [],
+  submitProjectCard,
+  deleteProjectCard,
+  projectId,
+}: ICardListProps) => {
   return (
     <div className="mx-auto flex content-center justify-center w-full">
       <div className="flex flex-1 overflow-auto gap-4 p-4 flex-wrap">
@@ -67,6 +81,7 @@ const CardList = ({ cards = [], submitProjectCard, projectId }: ICardListProps) 
                 key={card.id}
                 data={card}
                 submitProjectCard={submitProjectCard}
+                deleteProjectCard={deleteProjectCard}
                 projectId={projectId}
               />
             ))
