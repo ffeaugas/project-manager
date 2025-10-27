@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   Card,
@@ -10,7 +11,7 @@ import {
 } from '@/components/ui/card';
 import { Mail } from 'lucide-react';
 
-const EmailVerificationPage = () => {
+const EmailVerificationContent = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
 
@@ -35,6 +36,14 @@ const EmailVerificationPage = () => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+const EmailVerificationPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailVerificationContent />
+    </Suspense>
   );
 };
 

@@ -47,7 +47,7 @@ const ResetPasswordEmailTemplate = ({ name, url }: IResetPasswordEmailTemplatePr
         </div>
 
         <p style={{ fontSize: '14px', marginBottom: '20px', color: '#666666' }}>
-          If the button doesn't work, copy and paste this link into your browser:
+          If the button doesn&apos;t work, copy and paste this link into your browser:
         </p>
 
         <p
@@ -80,7 +80,7 @@ const ResetPasswordEmailTemplate = ({ name, url }: IResetPasswordEmailTemplatePr
             }}
           >
             <li>This link will expire in 1 hour</li>
-            <li>If you didn't request this, please ignore this email</li>
+            <li>If you didn&apos;t request this, please ignore this email</li>
             <li>Never share this link with anyone</li>
           </ul>
         </div>

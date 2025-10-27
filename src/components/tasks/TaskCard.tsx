@@ -1,4 +1,3 @@
-import { useDraggable } from '@dnd-kit/core';
 import NewTaskDialog from './dialogs/NewTaskDialog';
 import { TaskSelect, NewTaskType, EntityType } from './types';
 import { cn } from '@/lib/utils';

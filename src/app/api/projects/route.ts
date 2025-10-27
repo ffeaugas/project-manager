@@ -15,7 +15,7 @@ const updateProjectSchema = z.object({
   description: z.string().min(1, 'Description is required').optional(),
 });
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const user = await getUser();
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

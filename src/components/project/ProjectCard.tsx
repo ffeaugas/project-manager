@@ -1,5 +1,5 @@
 import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
-import { NewProjectCardType, ProjectCardSelect, ProjectWithUrls } from './types';
+import { NewProjectCardType, ProjectWithUrls } from './types';
 import Image from 'next/image';
 
 interface IProjectCardProps {

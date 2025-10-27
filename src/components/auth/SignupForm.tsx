@@ -15,7 +15,6 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { signIn, signUp } from '@/lib/auth-client';
-import { useRouter } from 'next/navigation';
 import { GithubIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Spinner } from '../ui/spinner';
@@ -24,7 +23,6 @@ type ProviderEnum = Parameters<typeof signIn.social>[0]['provider'];
 
 export default function SignupForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(SignupFormSchema),
@@ -44,7 +42,7 @@ export default function SignupForm() {
         password: values.password,
       },
       {
-        onSuccess: (response) => {
+        onSuccess: () => {
           window.location.href = '/auth/email-verification';
         },
         onError: (ctx) => {

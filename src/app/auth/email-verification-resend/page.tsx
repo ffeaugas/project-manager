@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import {
   Card,
   CardContent,
@@ -12,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { sendVerificationEmail } from '@/lib/auth-client';
 
-const EmailVerificationResendPage = () => {
+const EmailVerificationResendContent = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get('email');
   const router = useRouter();
@@ -50,6 +51,14 @@ const EmailVerificationResendPage = () => {
         </CardContent>
       </Card>
     </div>
+  );
+};
+
+const EmailVerificationResendPage = () => {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EmailVerificationResendContent />
+    </Suspense>
   );
 };
 

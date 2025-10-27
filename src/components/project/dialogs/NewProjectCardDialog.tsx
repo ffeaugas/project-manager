@@ -18,7 +18,6 @@ import { newProjectCardSchema, ProjectWithUrls, type NewProjectCardType } from '
 import { useState } from 'react';
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
-import type { EntityType } from '@/components/tasks/types';
 
 interface INewProjectCardDialogProps {
   submitProjectCard: (
@@ -48,7 +47,6 @@ const NewProjectCardDialog = ({
     handleSubmit,
     reset,
     setValue,
-    watch,
     formState: { errors },
   } = useForm<NewProjectCardType>({
     defaultValues: {
@@ -58,7 +56,6 @@ const NewProjectCardDialog = ({
     },
     resolver: zodResolver(newProjectCardSchema),
   });
-  const image = watch('image');
 
   const handleFileSelect = (file: File | null) => {
     setImageFile(file);

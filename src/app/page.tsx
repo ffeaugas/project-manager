@@ -10,7 +10,7 @@ const HomePage = () => {
           <Link href="/auth/signin">Se connecter</Link>
         </Button>
         <Button>
-          <Link href="/auth/signup">S'inscrire</Link>
+          <Link href="/auth/signup">S&apos;inscrire</Link>
         </Button>
       </div>
     </div>

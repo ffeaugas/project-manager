@@ -1,5 +1,4 @@
 import ProjectBody from '@/components/project/ProjectBody';
-import TaskBody from '@/components/tasks/TaskBody';
 
 interface ProjectProps {
   params: Promise<{

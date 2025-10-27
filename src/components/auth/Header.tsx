@@ -6,11 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@radix-ui/react-dropdown-menu';
-import { Power, PowerOff, User as UserIcon } from 'lucide-react';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { signOut } from '@/lib/auth-client';
+import { Power, User as UserIcon } from 'lucide-react';
 import SignOutButton from './AuthButton';
 import { User } from 'better-auth';
 

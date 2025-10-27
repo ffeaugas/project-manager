@@ -8,7 +8,6 @@ import {
   DropdownMenuItem,
 } from '../ui/dropdown-menu';
 import { GripVertical, Trash } from 'lucide-react';
-import Link from 'next/link';
 import ConfirmDialog from '../utils/ConfirmDialog';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';

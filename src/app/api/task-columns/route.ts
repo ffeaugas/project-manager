@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { getUser } from '@/lib/auth-server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const user = await getUser();
 

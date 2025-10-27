@@ -2,7 +2,6 @@
 
 import { signOut } from '@/lib/auth-client';
 import { Button } from '../ui/button';
-import { redirect } from 'next/navigation';
 import { PowerOff } from 'lucide-react';
 
 const SignOutButton = () => {

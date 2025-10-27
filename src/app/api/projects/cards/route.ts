@@ -93,7 +93,7 @@ export async function PATCH(request: NextRequest) {
   try {
     const formData = await request.formData();
     const raw = parseFormData(formData);
-    const data = toUpdateData(raw as any);
+    const data = toUpdateData(raw);
 
     const validatedData = UpdateProjectCardSchema.parse(data);
 

@@ -5,7 +5,7 @@ import {
   ProjectSelect,
   ProjectWithUrls,
 } from '@/components/project/types';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const useProjects = (id?: string) => {
   const [projects, setProjects] = useState<ProjectSelect[]>([]);
@@ -94,7 +94,7 @@ export const useProjects = (id?: string) => {
     }
   };
 
-  const fetchProject = async () => {
+  const fetchProject = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await fetch(`/api/projects/cards?projectId=${id}`);
@@ -110,20 +110,20 @@ export const useProjects = (id?: string) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [id]);
 
-  const fetchProjects = async () => {
+  const fetchProjects = useCallback(async () => {
     const response = await fetch('/api/projects');
     const data = await response.json();
     setProjects(data);
-  };
+  }, []);
 
   useEffect(() => {
     fetchProjects();
     if (id) {
       fetchProject();
     }
-  }, [id]);
+  }, [id, fetchProject, fetchProjects]);
 
   return {
     project,

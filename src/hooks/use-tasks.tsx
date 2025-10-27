@@ -10,7 +10,7 @@ import {
 import { DragEndEvent, DragStartEvent, Over, Active, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useRouter } from 'next/navigation';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export const useTasks = () => {
   const [columns, setColumns] = useState<TaskColumnWithTasks[]>([]);

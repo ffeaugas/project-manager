@@ -9,13 +9,18 @@ export function parseFormData(formData: FormData) {
 }
 
 export function toUpdateData(data: {
-  id: string;
+  id: string | null;
   name: string | null;
   description: string | null;
   projectId: string | null;
-}) {
+}): {
+  id: number | undefined;
+  name: string | undefined;
+  description: string | undefined;
+  projectId: number | undefined;
+} {
   return {
-    id: parseInt(data.id),
+    id: data.id ? parseInt(data.id) : undefined,
     name: data.name || undefined,
     description: data.description || undefined,
     projectId: data.projectId ? parseInt(data.projectId) : undefined,

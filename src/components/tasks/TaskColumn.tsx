@@ -46,7 +46,6 @@ interface ITaskColumnProps {
 
 const TaskColumn = ({
   data,
-  tasks,
   submitTask,
   submitColumn,
   deleteItem,
@@ -118,8 +117,10 @@ interface IColumnHeaderProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: number, type: EntityType) => Promise<boolean>;
-  dragAttributes?: any;
-  dragListeners?: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dragAttributes?: Record<string, any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  dragListeners?: Record<string, any>;
 }
 
 const ColumnHeader = ({

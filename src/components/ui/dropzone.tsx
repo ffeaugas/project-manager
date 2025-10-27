@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { cn } from '@/lib/utils';
 import { Upload, X } from 'lucide-react';
+import Image from 'next/image';
 
 export interface DropzoneProps {
   onFileSelect: (file: File | null) => void;
@@ -121,7 +122,9 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
         >
           {preview ? (
             <div className="relative group">
-              <img
+              <Image
+                width={100}
+                height={100}
                 src={preview}
                 alt="Preview"
                 className="w-full h-48 object-cover rounded-md"
