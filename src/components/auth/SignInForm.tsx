@@ -71,10 +71,10 @@ const SignInForm = () => {
   }
 
   return (
-    <div className="space-y-6 w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl flex flex-col justify-center items-center">
+    <div className="space-y-6 w-full max-w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl flex flex-col justify-center items-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
-          <h1 className="text-xl font-bold text-center">Sign In</h1>
+          <h1 className="text-lg md:text-xl font-bold text-center">Sign In</h1>
 
           <FormField
             control={form.control}

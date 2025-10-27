@@ -94,7 +94,7 @@ const NewTaskDialog = ({
               />
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex flex-row justify-end gap-2">
             {data && deleteItem && archiveItem && (
               <>
                 <ConfirmDialog

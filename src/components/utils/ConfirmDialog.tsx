@@ -55,7 +55,7 @@ const ConfirmDialog = ({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
+        <DialogFooter className="flex flex-row justify-end gap-2">
           <Button variant="secondary" onClick={handleCancel}>
             Cancel
           </Button>

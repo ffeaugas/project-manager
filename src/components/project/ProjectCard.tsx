@@ -27,23 +27,23 @@ const ProjectCard = ({
       projectId={projectId}
       data={data}
     >
-      <div className="bg-zinc-800 rounded-md w-[300px] h-[300px] flex flex-col overflow-hidden justify-start cursor-pointer">
+      <div className="bg-zinc-800 rounded-lg w-full md:w-[280px] h-[280px] md:h-[320px] flex flex-col overflow-hidden justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg">
         {firstImage && (
           <div className="w-full h-[70%] overflow-hidden relative">
             <Image
               src={firstImage.url}
               alt={data.name}
               fill
-              className="object-cover"
-              sizes="300px"
+              className="object-cover transition-transform hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 280px"
             />
           </div>
         )}
-        <div className="flex flex-col gap-1 p-2">
-          <p className="text-white text-md font-bold line-clamp-2 break-words">
+        <div className="flex flex-col gap-2 p-3 flex-1">
+          <p className="text-white text-sm md:text-base font-bold line-clamp-2 break-words">
             {data.name}
           </p>
-          <p className="text-slate-400 text-sm line-clamp-3 break-words">
+          <p className="text-slate-400 text-xs md:text-sm line-clamp-2 md:line-clamp-3 break-words">
             {data.description}
           </p>
         </div>

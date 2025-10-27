@@ -16,13 +16,23 @@ import {
 import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from './types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const TaskBody = () => {
+  const isMobile = useIsMobile();
+
+  if (isMobile) {
+    return (
+      <div className="flex flex-col h-screen max-h-screen w-full">
+        <KanbanBoard />
+      </div>
+    );
+  }
   return (
     <div className="flex flex-col h-screen max-h-screen w-full">
       <div className="flex flex-row h-full">
         <KanbanBoard />
-        <div className="min-w-[300px] flex flex-col border-l-[1px] border-zinc-700"></div>
+        <div className="min-w-[300px] flex flex-col border-l-[1px] border-zinc-700" />
       </div>
     </div>
   );
@@ -59,10 +69,10 @@ const KanbanBoard = () => {
   if (isLoading) return <Spinner size="large" />;
 
   return (
-    <div className="flex flex-col h-full flex-1 max-w-[75%]">
+    <div className="flex flex-col h-full flex-1 max-w-full md:max-w-[75%]">
       <TaskHeader submitTask={submitTask} />
-      <div className="overflow-y-scroll">
-        <div className="flex flex-row gap-3 p-4 min-w-fit">
+      <div className="overflow-y-scroll overflow-x-auto">
+        <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
           <DndContext
             sensors={sensors}
             onDragStart={handleDragStart}
@@ -106,7 +116,7 @@ const KanbanBoard = () => {
           <NewColumnDialog submitColumn={submitColumn}>
             <Button
               variant="outline"
-              className="flex flex-col justify-center w-[300px] h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-xl m-1 mt-[3.25rem]"
+              className="flex flex-col justify-center w-[250px] md:w-[300px] h-[400px] md:h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-xl m-1 mt-[3.25rem]"
             >
               Add Column
             </Button>

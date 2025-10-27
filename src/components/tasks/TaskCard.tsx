@@ -53,19 +53,21 @@ const TaskCard = ({ data, submitTask, deleteItem, archiveItem }: ITaskCardProps)
         {...attributes}
         data-task-card
         className={cn(
-          'flex flex-col rounded-md gap-2 px-2 py-2 bg-zinc-800 min-h-[100px] max-h-[200px] shadow-xl cursor-pointer transition-opacity justify-between',
+          'flex flex-col rounded-md gap-2 px-2 py-2 bg-zinc-800 min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-xl cursor-pointer transition-opacity justify-between',
           isDragging && 'opacity-20',
         )}
       >
         <div className="flex flex-col px-2">
-          <p className="text-sm font-bold text-white break-words line-clamp-2">
+          <p className="text-xs md:text-sm font-bold text-white break-words line-clamp-2">
             {data.title}
           </p>
-          <p className="text-sm text-slate-100 break-words line-clamp-3">
+          <p className="text-xs md:text-sm text-slate-100 break-words line-clamp-2 md:line-clamp-3">
             {data.description}
           </p>
         </div>
-        <p className="text-xs text-slate-400 text-right">{daysAgo} d ago</p>
+        <p className="text-[10px] md:text-xs text-slate-400 text-right">
+          {daysAgo} d ago
+        </p>
       </div>
     </NewTaskDialog>
   );

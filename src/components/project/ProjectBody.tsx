@@ -69,8 +69,8 @@ const CardList = ({
   projectId,
 }: ICardListProps) => {
   return (
-    <div className="mx-auto flex content-center justify-center w-full">
-      <div className="flex flex-1 overflow-auto gap-4 p-4 flex-wrap">
+    <div className="w-full overflow-auto">
+      <div className="flex flex-col md:flex-row md:flex-wrap gap-3 md:gap-4 p-3 md:p-6 justify-center md:justify-start">
         {cards.length > 0 ? (
           cards
             .sort(
@@ -104,10 +104,7 @@ interface IEmptyCardProps {
 const EmptyCard = ({ submitProjectCard, projectId }: IEmptyCardProps) => {
   return (
     <NewProjectCardDialog submitProjectCard={submitProjectCard} projectId={projectId}>
-      <div
-        className="rounded-md w-[300px] h-[300px] flex flex-col justify-center items-center overflow-hidden
-      bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-lg cursor-pointer"
-      >
+      <div className="rounded-lg w-full md:w-[280px] h-[280px] md:h-[320px] flex flex-col justify-center items-center overflow-hidden bg-transparent border-dashed border-2 border-zinc-700 hover:border-zinc-600 p-4 text-zinc-600 text-sm md:text-lg cursor-pointer transition-colors">
         <p className="text-zinc-400">ajouter une carte</p>
       </div>
     </NewProjectCardDialog>

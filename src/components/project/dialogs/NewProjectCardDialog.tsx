@@ -121,7 +121,7 @@ const NewProjectCardDialog = ({
             )}
             {errors.image && <span className="text-red-500">{errors.image.message}</span>}
           </div>
-          <DialogFooter>
+          <DialogFooter className="flex flex-row justify-end gap-2">
             {data && deleteProjectCard && (
               <ConfirmDialog
                 id={data.id}

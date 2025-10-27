@@ -69,7 +69,7 @@ const TaskColumn = ({
     <div
       ref={setNodeRef}
       className={cn(
-        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md bg-zinc-900',
+        'flex flex-col justify-start-start gap-4 w-[250px] md:w-[300px] min-h-[400px] p-2 rounded-md bg-zinc-900 flex-shrink-0',
         isDragging && 'opacity-20',
       )}
       style={style}
@@ -96,7 +96,7 @@ const TaskColumn = ({
       <NewTaskDialog submitTask={submitTask} columnId={data.id}>
         <Button
           variant="outline"
-          className="flex flex-col justify-center w-full h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-sm"
+          className="flex flex-col justify-center w-full h-[80px] md:h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-xs md:text-sm"
         >
           Click to add a new task
         </Button>
@@ -139,11 +139,12 @@ const ColumnHeader = ({
     >
       <div className="flex flex-row gap-4 items-center">
         <div
-          className="size-4 rounded-full"
+          className="size-4 rounded-full flex-shrink-0"
           style={{ backgroundColor: data.color }}
         ></div>
-        <p className="text-md font-semibold text-zinc-500">
-          {data.name} <b className="font-normal text-zinc-600 text-sm">({nbTasks})</b>
+        <p className="text-sm md:text-md font-semibold text-zinc-500 truncate">
+          {data.name}{' '}
+          <b className="font-normal text-zinc-600 text-xs md:text-sm">({nbTasks})</b>
         </p>
       </div>
       <ColDropdownMenu data={data} submitColumn={submitColumn} deleteItem={deleteItem} />
