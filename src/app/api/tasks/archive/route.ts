@@ -20,7 +20,6 @@ export async function PATCH(request: NextRequest) {
 
     if (!validatedData.id) throw new Error('Id is required');
 
-    // First check if the task belongs to the user
     const task = await prisma.task.findFirst({
       where: {
         id: validatedData.id,
