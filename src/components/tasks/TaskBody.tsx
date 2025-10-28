@@ -15,7 +15,7 @@ import {
 } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
-import { TaskColumnWithTasks } from './types';
+import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const TaskBody = () => {

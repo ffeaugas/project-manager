@@ -13,7 +13,12 @@ import { DialogFooter, DialogHeader } from '../../ui/dialog';
 import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { EntityType, newTaskSchema, NewTaskType, TaskSelect } from '../types';
+import {
+  EntityType,
+  newTaskSchema,
+  NewTaskType,
+  TaskSelect,
+} from '../../../app/api/columns/tasks/types';
 import { useState } from 'react';
 import { Archive, Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
@@ -23,15 +28,15 @@ interface INewTaskDialogProps {
   submitTask: (
     bodyData: NewTaskType,
     options?: {
-      taskId?: number;
-      columnId?: number | null;
+      taskId?: string;
+      columnId?: string | null;
     },
   ) => Promise<boolean>;
-  deleteItem?: (id: number, type: EntityType) => Promise<boolean>;
-  archiveItem?: (id: number, type: EntityType) => Promise<boolean>;
+  deleteItem?: (id: string, type: EntityType) => Promise<boolean>;
+  archiveItem?: (id: string, type: EntityType) => Promise<boolean>;
   children: React.ReactNode;
   data?: TaskSelect | null;
-  columnId?: number | null;
+  columnId?: string | null;
 }
 
 const NewTaskDialog = ({

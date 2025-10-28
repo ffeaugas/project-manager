@@ -1,5 +1,5 @@
 import NewTaskDialog from './dialogs/NewTaskDialog';
-import { TaskSelect, NewTaskType, EntityType } from './types';
+import { TaskSelect, NewTaskType, EntityType } from '../../app/api/columns/tasks/types';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
@@ -9,13 +9,13 @@ interface ITaskCardProps {
   submitTask: (
     bodyData: NewTaskType,
     options?: {
-      taskId?: number;
-      columnId?: number | null;
+      taskId?: string;
+      columnId?: string | null;
       pageName?: string | null;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
-  archiveItem: (id: number, type: EntityType) => Promise<boolean>;
+  deleteItem: (id: string, type: EntityType) => Promise<boolean>;
+  archiveItem: (id: string, type: EntityType) => Promise<boolean>;
 }
 
 const TaskCard = ({ data, submitTask, deleteItem, archiveItem }: ITaskCardProps) => {

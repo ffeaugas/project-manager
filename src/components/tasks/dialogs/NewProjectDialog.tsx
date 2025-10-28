@@ -14,9 +14,9 @@ import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { newProjectSchema, NewProjectType } from '../types';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { newProjectSchema, NewProjectType } from '@/components/project/types';
 
 interface INewProjectDialogProps {
   data?: { id: number; name: string; description: string } | null;

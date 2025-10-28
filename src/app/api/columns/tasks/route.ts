@@ -1,4 +1,4 @@
-import { newTaskSchema } from '@/components/tasks/types';
+import { newTaskSchema } from '@/app/api/columns/tasks/types';
 import { NextRequest, NextResponse } from 'next/server';
 import { z, ZodError } from 'zod';
 import { prisma } from '@/lib/prisma';
@@ -15,36 +15,14 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const validatedData = newTaskSchema.parse(body);
 
-    if (!validatedData.columnId) {
-      return NextResponse.json({ error: 'Column ID is required' }, { status: 400 });
-    }
-
-    const column = await prisma.taskColumn.findFirst({
-      where: {
-        id: validatedData.columnId,
-        userId: user.id, // Ensure user can only create tasks in their own columns
-      },
-    });
-
-    if (!column) throw new Error('Column not found');
-
-    const maxOrder = await prisma.task.aggregate({
-      where: {
-        columnId: column.id,
-      },
-      _max: {
-        order: true,
-      },
-    });
-
-    const newOrder = (maxOrder._max.order || 0) + 1;
-
     await prisma.task.create({
       data: {
+        id: validatedData.id,
         title: validatedData.title,
         description: validatedData.description,
         columnId: column.id,
         order: newOrder,
+        userId: user.id,
       },
     });
 
@@ -71,7 +49,7 @@ export async function PATCH(request: NextRequest) {
     const updateData: {
       title: string;
       description: string;
-      columnId?: number;
+      columnId?: string;
     } = {
       title: validatedData.title,
       description: validatedData.description,
@@ -106,7 +84,7 @@ export async function DELETE(request: NextRequest) {
     const body = await request.json();
     const validatedData = z
       .object({
-        id: z.number().min(1, 'Id is required'),
+        id: z.string().min(1, 'Id is required'),
       })
       .parse(body);
 

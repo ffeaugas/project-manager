@@ -1,6 +1,20 @@
 import { Prisma } from '@prisma/client';
 import { z, ZodType } from 'zod';
 
+interface NewProjectForm {
+  id?: number;
+  name: string;
+  description: string;
+}
+
+export const newProjectSchema: ZodType<NewProjectForm> = z.object({
+  id: z.number().optional(),
+  name: z.string().min(1, 'Name is required'),
+  description: z.string().min(1, 'Description is required'),
+});
+
+export type NewProjectType = z.infer<typeof newProjectSchema>;
+
 interface NewProjectCardForm {
   id?: number;
   name: string;

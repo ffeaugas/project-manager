@@ -14,7 +14,7 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const validatedData = z
       .object({
-        id: z.number().min(1, 'Id is required'),
+        id: z.string().min(1, 'Id is required'),
       })
       .parse(body);
 

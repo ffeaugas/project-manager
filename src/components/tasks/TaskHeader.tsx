@@ -1,6 +1,4 @@
 import { Button } from '../ui/button';
-import NewTaskDialog from './dialogs/NewTaskDialog';
-import { NewTaskType } from './types';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,24 +8,9 @@ import {
 import { Archive, GripVertical } from 'lucide-react';
 import Link from 'next/link';
 
-interface ITaskHeaderProps {
-  submitTask: (
-    bodyData: NewTaskType,
-    options?: {
-      taskId?: number;
-      columnId?: number | null;
-    },
-  ) => Promise<boolean>;
-}
-
-const TaskHeader = ({ submitTask }: ITaskHeaderProps) => {
+const TaskHeader = () => {
   return (
     <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
-      <NewTaskDialog submitTask={submitTask}>
-        <Button variant="outline" className="bg-zinc-900 text-xs md:text-sm">
-          Add task
-        </Button>
-      </NewTaskDialog>
       <Menu />
     </div>
   );

@@ -9,22 +9,22 @@ import {
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { useState } from 'react';
-import { EntityType } from '../tasks/types';
+import { EntityType } from '../../app/api/columns/tasks/types';
 
 interface IConfirmDialogProps {
-  id: number;
-  type: EntityType;
+  id: string;
+  route: string;
   title: string;
   message: string;
   confirmLabel: string;
-  action: (id: number, type: EntityType) => Promise<boolean>;
+  action: (id: string, route: string) => Promise<boolean>;
   onSuccess?: () => void;
   children?: React.ReactNode;
 }
 
 const ConfirmDialog = ({
   id,
-  type,
+  route,
   title,
   message,
   confirmLabel = 'Delete',
@@ -35,7 +35,7 @@ const ConfirmDialog = ({
   const [isOpen, setIsOpen] = useState(false);
 
   const handleDelete = async () => {
-    const success = await action(id, type);
+    const success = await action(id, route);
 
     if (success) {
       setIsOpen(false);

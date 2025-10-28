@@ -14,7 +14,8 @@ import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { newColumnSchema, NewColumnType, TaskColumnWithTasks } from '../types';
+import { TaskColumnWithTasks } from '@/app/api/columns/tasks/types';
+import { newColumnSchema, NewColumnType } from '@/app/api/columns/types';
 import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
 
@@ -22,7 +23,7 @@ interface INewColumnDialogProps {
   submitColumn: (
     bodyData: NewColumnType,
     options?: {
-      columnId?: number;
+      columnId?: string;
     },
   ) => Promise<boolean>;
   data?: TaskColumnWithTasks | null;

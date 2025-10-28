@@ -3,14 +3,15 @@
 import {
   TaskColumnWithTasks,
   NewTaskType,
-  NewColumnType,
   TaskSelect,
   EntityType,
-} from '@/components/tasks/types';
+} from '@/app/api/columns/tasks/types';
+import { NewColumnType } from '@/app/api/columns/types';
 import { DragEndEvent, DragStartEvent, Over, Active, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 export const useTasks = () => {
   const [columns, setColumns] = useState<TaskColumnWithTasks[]>([]);
@@ -23,7 +24,7 @@ export const useTasks = () => {
 
   const fetchTaskColumns = useCallback(async () => {
     try {
-      const response = await fetch(`/api/task-columns/`);
+      const response = await fetch(`/api/columns`);
       if (!response.ok) {
         router.push('/error');
         return;
@@ -33,7 +34,7 @@ export const useTasks = () => {
       setTasks(
         data
           .flatMap((column: TaskColumnWithTasks) => column.tasks)
-          .sort((a: TaskSelect, b: TaskSelect) => a.order - b.order),
+          .sort((a: TaskSelect, b: TaskSelect) => a.order.localeCompare(b.order)),
       );
     } catch {
       router.push('/error');
@@ -47,8 +48,8 @@ export const useTasks = () => {
     async (
       bodyData: NewTaskType,
       options?: {
-        taskId?: number;
-        columnId?: number | null;
+        taskId?: string;
+        columnId?: string | null;
       },
     ) => {
       try {
@@ -58,13 +59,49 @@ export const useTasks = () => {
           requestBody.columnId = options.columnId;
         }
 
+        let tempTask: TaskSelect | null = null;
+        if (!options?.taskId && options?.columnId) {
+          const taskId = uuidv4();
+          tempTask = {
+            id: taskId,
+            title: bodyData.title,
+            description: bodyData.description,
+            columnId: options.columnId,
+            order: String(
+              tasks.filter((t) => t.columnId === options.columnId).length + 1,
+            ),
+            createdAt: new Date(),
+          };
+
+          setTasks((prev) => [...prev, tempTask!]);
+          setColumns((prev) =>
+            prev.map((col) =>
+              col.id === options.columnId
+                ? { ...col, tasks: [...col.tasks, tempTask!] }
+                : col,
+            ),
+          );
+        }
+
         const response = await fetch('/api/tasks', {
           method: options?.taskId ? 'PATCH' : 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody),
         });
 
-        if (!response.ok) throw new Error('Failed to save task');
+        if (!response.ok) {
+          if (tempTask) {
+            setTasks((prev) => prev.filter((t) => t.id !== tempTask!.id));
+            setColumns((prev) =>
+              prev.map((col) =>
+                col.id === tempTask!.columnId
+                  ? { ...col, tasks: col.tasks.filter((t) => t.id !== tempTask!.id) }
+                  : col,
+              ),
+            );
+          }
+          throw new Error('Failed to save task');
+        }
 
         await fetchTaskColumns();
         return true;
@@ -73,26 +110,50 @@ export const useTasks = () => {
         return false;
       }
     },
-    [fetchTaskColumns],
+    [fetchTaskColumns, tasks],
   );
 
   const submitColumn = useCallback(
     async (
       bodyData: NewColumnType,
       options?: {
-        columnId?: number;
+        columnId?: string;
       },
     ) => {
       try {
-        const url = `/api/task-columns`;
+        const url = `/api/columns`;
+
+        let tempColumn: TaskColumnWithTasks | null = null;
+        let requestBody: NewColumnType | (NewColumnType & { id: string });
+
+        if (!options?.columnId) {
+          const columnId = uuidv4();
+          tempColumn = {
+            id: columnId,
+            name: bodyData.name,
+            color: bodyData.color,
+            order: String(columns.length),
+            tasks: [],
+          };
+
+          setColumns((prev) => [...prev, tempColumn!]);
+          requestBody = { ...bodyData, id: columnId };
+        } else {
+          requestBody = { ...bodyData, id: options.columnId };
+        }
 
         const response = await fetch(url, {
           method: options?.columnId ? 'PATCH' : 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...bodyData, id: options?.columnId }),
+          body: JSON.stringify(requestBody),
         });
 
-        if (!response.ok) throw new Error('Failed to save column');
+        if (!response.ok) {
+          if (tempColumn) {
+            setColumns((prev) => prev.filter((col) => col.id !== tempColumn!.id));
+          }
+          throw new Error('Failed to save column');
+        }
 
         await fetchTaskColumns();
         return true;
@@ -101,11 +162,11 @@ export const useTasks = () => {
         return false;
       }
     },
-    [fetchTaskColumns],
+    [fetchTaskColumns, columns],
   );
 
   const deleteItem = useCallback(
-    async (id: number, type: EntityType) => {
+    async (id: string, type: EntityType) => {
       try {
         const response = await fetch(`/api/${type}`, {
           method: 'DELETE',
@@ -126,7 +187,7 @@ export const useTasks = () => {
   );
 
   const archiveItem = useCallback(
-    async (id: number, type: EntityType) => {
+    async (id: string, type: EntityType) => {
       try {
         const response = await fetch(`/api/${type}/archive`, {
           method: 'PATCH',
@@ -175,7 +236,7 @@ export const useTasks = () => {
     if (isActiveTask && isOverColumn) {
       setTasks((tasks) => {
         const activeIndex = tasks.findIndex((task) => task.id === activeId);
-        tasks[activeIndex].columnId = Number(overId);
+        tasks[activeIndex].columnId = String(overId);
         return arrayMove(tasks, activeIndex, activeIndex);
       });
     }
@@ -219,14 +280,23 @@ export const useTasks = () => {
     const newColumns = arrayMove(columns, oldIndex, newIndex);
     setColumns(newColumns);
 
-    const response = await fetch('/api/task-columns/reorder', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ activeColumnId, overColumnId }),
-    });
-
-    if (!response.ok) throw new Error('Failed to reorder column');
-    await fetchTaskColumns();
+    try {
+      const afterColumn = newColumns[newIndex + 1];
+      const beforeColumn = newColumns[newIndex - 1];
+      await fetch('/api/columns/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          activeColumnId,
+          afterColumnId: afterColumn?.id,
+          beforeColumnId: beforeColumn?.id,
+        }),
+      });
+    } catch (e) {
+      const previousColumns = arrayMove(newColumns, newIndex, oldIndex);
+      setColumns(previousColumns);
+      throw new Error('Failed to reorder column');
+    }
   };
 
   const reOrderTask = async (active: Active, over: Over) => {
@@ -262,7 +332,7 @@ export const useTasks = () => {
           id: activeTaskId,
           title: task.title,
           description: task.description,
-          columnId: Number(overId),
+          columnId: String(overId),
         }),
       });
     } else {

@@ -3,10 +3,10 @@ import TaskCard from './TaskCard';
 import {
   TaskColumnWithTasks,
   NewTaskType,
-  NewColumnType,
   TaskSelect,
   EntityType,
-} from './types';
+} from '../../app/api/columns/tasks/types';
+import { NewColumnType } from '../../app/api/columns/types';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -30,18 +30,18 @@ interface ITaskColumnProps {
   submitTask: (
     bodyData: NewTaskType,
     options?: {
-      taskId?: number;
-      columnId?: number | null;
+      taskId?: string;
+      columnId?: string | null;
     },
   ) => Promise<boolean>;
   submitColumn: (
     bodyData: NewColumnType,
     options?: {
-      columnId?: number;
+      columnId?: string;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
-  archiveItem: (id: number, type: EntityType) => Promise<boolean>;
+  deleteItem: (id: string, route: string) => Promise<boolean>;
+  archiveItem: (id: string, route: string) => Promise<boolean>;
 }
 
 const TaskColumn = ({
@@ -113,10 +113,10 @@ interface IColumnHeaderProps {
   submitColumn: (
     bodyData: NewColumnType,
     options?: {
-      columnId?: number;
+      columnId?: string;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
+  deleteItem: (id: string, route: string) => Promise<boolean>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dragAttributes?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -157,10 +157,10 @@ interface IColDropdownMenuProps {
   submitColumn: (
     bodyData: NewColumnType,
     options?: {
-      columnId?: number;
+      columnId?: string;
     },
   ) => Promise<boolean>;
-  deleteItem: (id: number, type: EntityType) => Promise<boolean>;
+  deleteItem: (id: string, route: string) => Promise<boolean>;
 }
 
 const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuProps) => {
@@ -186,7 +186,7 @@ const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuPro
           </NewColumnDialog>
           <ConfirmDialog
             id={data.id}
-            type="task-columns"
+            route="columns"
             title={`Delete ${data.name} ?`}
             message="Are you sure you want to delete this column? Tasks inside will me removed too. This action cannot be undone."
             action={deleteItem}
