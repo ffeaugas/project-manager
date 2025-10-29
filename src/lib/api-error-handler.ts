@@ -34,7 +34,7 @@ export function handleApiError(
   return NextResponse.json({ error: 'Internal server error' }, { status: defaultStatus });
 }
 
-export function withErrorHandling<T extends any[]>(
+export function withErrorHandling<T extends unknown[]>(
   handler: (...args: T) => Promise<NextResponse>,
   options: ApiErrorHandlerOptions = {},
 ) {

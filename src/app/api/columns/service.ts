@@ -41,7 +41,7 @@ export async function updateColumn(data: EditColumnType, userId: string) {
   const column = await prisma.taskColumn.update({
     where: {
       id: data.id,
-      userId, // Ensure user can only update their own columns
+      userId,
     },
     data: {
       name: data.name,

@@ -18,7 +18,7 @@ interface IProjectHeaderProps {
     options?: { projectCardId?: number; projectId?: number },
   ) => Promise<boolean>;
   project: ProjectWithUrls;
-  deleteProject: (id: number) => Promise<boolean>;
+  deleteProject: (id: string) => Promise<boolean>;
 }
 
 const ProjectHeader = ({
@@ -42,7 +42,7 @@ export default ProjectHeader;
 
 interface IMenuProps {
   project: ProjectWithUrls;
-  deleteProject: (id: number) => Promise<boolean>;
+  deleteProject: (id: string) => Promise<boolean>;
 }
 
 const Menu = ({ project, deleteProject }: IMenuProps) => {
@@ -55,8 +55,8 @@ const Menu = ({ project, deleteProject }: IMenuProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 bg-zinc-800">
         <ConfirmDialog
-          id={project.id}
-          type="projects"
+          id={project.id.toString()}
+          route="projects"
           title={`Delete project ${project.name} ?`}
           message="Are you sure you want to delete this project? This action cannot be undone."
           action={deleteProject}

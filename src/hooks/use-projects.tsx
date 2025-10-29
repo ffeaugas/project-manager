@@ -48,7 +48,7 @@ export const useProjects = (id?: string) => {
     return true;
   };
 
-  const deleteProjectCard = async (id: number) => {
+  const deleteProjectCard = async (id: string) => {
     const response = await fetch(`/api/projects/cards`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -60,7 +60,7 @@ export const useProjects = (id?: string) => {
     return true;
   };
 
-  const deleteProject = async (id: number) => {
+  const deleteProject = async (id: string) => {
     const response = await fetch(`/api/projects`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },

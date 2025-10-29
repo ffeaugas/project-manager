@@ -4,7 +4,6 @@ import {
   TaskColumnWithTasks,
   NewTaskType,
   TaskSelect,
-  EntityType,
 } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '../../app/api/columns/types';
 import { Button } from '@/components/ui/button';
@@ -40,7 +39,7 @@ interface ITaskColumnProps {
     },
   ) => Promise<boolean>;
   deleteItem: (id: string, route: string) => Promise<boolean>;
-  archiveItem: (id: string, route: string) => Promise<boolean>;
+  archiveItem: (id: string) => Promise<boolean>;
 }
 
 const TaskColumn = ({

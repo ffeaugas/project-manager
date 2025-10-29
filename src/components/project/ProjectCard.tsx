@@ -8,7 +8,7 @@ interface IProjectCardProps {
     bodyData: NewProjectCardType,
     options?: { projectCardId?: number; projectId?: number },
   ) => Promise<boolean>;
-  deleteProjectCard: (id: number) => Promise<boolean>;
+  deleteProjectCard: (id: string) => Promise<boolean>;
   projectId: number;
 }
 

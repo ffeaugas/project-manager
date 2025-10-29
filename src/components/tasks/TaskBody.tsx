@@ -9,7 +9,9 @@ import { useTasks } from '@/hooks/use-tasks';
 import {
   DndContext,
   DragOverlay,
+  KeyboardSensor,
   PointerSensor,
+  TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -65,13 +67,15 @@ const KanbanBoard = () => {
         distance: 5,
       },
     }),
+    useSensor(TouchSensor),
+    useSensor(KeyboardSensor),
   );
 
   if (isLoading) return <Spinner size="large" />;
 
   return (
     <div className="flex flex-col h-full flex-1 max-w-full md:max-w-[75%]">
-      <TaskHeader createTask={createTask} updateTask={updateTask} />
+      <TaskHeader />
       <div className="overflow-y-scroll overflow-x-auto">
         <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
           <DndContext

@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { generateKeyBetween } from 'fractional-indexing';
 import { NewTaskType } from './types';
-import { getColumnById, getTaskById } from '../utils';
+import { getTaskById } from '../utils';
 
 export async function createTask(data: NewTaskType, userId: string, columnId: string) {
   if (!data.id) {

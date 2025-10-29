@@ -27,7 +27,7 @@ interface INewProjectCardDialogProps {
       projectId?: number;
     },
   ) => Promise<boolean>;
-  deleteProjectCard?: (id: number) => Promise<boolean>;
+  deleteProjectCard?: (id: string) => Promise<boolean>;
   children: React.ReactNode;
   data?: ProjectWithUrls['projectCards'][0] | null;
   projectId?: number;
@@ -124,8 +124,8 @@ const NewProjectCardDialog = ({
           <DialogFooter className="flex flex-row justify-end gap-2">
             {data && deleteProjectCard && (
               <ConfirmDialog
-                id={data.id}
-                type="project-cards"
+                id={data.id.toString()}
+                route="project-cards"
                 title="Delete this project card?"
                 message="Are you sure you want to delete this project card? This action cannot be undone."
                 confirmLabel="Delete"

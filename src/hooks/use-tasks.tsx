@@ -51,7 +51,6 @@ export const useTasks = () => {
     async (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => {
       try {
         const taskId = uuidv4();
-        const requestBody: NewTaskType = { ...bodyData, id: taskId };
 
         // Calculate order for new task
         const tasksInColumn = tasks.filter((t) => t.columnId === columnId);
@@ -109,7 +108,7 @@ export const useTasks = () => {
   const updateTask = useCallback(
     async (taskId: string, bodyData: Omit<NewTaskType, 'id'>, columnId?: string) => {
       try {
-        const requestBody: NewTaskType = { ...bodyData, id: taskId };
+        const requestBody: NewTaskType = { ...bodyData, id: taskId, columnId };
 
         const response = await fetch('/api/columns/tasks', {
           method: 'PATCH',
@@ -336,7 +335,7 @@ export const useTasks = () => {
           beforeColumnId: beforeColumn?.id,
         }),
       });
-    } catch (e) {
+    } catch {
       const previousColumns = arrayMove(newColumns, newIndex, oldIndex);
       setColumns(previousColumns);
       throw new Error('Failed to reorder column');
@@ -362,7 +361,7 @@ export const useTasks = () => {
           afterTaskId: afterTask?.id,
         }),
       });
-    } catch (e) {
+    } catch {
       fetchTaskColumns();
       throw new Error('Failed to reorder task');
     }

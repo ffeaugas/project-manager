@@ -9,7 +9,6 @@ import {
 } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { useState } from 'react';
-import { EntityType } from '../../app/api/columns/tasks/types';
 
 interface IConfirmDialogProps {
   id: string;

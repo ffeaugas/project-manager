@@ -14,7 +14,6 @@ import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
-  EntityType,
   newTaskSchema,
   NewTaskType,
   TaskSelect,
