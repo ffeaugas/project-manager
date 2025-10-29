@@ -6,7 +6,14 @@ import {
   TaskSelect,
 } from '@/app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
-import { DragEndEvent, DragStartEvent, Over, Active, DragOverEvent } from '@dnd-kit/core';
+import {
+  DragEndEvent,
+  DragStartEvent,
+  Over,
+  Active,
+  DragOverEvent,
+  DataRef,
+} from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { generateKeyBetween } from 'fractional-indexing';
 import { useRouter } from 'next/navigation';
@@ -291,15 +298,19 @@ export const useTasks = () => {
     const overId = over.id;
 
     if (!hasDraggableData(active)) return;
+    if (!hasDraggableData(over)) return;
 
     const activeData = active.data.current;
 
+    if (activeData?.type === 'task') {
+      reOrderTask(active);
+    }
+
     if (activeId === overId) return;
 
-    const isActiveAColumn = activeData?.type === 'column';
-    if (!isActiveAColumn) return;
-
-    reOrderColumn(active, over);
+    if (activeData?.type === 'column') {
+      reOrderColumn(active, over);
+    }
   };
 
   const reOrderColumn = async (active: Active, over: Over) => {
@@ -329,6 +340,31 @@ export const useTasks = () => {
       const previousColumns = arrayMove(newColumns, newIndex, oldIndex);
       setColumns(previousColumns);
       throw new Error('Failed to reorder column');
+    }
+  };
+
+  const reOrderTask = async (active: Active) => {
+    const activeTaskId = active.id;
+    const tasksInColumn = tasks.filter(
+      (t) => t.columnId === active.data.current?.task?.columnId,
+    );
+    const activeTaskIndex = tasksInColumn.findIndex((t) => t.id === activeTaskId);
+    const beforeTask = tasksInColumn[activeTaskIndex - 1];
+    const afterTask = tasksInColumn[activeTaskIndex + 1];
+    try {
+      await fetch('/api/columns/tasks/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          activeTaskId,
+          targetColumnId: active.data.current?.task?.columnId,
+          beforeTaskId: beforeTask?.id,
+          afterTaskId: afterTask?.id,
+        }),
+      });
+    } catch (e) {
+      fetchTaskColumns();
+      throw new Error('Failed to reorder task');
     }
   };
 
@@ -367,8 +403,11 @@ export const useTasks = () => {
 function hasDraggableData<T extends Active | Over>(
   entry: T | null | undefined,
 ): entry is T & {
-  // data: DataRef<DraggableData>;
-  data: any;
+  data: DataRef<{
+    type: 'column' | 'task';
+    column?: TaskColumnWithTasks;
+    task?: TaskSelect;
+  }>;
 } {
   if (!entry) {
     return false;

@@ -20,7 +20,7 @@ export const reorderTaskSchema = z.object({
   activeTaskId: z.string().min(1, 'Active task ID is required'),
   beforeTaskId: z.string().optional(),
   afterTaskId: z.string().optional(),
-  targetColumnId: z.string().optional(),
+  targetColumnId: z.string(),
 });
 
 export type NewTaskType = z.infer<typeof newTaskSchema>;

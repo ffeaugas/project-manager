@@ -17,9 +17,9 @@ export async function POST(request: NextRequest) {
     await reorderTasks(
       user.id,
       validatedData.activeTaskId,
+      validatedData.targetColumnId,
       validatedData.beforeTaskId,
       validatedData.afterTaskId,
-      validatedData.targetColumnId,
     );
     return NextResponse.json({ status: 200 });
   } catch (error) {

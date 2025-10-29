@@ -10,3 +10,14 @@ export const getColumnById = async (userId: string, id?: string) => {
   });
   return column;
 };
+
+export const getTaskById = async (userId: string, id?: string) => {
+  if (!id) {
+    return null;
+  }
+
+  const task = await prisma.task.findFirst({
+    where: { id, userId },
+  });
+  return task;
+};

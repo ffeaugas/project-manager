@@ -53,7 +53,6 @@ export async function updateColumn(data: EditColumnType, userId: string) {
 }
 
 export async function deleteColumn(userId: string, id: string) {
-  console.log('Deleting column:', { userId, id });
   await prisma.taskColumn.delete({
     where: { userId, id },
   });
@@ -68,7 +67,6 @@ export async function reorderColumns(
   afterColumnId?: string,
 ) {
   const activeColumn = await getColumnById(userId, activeColumnId);
-  console.log('Active column:', activeColumn);
 
   if (!activeColumn) {
     throw new Error('Column not found');
@@ -82,12 +80,6 @@ export async function reorderColumns(
       beforeColumn?.order || null,
       afterColumn?.order || null,
     );
-
-    console.log({
-      afterColumn: afterColumn?.order,
-      beforeColumn: beforeColumn?.order,
-      newOrder,
-    });
 
     await prisma.taskColumn.update({
       where: { id: activeColumnId },
