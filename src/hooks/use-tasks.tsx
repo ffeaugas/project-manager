@@ -4,11 +4,11 @@ import {
   TaskColumnWithTasks,
   NewTaskType,
   TaskSelect,
-  EntityType,
 } from '@/app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
 import { DragEndEvent, DragStartEvent, Over, Active, DragOverEvent } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
+import { generateKeyBetween } from 'fractional-indexing';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
@@ -16,8 +16,8 @@ import { v4 as uuidv4 } from 'uuid';
 export const useTasks = () => {
   const [columns, setColumns] = useState<TaskColumnWithTasks[]>([]);
   const [tasks, setTasks] = useState<TaskSelect[]>([]);
-  const [overlayTask, setOverlayTask] = useState<TaskSelect | null>(null);
-  const [overlayColumn, setOverlayColumn] = useState<TaskColumnWithTasks | null>(null);
+  const [activeTask, setActiveTask] = useState<TaskSelect | null>(null);
+  const [activeColumn, setActiveColumn] = useState<TaskColumnWithTasks | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
   const router = useRouter();
@@ -31,11 +31,7 @@ export const useTasks = () => {
       }
       const data = await response.json();
       setColumns(data);
-      setTasks(
-        data
-          .flatMap((column: TaskColumnWithTasks) => column.tasks)
-          .sort((a: TaskSelect, b: TaskSelect) => a.order.localeCompare(b.order)),
-      );
+      setTasks(data.flatMap((column: TaskColumnWithTasks) => column.tasks));
     } catch {
       router.push('/error');
       return;
@@ -44,73 +40,88 @@ export const useTasks = () => {
     }
   }, [router]);
 
-  const submitTask = useCallback(
-    async (
-      bodyData: NewTaskType,
-      options?: {
-        taskId?: string;
-        columnId?: string | null;
-      },
-    ) => {
+  const createTask = useCallback(
+    async (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => {
       try {
-        const requestBody: NewTaskType = { ...bodyData, id: options?.taskId };
+        const taskId = uuidv4();
+        const requestBody: NewTaskType = { ...bodyData, id: taskId };
 
-        if (options?.columnId !== null && options?.columnId !== undefined) {
-          requestBody.columnId = options.columnId;
-        }
+        // Calculate order for new task
+        const tasksInColumn = tasks.filter((t) => t.columnId === columnId);
+        const afterTask = tasksInColumn[tasksInColumn.length + 1];
+        const beforeTask = tasksInColumn[tasksInColumn.length - 1];
 
-        let tempTask: TaskSelect | null = null;
-        if (!options?.taskId && options?.columnId) {
-          const taskId = uuidv4();
-          tempTask = {
-            id: taskId,
-            title: bodyData.title,
-            description: bodyData.description,
-            columnId: options.columnId,
-            order: String(
-              tasks.filter((t) => t.columnId === options.columnId).length + 1,
-            ),
-            createdAt: new Date(),
-          };
+        const newOrder = generateKeyBetween(beforeTask?.order, afterTask?.order);
 
-          setTasks((prev) => [...prev, tempTask!]);
-          setColumns((prev) =>
-            prev.map((col) =>
-              col.id === options.columnId
-                ? { ...col, tasks: [...col.tasks, tempTask!] }
-                : col,
-            ),
-          );
-        }
+        // Optimistic update
+        const tempTask = {
+          id: taskId,
+          title: bodyData.title,
+          description: bodyData.description,
+          columnId,
+          order: newOrder,
+          createdAt: new Date(),
+        };
 
-        const response = await fetch('/api/tasks', {
-          method: options?.taskId ? 'PATCH' : 'POST',
+        setTasks((prev) => [...prev, tempTask]);
+        setColumns((prev) =>
+          prev.map((col) =>
+            col.id === columnId ? { ...col, tasks: [...col.tasks, tempTask] } : col,
+          ),
+        );
+
+        const response = await fetch('/api/columns/tasks', {
+          method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(requestBody),
+          body: JSON.stringify(tempTask),
         });
 
         if (!response.ok) {
-          if (tempTask) {
-            setTasks((prev) => prev.filter((t) => t.id !== tempTask!.id));
-            setColumns((prev) =>
-              prev.map((col) =>
-                col.id === tempTask!.columnId
-                  ? { ...col, tasks: col.tasks.filter((t) => t.id !== tempTask!.id) }
-                  : col,
-              ),
-            );
-          }
-          throw new Error('Failed to save task');
+          // Rollback on error
+          setTasks((prev) => prev.filter((t) => t.id !== tempTask.id));
+          setColumns((prev) =>
+            prev.map((col) =>
+              col.id === columnId
+                ? { ...col, tasks: col.tasks.filter((t) => t.id !== tempTask.id) }
+                : col,
+            ),
+          );
+          throw new Error('Failed to create task');
         }
 
         await fetchTaskColumns();
         return true;
       } catch (e) {
-        console.error('Error saving task:', e);
+        console.error('Error creating task:', e);
         return false;
       }
     },
     [fetchTaskColumns, tasks],
+  );
+
+  const updateTask = useCallback(
+    async (taskId: string, bodyData: Omit<NewTaskType, 'id'>, columnId?: string) => {
+      try {
+        const requestBody: NewTaskType = { ...bodyData, id: taskId };
+
+        const response = await fetch('/api/columns/tasks', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(requestBody),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update task');
+        }
+
+        await fetchTaskColumns();
+        return true;
+      } catch (e) {
+        console.error('Error updating task:', e);
+        return false;
+      }
+    },
+    [fetchTaskColumns],
   );
 
   const submitColumn = useCallback(
@@ -166,9 +177,9 @@ export const useTasks = () => {
   );
 
   const deleteItem = useCallback(
-    async (id: string, type: EntityType) => {
+    async (id: string, route: string) => {
       try {
-        const response = await fetch(`/api/${type}`, {
+        const response = await fetch(`/api/${route}`, {
           method: 'DELETE',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id }),
@@ -187,9 +198,9 @@ export const useTasks = () => {
   );
 
   const archiveItem = useCallback(
-    async (id: string, type: EntityType) => {
+    async (id: string) => {
       try {
-        const response = await fetch(`/api/${type}/archive`, {
+        const response = await fetch(`/api/columns/tasks/archive`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id }),
@@ -216,28 +227,44 @@ export const useTasks = () => {
 
     if (activeId === overId) return;
 
-    const isActiveTask = active.data.current?.type === 'task';
-    const isOverTask = over.data.current?.type === 'task';
+    if (!hasDraggableData(active) || !hasDraggableData(over)) return;
 
-    if (!isActiveTask) return;
+    const activeData = active.data.current;
+    const overData = over.data.current;
+
+    const isActiveATask = activeData?.type === 'task';
+    const isOverATask = overData?.type === 'task';
+
+    if (!isActiveATask) return;
 
     // Dropping a Task over another Task
-    if (isActiveTask && isOverTask) {
+    if (isActiveATask && isOverATask) {
       setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((task) => task.id === activeId);
-        const overIndex = tasks.findIndex((task) => task.id === overId);
-        tasks[activeIndex].columnId = tasks[overIndex].columnId;
+        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+        const overIndex = tasks.findIndex((t) => t.id === overId);
+        const activeTask = tasks[activeIndex];
+        const overTask = tasks[overIndex];
+        if (activeTask && overTask && activeTask.columnId !== overTask.columnId) {
+          activeTask.columnId = overTask.columnId;
+          return arrayMove(tasks, activeIndex, overIndex);
+        }
+
         return arrayMove(tasks, activeIndex, overIndex);
       });
     }
 
-    const isOverColumn = over.data.current?.type === 'column';
+    const isOverAColumn = overData?.type === 'column';
 
-    if (isActiveTask && isOverColumn) {
+    // Dropping a Task over a column
+    if (isActiveATask && isOverAColumn) {
       setTasks((tasks) => {
-        const activeIndex = tasks.findIndex((task) => task.id === activeId);
-        tasks[activeIndex].columnId = String(overId);
-        return arrayMove(tasks, activeIndex, activeIndex);
+        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+        const activeTask = tasks[activeIndex];
+        if (activeTask) {
+          activeTask.columnId = overId as string;
+          return arrayMove(tasks, activeIndex, activeIndex);
+        }
+        return tasks;
       });
     }
   };
@@ -245,28 +272,34 @@ export const useTasks = () => {
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
     if (active.data.current?.type === 'column') {
-      setOverlayColumn(active.data.current.column);
+      setActiveColumn(active.data.current.column);
     }
     if (active.data.current?.type === 'task') {
-      setOverlayTask(active.data.current.task);
+      setActiveTask(active.data.current.task);
     }
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
-    setOverlayColumn(null);
-    setOverlayTask(null);
+    setActiveColumn(null);
+    setActiveTask(null);
 
     const { active, over } = event;
 
     if (!over) return;
 
-    if (active.data.current?.type === 'column') {
-      reOrderColumn(active, over);
-    }
+    const activeId = active.id;
+    const overId = over.id;
 
-    if (active.data.current?.type === 'task') {
-      reOrderTask(active, over);
-    }
+    if (!hasDraggableData(active)) return;
+
+    const activeData = active.data.current;
+
+    if (activeId === overId) return;
+
+    const isActiveAColumn = activeData?.type === 'column';
+    if (!isActiveAColumn) return;
+
+    reOrderColumn(active, over);
   };
 
   const reOrderColumn = async (active: Active, over: Over) => {
@@ -299,49 +332,14 @@ export const useTasks = () => {
     }
   };
 
-  const reOrderTask = async (active: Active, over: Over) => {
-    const activeTaskId = active.id;
-    const overId = over.id;
-    const type = over.data.current?.type;
-    let response;
-
-    if (activeTaskId === overId) return;
-
-    if (type === 'task') {
-      const oldIndex = tasks.findIndex((task) => task.id === activeTaskId);
-      const newIndex = tasks.findIndex((task) => task.id === overId);
-      const newTasks = arrayMove(tasks, oldIndex, newIndex);
-      setTasks(newTasks);
-
-      response = await fetch('/api/tasks/reorder', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          activeTaskId,
-          overTaskId: overId,
-        }),
-      });
-    } else if (type === 'column') {
-      const task = tasks.find((t) => t.id === activeTaskId);
-      if (!task) return;
-
-      response = await fetch('/api/tasks', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id: activeTaskId,
-          title: task.title,
-          description: task.description,
-          columnId: String(overId),
-        }),
-      });
-    } else {
-      return;
-    }
-
-    if (!response.ok) throw new Error('Failed to reorder task');
-    await fetchTaskColumns();
-  };
+  useEffect(() => {
+    setColumns((prevColumns) =>
+      prevColumns.map((col) => {
+        const columnTasks = tasks.filter((t) => t.columnId === col.id);
+        return { ...col, tasks: columnTasks };
+      }),
+    );
+  }, [tasks]);
 
   useEffect(() => {
     fetchTaskColumns();
@@ -353,14 +351,34 @@ export const useTasks = () => {
     isLoading,
     error,
     fetchTaskColumns,
-    submitTask,
+    createTask,
+    updateTask,
     submitColumn,
     deleteItem,
     archiveItem,
     handleDragStart,
     handleDragOver,
     handleDragEnd,
-    overlayTask,
-    overlayColumn,
+    activeTask,
+    activeColumn,
   };
 };
+
+function hasDraggableData<T extends Active | Over>(
+  entry: T | null | undefined,
+): entry is T & {
+  // data: DataRef<DraggableData>;
+  data: any;
+} {
+  if (!entry) {
+    return false;
+  }
+
+  const data = entry.data.current;
+
+  if (data?.type === 'column' || data?.type === 'task') {
+    return true;
+  }
+
+  return false;
+}

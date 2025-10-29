@@ -34,7 +34,7 @@ const ConfirmDialog = ({
 }: IConfirmDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleDelete = async () => {
+  const handleConfirm = async () => {
     const success = await action(id, route);
 
     if (success) {
@@ -59,7 +59,7 @@ const ConfirmDialog = ({
           <Button variant="secondary" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={handleDelete}>{confirmLabel}</Button>
+          <Button onClick={handleConfirm}>{confirmLabel}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

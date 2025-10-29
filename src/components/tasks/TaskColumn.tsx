@@ -27,12 +27,11 @@ import { CSS } from '@dnd-kit/utilities';
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
   tasks: TaskSelect[];
-  submitTask: (
-    bodyData: NewTaskType,
-    options?: {
-      taskId?: string;
-      columnId?: string | null;
-    },
+  createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
+  updateTask: (
+    taskId: string,
+    bodyData: Omit<NewTaskType, 'id'>,
+    columnId?: string,
   ) => Promise<boolean>;
   submitColumn: (
     bodyData: NewColumnType,
@@ -46,7 +45,9 @@ interface ITaskColumnProps {
 
 const TaskColumn = ({
   data,
-  submitTask,
+  tasks,
+  createTask,
+  updateTask,
   submitColumn,
   deleteItem,
   archiveItem,
@@ -76,24 +77,25 @@ const TaskColumn = ({
     >
       <ColumnHeader
         data={data}
-        nbTasks={data.tasks.length}
+        nbTasks={tasks.length}
         submitColumn={submitColumn}
         deleteItem={deleteItem}
         dragAttributes={attributes}
         dragListeners={listeners}
       />
-      <SortableContext items={data.tasks.map((task) => task.id)}>
-        {data.tasks.map((task) => (
+      <SortableContext items={tasks.map((task) => task.id)}>
+        {tasks.map((task) => (
           <TaskCard
             key={task.id}
             data={task}
-            submitTask={submitTask}
+            createTask={createTask}
+            updateTask={updateTask}
             deleteItem={deleteItem}
             archiveItem={archiveItem}
           />
         ))}
       </SortableContext>
-      <NewTaskDialog submitTask={submitTask} columnId={data.id}>
+      <NewTaskDialog createTask={createTask} updateTask={updateTask} columnId={data.id}>
         <Button
           variant="outline"
           className="flex flex-col justify-center w-full h-[80px] md:h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-xs md:text-sm"

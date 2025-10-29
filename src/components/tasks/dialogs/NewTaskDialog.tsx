@@ -25,26 +25,26 @@ import ConfirmDialog from '../../utils/ConfirmDialog';
 import { toast } from 'sonner';
 
 interface INewTaskDialogProps {
-  submitTask: (
-    bodyData: NewTaskType,
-    options?: {
-      taskId?: string;
-      columnId?: string | null;
-    },
+  createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
+  updateTask: (
+    taskId: string,
+    bodyData: Omit<NewTaskType, 'id'>,
+    columnId?: string,
   ) => Promise<boolean>;
-  deleteItem?: (id: string, type: EntityType) => Promise<boolean>;
-  archiveItem?: (id: string, type: EntityType) => Promise<boolean>;
+  deleteItem?: (id: string, route: string) => Promise<boolean>;
+  archiveItem?: (id: string) => Promise<boolean>;
   children: React.ReactNode;
   data?: TaskSelect | null;
-  columnId?: string | null;
+  columnId: string;
 }
 
 const NewTaskDialog = ({
-  submitTask,
+  createTask,
+  updateTask,
   deleteItem,
   children,
   data = null,
-  columnId = null,
+  columnId,
   archiveItem,
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,10 +54,9 @@ const NewTaskDialog = ({
   });
 
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
-    const success = await submitTask(bodyData, {
-      taskId: data?.id,
-      columnId,
-    });
+    const success = data
+      ? await updateTask(data.id, bodyData, columnId)
+      : await createTask(bodyData, columnId);
 
     if (success) {
       reset();
@@ -104,7 +103,7 @@ const NewTaskDialog = ({
               <>
                 <ConfirmDialog
                   id={data.id}
-                  type="tasks"
+                  route="columns/tasks/archive"
                   title="Archive this task ?"
                   message="Are you sure you want to archive this task ? You will be able to find it in the archived tasks section."
                   confirmLabel="Archive"
@@ -119,7 +118,7 @@ const NewTaskDialog = ({
                 </ConfirmDialog>
                 <ConfirmDialog
                   id={data.id}
-                  type="tasks"
+                  route="columns/tasks"
                   title="Delete this task ?"
                   message="Are you sure you want to delete this task ? This action cannot be undone."
                   confirmLabel="Delete"

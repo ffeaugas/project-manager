@@ -17,6 +17,7 @@ export function handleApiError(
   const { defaultStatus = 500, statusMap = {} } = options;
 
   if (error instanceof ZodError) {
+    console.error('Zod error:', error.errors);
     return NextResponse.json(
       { error: 'Invalid request data', details: error.errors },
       { status: 400 },
@@ -25,6 +26,7 @@ export function handleApiError(
 
   if (error instanceof Error) {
     const status = statusMap[error.message] || defaultStatus;
+    console.error('Error:', error.message, 'Status:', status);
     return NextResponse.json({ error: error.message }, { status });
   }
 
@@ -40,6 +42,7 @@ export function withErrorHandling<T extends any[]>(
     try {
       return await handler(...args);
     } catch (error) {
+      console.error('Error in withErrorHandling:', error);
       return handleApiError(error, options);
     }
   };

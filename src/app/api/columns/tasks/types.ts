@@ -13,7 +13,14 @@ export const newTaskSchema: ZodType<NewTaskForm & { columnId?: string }> = z.obj
   id: z.string().optional(),
   title: z.string().min(1, 'Title is required'),
   description: z.string().min(1, 'Description is required'),
-  columnId: z.string(),
+  columnId: z.string().optional(),
+});
+
+export const reorderTaskSchema = z.object({
+  activeTaskId: z.string().min(1, 'Active task ID is required'),
+  beforeTaskId: z.string().optional(),
+  afterTaskId: z.string().optional(),
+  targetColumnId: z.string().optional(),
 });
 
 export type NewTaskType = z.infer<typeof newTaskSchema>;
@@ -34,7 +41,7 @@ export const TaskColumnSelect = {
     },
     orderBy: { order: 'asc' as const },
   },
-};
+} as const;
 
 export type TaskColumnWithTasks = Prisma.TaskColumnGetPayload<{
   select: typeof TaskColumnSelect;

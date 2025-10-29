@@ -7,8 +7,18 @@ import {
 } from '../ui/dropdown-menu';
 import { Archive, GripVertical } from 'lucide-react';
 import Link from 'next/link';
+import { NewTaskType } from '../../app/api/columns/tasks/types';
 
-const TaskHeader = () => {
+interface ITaskHeaderProps {
+  createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
+  updateTask: (
+    taskId: string,
+    bodyData: Omit<NewTaskType, 'id'>,
+    columnId?: string,
+  ) => Promise<boolean>;
+}
+
+const TaskHeader = ({ createTask, updateTask }: ITaskHeaderProps) => {
   return (
     <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
       <Menu />

@@ -45,15 +45,16 @@ const KanbanBoard = () => {
     columns,
     tasks,
     isLoading,
-    submitTask,
+    createTask,
+    updateTask,
     submitColumn,
     deleteItem,
     archiveItem,
     handleDragStart,
     handleDragEnd,
     handleDragOver,
-    overlayTask,
-    overlayColumn,
+    activeTask,
+    activeColumn,
   } = useTasks();
 
   const columnIds = columns.map((col: TaskColumnWithTasks) => col.id);
@@ -70,7 +71,7 @@ const KanbanBoard = () => {
 
   return (
     <div className="flex flex-col h-full flex-1 max-w-full md:max-w-[75%]">
-      <TaskHeader submitTask={submitTask} />
+      <TaskHeader createTask={createTask} updateTask={updateTask} />
       <div className="overflow-y-scroll overflow-x-auto">
         <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
           <DndContext
@@ -85,7 +86,8 @@ const KanbanBoard = () => {
                   key={col.id}
                   data={col}
                   tasks={tasks.filter((task) => task.columnId === col.id)}
-                  submitTask={submitTask}
+                  createTask={createTask}
+                  updateTask={updateTask}
                   submitColumn={submitColumn}
                   deleteItem={deleteItem}
                   archiveItem={archiveItem}
@@ -93,20 +95,22 @@ const KanbanBoard = () => {
               ))}
             </SortableContext>
             <DragOverlay>
-              {overlayColumn ? (
+              {activeColumn ? (
                 <TaskColumn
-                  data={overlayColumn}
-                  tasks={tasks.filter((task) => task.columnId === overlayColumn.id)}
-                  submitTask={submitTask}
+                  data={activeColumn}
+                  tasks={tasks.filter((task) => task.columnId === activeColumn.id)}
+                  createTask={createTask}
+                  updateTask={updateTask}
                   submitColumn={submitColumn}
                   deleteItem={deleteItem}
                   archiveItem={archiveItem}
                 />
               ) : null}
-              {overlayTask ? (
+              {activeTask ? (
                 <TaskCard
-                  data={overlayTask}
-                  submitTask={submitTask}
+                  data={activeTask}
+                  createTask={createTask}
+                  updateTask={updateTask}
                   deleteItem={deleteItem}
                   archiveItem={archiveItem}
                 />

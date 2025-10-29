@@ -1,7 +1,7 @@
-import { prisma } from '@/lib/prisma';
 import { NextRequest, NextResponse } from 'next/server';
 import z, { ZodError } from 'zod';
 import { getUser } from '@/lib/auth-server';
+import { prisma } from '@/lib/prisma';
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -20,22 +20,10 @@ export async function PATCH(request: NextRequest) {
 
     if (!validatedData.id) throw new Error('Id is required');
 
-    const task = await prisma.task.findFirst({
-      where: {
-        id: validatedData.id,
-        column: {
-          userId: user.id,
-        },
-      },
-    });
-
-    if (!task) {
-      return NextResponse.json({ error: 'Task not found' }, { status: 404 });
-    }
-
     await prisma.task.update({
       where: {
         id: validatedData.id,
+        userId: user.id,
       },
       data: { archivedAt: new Date(), columnId: null },
     });

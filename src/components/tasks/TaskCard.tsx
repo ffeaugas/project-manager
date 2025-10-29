@@ -6,19 +6,23 @@ import { CSS } from '@dnd-kit/utilities';
 
 interface ITaskCardProps {
   data: TaskSelect;
-  submitTask: (
-    bodyData: NewTaskType,
-    options?: {
-      taskId?: string;
-      columnId?: string | null;
-      pageName?: string | null;
-    },
+  createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
+  updateTask: (
+    taskId: string,
+    bodyData: Omit<NewTaskType, 'id'>,
+    columnId?: string,
   ) => Promise<boolean>;
   deleteItem: (id: string, type: EntityType) => Promise<boolean>;
   archiveItem: (id: string, type: EntityType) => Promise<boolean>;
 }
 
-const TaskCard = ({ data, submitTask, deleteItem, archiveItem }: ITaskCardProps) => {
+const TaskCard = ({
+  data,
+  createTask,
+  updateTask,
+  deleteItem,
+  archiveItem,
+}: ITaskCardProps) => {
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
     useSortable({
       id: data.id,
@@ -40,7 +44,8 @@ const TaskCard = ({ data, submitTask, deleteItem, archiveItem }: ITaskCardProps)
 
   return (
     <NewTaskDialog
-      submitTask={submitTask}
+      createTask={createTask}
+      updateTask={updateTask}
       deleteItem={deleteItem}
       archiveItem={archiveItem}
       data={data}
