@@ -34,7 +34,7 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
   }
 
   return (
-    <div className="flex flex-col h-full max-h-screen">
+    <div className="flex flex-col h-screen flex-1">
       <ProjectHeader
         submitProjectCard={submitProjectCard}
         project={project}
@@ -69,7 +69,7 @@ const CardList = ({
   projectId,
 }: ICardListProps) => {
   return (
-    <div className="w-full overflow-auto">
+    <div className="w-full overflow-auto flex-1">
       <div className="flex flex-col md:flex-row md:flex-wrap gap-3 md:gap-4 p-3 md:p-6 justify-center md:justify-start">
         {cards.length > 0 ? (
           cards

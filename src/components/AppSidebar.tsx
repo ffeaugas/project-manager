@@ -27,7 +27,7 @@ const AppSidebar = () => {
   const { projects, submitProject } = useProjects();
 
   return (
-    <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200">
+    <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200 z-20">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>

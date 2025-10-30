@@ -27,7 +27,7 @@ const Header = ({ userData }: { userData: User | undefined }) => {
     );
 
   return (
-    <div className="flex gap-2 flex-row py-1 px-2 md:px-4 items-center justify-between border-b-[1px] border-zinc-700 md:justify-end fixed top-0 left-0 right-0 z-50 md:relative h-12 bg-black">
+    <div className="flex gap-2 flex-row py-1 px-2 md:px-4 items-center justify-between border-b-[1px] border-zinc-700 md:justify-end fixed top-0 left-0 right-0 z-10 h-12 bg-black">
       <SidebarTrigger />
       <DropdownMenu>
         <DropdownMenuTrigger

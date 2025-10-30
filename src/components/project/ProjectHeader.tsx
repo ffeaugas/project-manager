@@ -29,7 +29,7 @@ const ProjectHeader = ({
   deleteProject,
 }: IProjectHeaderProps) => {
   return (
-    <div className="flex flex-row px-2 md:p-4 justify-between w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
+    <div className="flex flex-row h-14 px-2 mx:p-4 justify-between w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2 items-center">
       <div className="flex flex-row gap-4 items-center">
         <LucidIcon
           icon={getProjectCategory(project.category).icon}
