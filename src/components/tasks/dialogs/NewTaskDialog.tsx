@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { Archive, Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
 import { toast } from 'sonner';
+import { Textarea } from '@/components/ui/textarea';
 
 interface INewTaskDialogProps {
   createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
@@ -58,7 +59,7 @@ const NewTaskDialog = ({
       : await createTask(bodyData, columnId);
 
     if (success) {
-      data ? null : reset();
+      if (data) reset();
       setIsOpen(false);
     } else {
       toast.error(
@@ -90,10 +91,11 @@ const NewTaskDialog = ({
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
-              <Input
+              <Textarea
                 {...register('description')}
                 id="description"
-                className="col-span-3"
+                className="col-span-3 resize-none"
+                rows={4}
               />
             </div>
           </div>

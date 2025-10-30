@@ -8,11 +8,7 @@ import {
   deleteProjectCard,
 } from './service';
 import { parseFormData, toUpdateData } from './utils';
-import {
-  NewProjectCardSchema,
-  UpdateProjectCardSchema,
-  DeleteProjectCardSchema,
-} from './types';
+import { NewProjectCardSchema, DeleteProjectCardSchema } from './types';
 
 export async function GET(request: NextRequest) {
   const user = await getUser();
@@ -27,7 +23,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
     }
 
-    const project = await getProjectWithCards(parseInt(projectId), user.id);
+    const project = await getProjectWithCards(projectId, user.id);
 
     if (!project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
@@ -52,7 +48,7 @@ export async function POST(request: NextRequest) {
     const validatedData = NewProjectCardSchema.parse({
       name,
       description,
-      projectId: parseInt(projectId!),
+      projectId: projectId!,
     });
 
     const projectCard = await createProjectCard(validatedData, user.id, imageFile);
@@ -79,10 +75,10 @@ export async function PATCH(request: NextRequest) {
     const raw = parseFormData(formData);
     const data = toUpdateData(raw);
 
-    const validatedData = UpdateProjectCardSchema.parse(data);
+    const validatedData = NewProjectCardSchema.parse(data);
 
     const projectCard = await updateProjectCard(
-      validatedData.id,
+      validatedData.id!,
       validatedData,
       user.id,
       raw.imageFile,

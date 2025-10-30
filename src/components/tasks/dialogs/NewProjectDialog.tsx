@@ -16,15 +16,15 @@ import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { newProjectSchema, NewProjectType } from '@/components/project/types';
+import { newProjectSchema, NewProjectType } from '@/app/api/projects/types';
 import { PROJECT_CATEGORIES, PROJECT_CATEGORY_KEYS } from '@/const/categories';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import { ProjectCategory } from '@/app/api/projects/types';
 import LucidIcon from '@/components/utils/LucidIcon';
 
 interface INewProjectDialogProps {
-  data?: { id: number; name: string; description: string } | null;
-  submitProject: (bodyData: NewProjectType, projectId?: number) => Promise<boolean>;
+  data?: { id: string; name: string; description: string } | null;
+  submitProject: (bodyData: NewProjectType, projectId?: string) => Promise<boolean>;
   children: React.ReactNode;
 }
 

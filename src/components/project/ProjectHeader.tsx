@@ -1,6 +1,6 @@
 import { Button } from '../ui/button';
 import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
-import { NewProjectCardType, ProjectWithUrls } from './types';
+import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -11,11 +11,13 @@ import { GripVertical, Trash } from 'lucide-react';
 import ConfirmDialog from '../utils/ConfirmDialog';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
+import LucidIcon from '../utils/LucidIcon';
+import { getProjectCategory } from '@/app/api/projects/utils';
 
 interface IProjectHeaderProps {
   submitProjectCard: (
     bodyData: NewProjectCardType,
-    options?: { projectCardId?: number; projectId?: number },
+    options?: { projectCardId?: string; projectId?: string },
   ) => Promise<boolean>;
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
@@ -27,13 +29,27 @@ const ProjectHeader = ({
   deleteProject,
 }: IProjectHeaderProps) => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
-      <NewProjectCardDialog submitProjectCard={submitProjectCard} projectId={project.id}>
-        <Button variant="outline" className="bg-zinc-900 text-xs md:text-sm">
-          Add card
-        </Button>
-      </NewProjectCardDialog>
-      <Menu project={project} deleteProject={deleteProject} />
+    <div className="flex flex-row px-2 md:p-4 justify-between w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
+      <div className="flex flex-row gap-4 items-center">
+        <LucidIcon
+          icon={getProjectCategory(project.category).icon}
+          size={40}
+          color={getProjectCategory(project.category).color}
+          className="border-[1px] border-zinc-700 rounded-sm p-2"
+        />
+        <span className="text-md md:text-lg font-semibold">{project.name}</span>
+      </div>
+      <div className="flex flex-row gap-2">
+        <NewProjectCardDialog
+          submitProjectCard={submitProjectCard}
+          projectId={project.id}
+        >
+          <Button variant="outline" className="bg-zinc-900 text-xs md:text-sm">
+            Add card
+          </Button>
+        </NewProjectCardDialog>
+        <Menu project={project} deleteProject={deleteProject} />
+      </div>
     </div>
   );
 };
@@ -55,7 +71,7 @@ const Menu = ({ project, deleteProject }: IMenuProps) => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 bg-zinc-800">
         <ConfirmDialog
-          id={project.id.toString()}
+          id={project.id}
           route="projects"
           title={`Delete project ${project.name} ?`}
           message="Are you sure you want to delete this project? This action cannot be undone."

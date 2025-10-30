@@ -3,9 +3,9 @@
 import { useProjects } from '@/hooks/use-projects';
 import ProjectHeader from './ProjectHeader';
 import { Spinner } from '../ui/spinner';
-import { NewProjectCardType, ProjectWithUrls } from './types';
 import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
 import ProjectCard from './ProjectCard';
+import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 
 interface IProjectBodyProps {
   projectId: string;
@@ -44,7 +44,7 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
         cards={project.projectCards}
         submitProjectCard={submitProjectCard}
         deleteProjectCard={deleteProjectCard}
-        projectId={parseInt(projectId)}
+        projectId={projectId}
       />
     </div>
   );
@@ -56,10 +56,10 @@ interface ICardListProps {
   cards: ProjectWithUrls['projectCards'];
   submitProjectCard: (
     bodyData: NewProjectCardType,
-    options?: { projectCardId?: number; projectId?: number },
+    options?: { projectCardId?: string; projectId?: string },
   ) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
-  projectId: number;
+  projectId: string;
 }
 
 const CardList = ({
@@ -96,9 +96,9 @@ const CardList = ({
 interface IEmptyCardProps {
   submitProjectCard: (
     bodyData: NewProjectCardType,
-    options?: { projectCardId?: number; projectId?: number },
+    options?: { projectCardId?: string; projectId?: string },
   ) => Promise<boolean>;
-  projectId: number;
+  projectId: string;
 }
 
 const EmptyCard = ({ submitProjectCard, projectId }: IEmptyCardProps) => {

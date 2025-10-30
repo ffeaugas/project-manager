@@ -14,15 +14,15 @@ export function toUpdateData(data: {
   description: string | null;
   projectId: string | null;
 }): {
-  id: number | undefined;
+  id: string | undefined;
   name: string | undefined;
   description: string | undefined;
-  projectId: number | undefined;
+  projectId: string | undefined;
 } {
   return {
-    id: data.id ? parseInt(data.id) : undefined,
+    id: data.id || undefined,
     name: data.name || undefined,
     description: data.description || undefined,
-    projectId: data.projectId ? parseInt(data.projectId) : undefined,
+    projectId: data.projectId || undefined,
   };
 }

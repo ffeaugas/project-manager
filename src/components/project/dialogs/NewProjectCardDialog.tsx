@@ -14,23 +14,28 @@ import { Label } from '../../ui/label';
 import { Dropzone } from '../../ui/dropzone';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { newProjectCardSchema, ProjectWithUrls, type NewProjectCardType } from '../types';
 import { useState } from 'react';
+import {
+  NewProjectCardSchema,
+  NewProjectCardType,
+  ProjectWithUrls,
+} from '@/app/api/projects/cards/types';
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
+import { Textarea } from '@/components/ui/textarea';
 
 interface INewProjectCardDialogProps {
   submitProjectCard: (
     bodyData: NewProjectCardType,
     options?: {
-      projectCardId?: number;
-      projectId?: number;
+      projectCardId?: string;
+      projectId?: string;
     },
   ) => Promise<boolean>;
   deleteProjectCard?: (id: string) => Promise<boolean>;
   children: React.ReactNode;
   data?: ProjectWithUrls['projectCards'][0] | null;
-  projectId?: number;
+  projectId?: string;
 }
 
 const NewProjectCardDialog = ({
@@ -54,7 +59,7 @@ const NewProjectCardDialog = ({
       description: data?.description || '',
       image: undefined,
     },
-    resolver: zodResolver(newProjectCardSchema),
+    resolver: zodResolver(NewProjectCardSchema),
   });
 
   const handleFileSelect = (file: File | null) => {
@@ -98,10 +103,11 @@ const NewProjectCardDialog = ({
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
-              <Input
+              <Textarea
                 {...register('description')}
                 id="description"
-                className="col-span-3"
+                className="col-span-3 resize-none"
+                rows={4}
               />
             </div>
             <div className="grid grid-cols-4 items-start gap-4">
@@ -124,7 +130,7 @@ const NewProjectCardDialog = ({
           <DialogFooter className="flex flex-row justify-end gap-2">
             {data && deleteProjectCard && (
               <ConfirmDialog
-                id={data.id.toString()}
+                id={data.id}
                 route="project-cards"
                 title="Delete this project card?"
                 message="Are you sure you want to delete this project card? This action cannot be undone."

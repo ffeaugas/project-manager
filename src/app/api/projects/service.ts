@@ -22,7 +22,7 @@ export async function createProject(
       description: data.description,
       category: data.category ?? 'other',
       userId: uid,
-    } as any,
+    },
     select: { id: true },
   });
   return created;
@@ -30,7 +30,7 @@ export async function createProject(
 
 export async function updateProject(
   userId: string | number,
-  id: number,
+  id: string,
   data: { name?: string; description?: string; category?: string },
 ) {
   const uid = String(userId);
@@ -49,14 +49,14 @@ export async function updateProject(
       name: data.name,
       description: data.description,
       category: data.category,
-    } as any,
+    },
     select: { id: true },
   });
 
   return updated;
 }
 
-export async function deleteProject(userId: string | number, id: number) {
+export async function deleteProject(userId: string | number, id: string) {
   const uid = String(userId);
   const existing = await prisma.project.findUnique({
     where: { id, userId: uid },

@@ -1,15 +1,15 @@
 import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
-import { NewProjectCardType, ProjectWithUrls } from './types';
+import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import Image from 'next/image';
 
 interface IProjectCardProps {
   data: ProjectWithUrls['projectCards'][0];
   submitProjectCard: (
     bodyData: NewProjectCardType,
-    options?: { projectCardId?: number; projectId?: number },
+    options?: { projectCardId?: string; projectId?: string },
   ) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
-  projectId: number;
+  projectId: string;
 }
 
 const ProjectCard = ({

@@ -1,10 +1,10 @@
 import { prisma } from '@/lib/prisma';
 import { s3UploadFile, s3DeleteFolder } from '@/lib/s3';
-import { ProjectSelect } from '@/components/project/types';
+import { NewProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
-export async function getProjectWithCards(projectId: number, userId: string) {
+export async function getProjectWithCards(projectId: string, userId: string) {
   const project = await prisma.project.findUnique({
     where: { id: projectId, userId },
     select: ProjectSelect,
@@ -25,7 +25,7 @@ export async function getProjectWithCards(projectId: number, userId: string) {
 }
 
 export async function createProjectCard(
-  data: { name: string; description: string; projectId: number },
+  data: NewProjectCardType,
   userId: string,
   imageFile?: File | null,
 ) {
@@ -45,7 +45,7 @@ export async function createProjectCard(
     data: {
       name: data.name,
       description: data.description,
-      projectId: data.projectId,
+      projectId: project.id,
     },
   });
 
@@ -70,8 +70,8 @@ export async function createProjectCard(
 }
 
 export async function updateProjectCard(
-  id: number,
-  data: { name?: string; description?: string; projectId?: number },
+  id: string,
+  data: { name?: string; description?: string; projectId?: string },
   userId: string,
   imageFile?: File | null,
 ) {
@@ -131,7 +131,7 @@ export async function updateProjectCard(
   return getProjectCardWithUrls(id);
 }
 
-export async function deleteProjectCard(id: number, userId: string) {
+export async function deleteProjectCard(id: string, userId: string) {
   const existingCard = await prisma.projectCard.findUnique({
     where: { id },
     include: { project: true, images: true },
@@ -156,7 +156,7 @@ export async function deleteProjectCard(id: number, userId: string) {
   return { deletedImagesCount: existingCard.images.length };
 }
 
-async function getProjectCardWithUrls(id: number) {
+async function getProjectCardWithUrls(id: string) {
   const card = await prisma.projectCard.findUnique({
     where: { id },
     include: { project: true, images: true },

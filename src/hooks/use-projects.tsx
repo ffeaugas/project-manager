@@ -1,11 +1,7 @@
 'use client';
 
 import { ProjectSelectType } from '@/app/api/projects/types';
-import {
-  NewProjectCardType,
-  ProjectSelect,
-  ProjectWithUrls,
-} from '@/components/project/types';
+import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useProjects = (id?: string) => {
@@ -16,14 +12,14 @@ export const useProjects = (id?: string) => {
 
   const submitProjectCard = async (
     bodyData: NewProjectCardType,
-    options?: { projectCardId?: number; projectId?: number },
+    options?: { projectCardId?: string; projectId?: string },
   ) => {
     const formData = new FormData();
     formData.append('name', bodyData.name);
     formData.append('description', bodyData.description);
 
     if (options?.projectId) {
-      formData.append('projectId', options.projectId.toString());
+      formData.append('projectId', options.projectId);
     }
 
     if (bodyData.image) {
@@ -32,7 +28,7 @@ export const useProjects = (id?: string) => {
 
     const method = options?.projectCardId ? 'PATCH' : 'POST';
     if (options?.projectCardId) {
-      formData.append('id', options.projectCardId.toString());
+      formData.append('id', options.projectCardId);
     }
 
     const response = await fetch(`/api/projects/cards`, {
@@ -74,7 +70,7 @@ export const useProjects = (id?: string) => {
 
   const submitProject = async (
     bodyData: { name: string; description: string; category?: string },
-    projectId?: number,
+    projectId?: string,
   ) => {
     try {
       const requestBody = projectId ? { ...bodyData, id: projectId } : bodyData;
