@@ -133,12 +133,12 @@ const ColumnHeader = ({
   dragListeners,
 }: IColumnHeaderProps) => {
   return (
-    <div
-      className="flex flex-row justify-between items-center group h-8"
-      {...dragAttributes}
-      {...dragListeners}
-    >
-      <div className="flex flex-row gap-4 items-center">
+    <div className="flex flex-row items-center group h-8">
+      <div
+        className="px-2 flex flex-row gap-4 items-center flex-1"
+        {...dragAttributes}
+        {...dragListeners}
+      >
         <div
           className="size-4 rounded-full flex-shrink-0"
           style={{ backgroundColor: data.color }}

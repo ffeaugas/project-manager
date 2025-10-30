@@ -124,7 +124,7 @@ const KanbanBoard = () => {
           <NewColumnDialog submitColumn={submitColumn}>
             <Button
               variant="outline"
-              className="flex flex-col justify-center w-[250px] md:w-[300px] h-[400px] md:h-[500px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-xl m-1 mt-[3.25rem]"
+              className="flex flex-col justify-center w-[250px] md:w-[300px] h-[200px] md:h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-xl my-[1px]"
             >
               Add Column
             </Button>

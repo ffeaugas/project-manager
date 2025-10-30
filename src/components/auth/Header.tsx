@@ -27,12 +27,12 @@ const Header = ({ userData }: { userData: User | undefined }) => {
     );
 
   return (
-    <div className="flex gap-2 flex-row py-2 px-2 md:px-4 items-center justify-between border-b-[1px] border-zinc-700">
+    <div className="flex gap-2 flex-row py-1 px-2 md:px-4 items-center justify-between border-b-[1px] border-zinc-700 md:justify-end fixed top-0 left-0 right-0 z-50 md:relative h-12 bg-black">
       <SidebarTrigger />
       <DropdownMenu>
         <DropdownMenuTrigger
           className="cursor-pointer space-x-2 flex flex-row items-center
-        border-[1px] border-green-700 bg-zinc-800/30 py-2 px-2 md:px-4 pr-3 rounded-sm gap-2"
+        border-[1px] bg-green-800 py-1 px-2 md:px-4 pr-3 rounded-full gap-2"
         >
           <p className="text-slate-200 text-xs md:text-sm font-semibold">
             {userData.name}

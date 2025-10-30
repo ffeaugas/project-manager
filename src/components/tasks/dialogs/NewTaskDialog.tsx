@@ -58,7 +58,7 @@ const NewTaskDialog = ({
       : await createTask(bodyData, columnId);
 
     if (success) {
-      reset();
+      data ? null : reset();
       setIsOpen(false);
     } else {
       toast.error(

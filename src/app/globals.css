@@ -84,5 +84,9 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    background-image: url('/grain.svg');
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    filter: url(#noise);
   }
 }

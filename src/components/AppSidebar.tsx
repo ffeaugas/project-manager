@@ -45,6 +45,7 @@ import { User } from 'better-auth';
 import { Spinner } from './ui/spinner';
 import { toast } from 'sonner';
 import { useProjects } from '@/hooks/use-projects';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SidebarItem {
   name: string;
@@ -83,7 +84,7 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
   }
 
   return (
-    <Sidebar className="bg-zinc-900 border-[1px] border-zinc-700 text-slate-200">
+    <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupContent>
