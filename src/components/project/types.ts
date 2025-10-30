@@ -1,3 +1,4 @@
+import { ProjectCategoryKey } from '@/app/api/projects/types';
 import { Prisma } from '@prisma/client';
 import { z, ZodType } from 'zod';
 
@@ -5,12 +6,14 @@ interface NewProjectForm {
   id?: number;
   name: string;
   description: string;
+  category: string;
 }
 
-export const newProjectSchema: ZodType<NewProjectForm> = z.object({
+export const newProjectSchema = z.object({
   id: z.number().optional(),
   name: z.string().min(1, 'Name is required'),
   description: z.string().min(1, 'Description is required'),
+  category: z.string().default('other'),
 });
 
 export type NewProjectType = z.infer<typeof newProjectSchema>;
@@ -71,6 +74,7 @@ export const ProjectSelect = {
   id: true,
   name: true,
   description: true,
+  category: true,
   projectCards: {
     select: ProjectCardSelect,
   },

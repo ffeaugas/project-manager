@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ZodError } from 'zod';
+import { handleApiError } from '@/lib/api-error-handler';
 import { getUser } from '@/lib/auth-server';
 import {
   getProjectWithCards,
@@ -35,8 +35,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(project, { status: 200 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+    return handleApiError(error);
   }
 }
 
@@ -60,27 +59,12 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(projectCard, { status: 201 });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 },
-      );
-    }
-
-    if (error instanceof Error) {
-      const statusMap: Record<string, number> = {
+    return handleApiError(error, {
+      statusMap: {
         'Project not found': 404,
         'File too large': 400,
-      };
-
-      return NextResponse.json(
-        { error: error.message },
-        { status: statusMap[error.message] || 500 },
-      );
-    }
-
-    console.error(error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+      },
+    });
   }
 }
 
@@ -106,29 +90,14 @@ export async function PATCH(request: NextRequest) {
 
     return NextResponse.json(projectCard, { status: 200 });
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 },
-      );
-    }
-
-    if (error instanceof Error) {
-      const statusMap: Record<string, number> = {
+    return handleApiError(error, {
+      statusMap: {
         'Project card not found': 404,
         'Project not found': 404,
         Unauthorized: 403,
         'File too large': 400,
-      };
-
-      return NextResponse.json(
-        { error: error.message },
-        { status: statusMap[error.message] || 500 },
-      );
-    }
-
-    console.error(error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+      },
+    });
   }
 }
 
@@ -152,26 +121,11 @@ export async function DELETE(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        { error: 'Invalid request data', details: error.errors },
-        { status: 400 },
-      );
-    }
-
-    if (error instanceof Error) {
-      const statusMap: Record<string, number> = {
+    return handleApiError(error, {
+      statusMap: {
         'Project card not found': 404,
         Unauthorized: 403,
-      };
-
-      return NextResponse.json(
-        { error: error.message },
-        { status: statusMap[error.message] || 500 },
-      );
-    }
-
-    console.error(error);
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+      },
+    });
   }
 }

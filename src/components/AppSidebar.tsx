@@ -1,28 +1,6 @@
 'use client';
 
-/* eslint-disable @typescript-eslint/no-unused-vars*/
-import {
-  Brush,
-  Home,
-  Box,
-  Cat,
-  Eclipse,
-  Frown,
-  Heart,
-  Star,
-  Layers,
-  WandSparkles,
-  Citrus,
-  AlarmClock,
-  Cherry,
-  Drum,
-  Plus,
-  LucideIcon,
-  Folder,
-  ChevronDown,
-  ChevronRight,
-  HomeIcon,
-} from 'lucide-react';
+import { Plus, Folder, ChevronDown, ChevronRight, HomeIcon } from 'lucide-react';
 
 import {
   Sidebar,
@@ -37,51 +15,16 @@ import {
   SidebarMenuSubItem,
 } from './ui/sidebar';
 import { Button } from './ui/button';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
 import Link from 'next/link';
-import AuthStatus from './auth/Header';
-import { User } from 'better-auth';
-import { Spinner } from './ui/spinner';
-import { toast } from 'sonner';
 import { useProjects } from '@/hooks/use-projects';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { getProjectCategory } from '@/app/api/projects/utils';
+import LucidIcon from './utils/LucidIcon';
 
-interface SidebarItem {
-  name: string;
-  id: number;
-}
-
-// Icon mapping function
-const getIconComponent = (iconName: string): LucideIcon => {
-  const iconMap: Record<string, LucideIcon> = {
-    brush: Brush,
-    home: Home,
-    box: Box,
-    cat: Cat,
-    eclipse: Eclipse,
-    frown: Frown,
-    heart: Heart,
-    star: Star,
-    layers: Layers,
-    wandsparkles: WandSparkles,
-    citrus: Citrus,
-    alarmclock: AlarmClock,
-    cherry: Cherry,
-    drum: Drum,
-  };
-
-  return iconMap[iconName.toLowerCase()] || Home;
-};
-
-const AppSidebar = ({ user }: { user: User | undefined }) => {
+const AppSidebar = () => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
-  const { projects, isLoading, error, submitProject } = useProjects();
-
-  if (!user) {
-    toast.error('Problem logging in');
-    return <Spinner />;
-  }
+  const { projects, submitProject } = useProjects();
 
   return (
     <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200">
@@ -116,9 +59,26 @@ const AppSidebar = ({ user }: { user: User | undefined }) => {
                     {projects.map((project) => (
                       <SidebarMenuSubItem key={project.name}>
                         <SidebarMenuSubButton asChild>
-                          <Link href={`/project/${project.id}`}>
-                            <Home />
-                            <span>{project.name}</span>
+                          <Link
+                            href={`/project/${project.id}`}
+                            className="flex items-center gap-2 justify-between w-full"
+                          >
+                            <div className="flex items-center gap-2">
+                              {(() => {
+                                const category = getProjectCategory(project.category);
+                                return (
+                                  <LucidIcon
+                                    icon={category.icon}
+                                    size={16}
+                                    color={category.color}
+                                  />
+                                );
+                              })()}
+                              <span className="text-sm">{project.name}</span>
+                            </div>
+                            <span className="text-xs text-zinc-400">
+                              {project._count.projectCards}
+                            </span>
                           </Link>
                         </SidebarMenuSubButton>
                       </SidebarMenuSubItem>

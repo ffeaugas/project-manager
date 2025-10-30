@@ -12,11 +12,15 @@ import {
 import { Button } from '../../ui/button';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { newProjectSchema, NewProjectType } from '@/components/project/types';
+import { PROJECT_CATEGORIES, PROJECT_CATEGORY_KEYS } from '@/const/categories';
+import { getProjectCategory } from '@/app/api/projects/utils';
+import { ProjectCategory } from '@/app/api/projects/types';
+import LucidIcon from '@/components/utils/LucidIcon';
 
 interface INewProjectDialogProps {
   data?: { id: number; name: string; description: string } | null;
@@ -33,16 +37,20 @@ const NewProjectDialog = ({
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<NewProjectType>({
     defaultValues: {
       name: data?.name || '',
       description: data?.description || '',
+      category: 'other',
     },
     resolver: zodResolver(newProjectSchema),
   });
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const selectedCategoryKey = watch('category');
+  const selectedCategory = getProjectCategory(selectedCategoryKey);
 
   const onSubmit: SubmitHandler<NewProjectType> = async (bodyData) => {
     try {
@@ -85,9 +93,13 @@ const NewProjectDialog = ({
                 placeholder="e.g., Q4 Marketing Campaign"
               />
             </div>
+            <CategorySelect selectedCategory={selectedCategory} register={register} />
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             {errors.description && (
               <span className="text-red-500">{errors.description.message}</span>
+            )}
+            {errors.category && (
+              <span className="text-red-500">{errors.category.message as string}</span>
             )}
           </div>
           <DialogFooter>
@@ -100,3 +112,42 @@ const NewProjectDialog = ({
 };
 
 export default NewProjectDialog;
+
+interface ICategorySelectProps {
+  selectedCategory: ProjectCategory;
+  register: UseFormRegister<NewProjectType>;
+}
+
+const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) => {
+  return (
+    <div className="grid grid-cols-4 items-center gap-4">
+      <Label htmlFor="category" className="text-right">
+        Category
+      </Label>
+      <div className="col-span-3 flex items-center gap-2">
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-700">
+          <LucidIcon
+            icon={selectedCategory.icon}
+            size={16}
+            color={selectedCategory.color}
+          />
+        </div>
+        <select
+          id="category"
+          className="flex h-9 w-full rounded-md border border-zinc-700 bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-600"
+          {...register('category')}
+          defaultValue="other"
+        >
+          {PROJECT_CATEGORY_KEYS.map((key) => {
+            const cat = PROJECT_CATEGORIES[key];
+            return (
+              <option key={key} value={key}>
+                {cat.name}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+    </div>
+  );
+};

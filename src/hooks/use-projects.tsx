@@ -1,5 +1,6 @@
 'use client';
 
+import { ProjectSelectType } from '@/app/api/projects/types';
 import {
   NewProjectCardType,
   ProjectSelect,
@@ -8,7 +9,7 @@ import {
 import { useCallback, useEffect, useState } from 'react';
 
 export const useProjects = (id?: string) => {
-  const [projects, setProjects] = useState<ProjectSelect[]>([]);
+  const [projects, setProjects] = useState<ProjectSelectType[]>([]);
   const [project, setProject] = useState<ProjectWithUrls | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -72,7 +73,7 @@ export const useProjects = (id?: string) => {
   };
 
   const submitProject = async (
-    bodyData: { name: string; description: string },
+    bodyData: { name: string; description: string; category?: string },
     projectId?: number,
   ) => {
     try {
