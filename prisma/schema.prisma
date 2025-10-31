@@ -108,6 +108,26 @@ model Image {
   @@map("image")
 }
 
+model CalendarEvent {
+  id          String      @id @default(uuid())
+  userId      String      @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  date        DateTime @db.Date
+  startTime   String?  @map("start_time")
+  duration    Int?     
+  
+  description String   @db.Text
+  
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([date])
+  @@index([userId, date])
+  @@map("calendar_event")
+}
+
 model User {
   id            String    @id
   name          String
@@ -122,6 +142,7 @@ model User {
   taskColumns   TaskColumn[]
   tasks         Task[]
   projects      Project[]
+  calendarEvents CalendarEvent[]
 
   @@unique([email])
   @@map("user")

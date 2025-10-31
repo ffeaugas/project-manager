@@ -3,6 +3,7 @@ import { TaskColumnSelect } from './tasks/types';
 import { generateKeyBetween } from 'fractional-indexing';
 import { NewColumnType, EditColumnType } from './types';
 import { getColumnById } from './utils';
+import { assert } from 'node:console';
 
 export async function getColumns(userId: string) {
   const columns = await prisma.taskColumn.findMany({
@@ -56,7 +57,6 @@ export async function deleteColumn(userId: string, id: string) {
   await prisma.taskColumn.delete({
     where: { userId, id },
   });
-
   return true;
 }
 

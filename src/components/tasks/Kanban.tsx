@@ -20,29 +20,7 @@ import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const TaskBody = () => {
-  const isMobile = useIsMobile();
-
-  if (isMobile) {
-    return (
-      <div className="flex flex-col h-screen max-h-screen w-full">
-        <KanbanBoard />
-      </div>
-    );
-  }
-  return (
-    <div className="flex flex-col h-screen max-h-screen w-full">
-      <div className="flex flex-row h-full">
-        <KanbanBoard />
-        <div className="min-w-[300px] flex flex-col border-l-[1px] border-zinc-700" />
-      </div>
-    </div>
-  );
-};
-
-export default TaskBody;
-
-const KanbanBoard = () => {
+const Kanban = () => {
   const {
     columns,
     tasks,
@@ -134,3 +112,5 @@ const KanbanBoard = () => {
     </div>
   );
 };
+
+export default Kanban;

@@ -16,7 +16,7 @@ interface IConfirmDialogProps {
   title: string;
   message: string;
   confirmLabel: string;
-  action: (id: string, route: string) => Promise<boolean>;
+  action: (id: string, route: string) => Promise<boolean> | Promise<void>;
   onSuccess?: () => void;
   children?: React.ReactNode;
 }
