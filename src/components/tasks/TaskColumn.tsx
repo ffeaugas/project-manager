@@ -1,4 +1,3 @@
-import { GripVertical, Pencil, Trash } from 'lucide-react';
 import TaskCard from './TaskCard';
 import {
   TaskColumnWithTasks,
@@ -7,21 +6,11 @@ import {
 } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '../../app/api/columns/types';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import NewTaskDialog from './dialogs/NewTaskDialog';
-import ConfirmDialog from '../utils/ConfirmDialog';
-import NewColumnDialog from './dialogs/NewColumnDialog';
 import { cn } from '@/lib/utils';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import TaskColumnDropdownMenu from './menus/TaskColumnDropdownMenu';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
@@ -69,7 +58,7 @@ const TaskColumn = ({
     <div
       ref={setNodeRef}
       className={cn(
-        'flex flex-col justify-start-start gap-4 w-[250px] md:w-[300px] min-h-[400px] p-2 rounded-md bg-zinc-900 flex-shrink-0',
+        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md flex-shrink-0',
         isDragging && 'opacity-20',
       )}
       style={style}
@@ -133,7 +122,7 @@ const ColumnHeader = ({
   dragListeners,
 }: IColumnHeaderProps) => {
   return (
-    <div className="flex flex-row items-center group h-8">
+    <div className="flex flex-row items-center group h-8 bg-zinc-800 rounded-md border-[1px] border-black">
       <div
         className="px-2 flex flex-row gap-4 items-center flex-1"
         {...dragAttributes}
@@ -148,61 +137,11 @@ const ColumnHeader = ({
           <b className="font-normal text-zinc-600 text-xs md:text-sm">({nbTasks})</b>
         </p>
       </div>
-      <ColDropdownMenu data={data} submitColumn={submitColumn} deleteItem={deleteItem} />
+      <TaskColumnDropdownMenu
+        data={data}
+        submitColumn={submitColumn}
+        deleteItem={deleteItem}
+      />
     </div>
-  );
-};
-
-interface IColDropdownMenuProps {
-  data: TaskColumnWithTasks;
-  submitColumn: (
-    bodyData: NewColumnType,
-    options?: {
-      columnId?: string;
-    },
-  ) => Promise<boolean>;
-  deleteItem: (id: string, route: string) => Promise<boolean>;
-}
-
-const ColDropdownMenu = ({ data, submitColumn, deleteItem }: IColDropdownMenuProps) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border-[1px] ">
-          <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-zinc-800">
-        <DropdownMenuLabel>{data.name}</DropdownMenuLabel>
-        <DropdownMenuSeparator className="bg-zinc-700" />
-        <DropdownMenuGroup>
-          <NewColumnDialog submitColumn={submitColumn} data={data}>
-            <DropdownMenuItem
-              className="flex justify-between text-zinc-300"
-              onSelect={(event) => event.preventDefault()}
-            >
-              Edit
-              <Pencil />
-            </DropdownMenuItem>
-          </NewColumnDialog>
-          <ConfirmDialog
-            id={data.id}
-            route="columns"
-            title={`Delete ${data.name} ?`}
-            message="Are you sure you want to delete this column? Tasks inside will me removed too. This action cannot be undone."
-            action={deleteItem}
-            confirmLabel="Delete"
-          >
-            <DropdownMenuItem
-              onSelect={(event) => event.preventDefault()}
-              className="flex justify-between text-zinc-300"
-            >
-              Delete
-              <Trash />
-            </DropdownMenuItem>
-          </ConfirmDialog>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
   );
 };

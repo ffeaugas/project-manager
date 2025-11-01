@@ -10,14 +10,14 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
   );
   return (
     <div
-      className="w-full bg-zinc-900 rounded-lg h-[200px] cursor-pointer hover:bg-zinc-800 transition-colors"
+      className="w-full bg-zinc-800 rounded-lg h-[200px] cursor-pointer hover:bg-zinc-700 transition-colors border-[1px] border-black"
       onClick={onClick}
     >
       <h1 className="text-white text-lg font-bold p-2">{date.getDate()}</h1>
       {filteredEvents.length > 0 && (
-        <div className="px-2 space-y-1">
+        <div className="space-y-1">
           {filteredEvents.slice(0, 3).map((event) => (
-            <div key={event.id} className="bg-blue-600 rounded px-2 py-1">
+            <div key={event.id} className="bg-blue-600 px-2 py-1">
               {event.startTime && (
                 <p className="text-xs font-semibold text-white">{event.startTime}</p>
               )}

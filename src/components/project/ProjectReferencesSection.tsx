@@ -61,7 +61,7 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
   };
 
   return (
-    <div className="w-[400px] h-screen border-l border-zinc-700 flex flex-col">
+    <div className="w-[400px] h-screen border-l border-zinc-700 flex flex-col bg-zinc-900">
       <div className="h-14 px-4 border-b border-zinc-700 flex items-center justify-between bg-zinc-900">
         <h2 className="text-md font-semibold text-zinc-200">References</h2>
         <NewReferenceSheet

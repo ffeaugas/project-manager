@@ -34,7 +34,7 @@ const CalendarSection = () => {
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
   return (
-    <div className="w-[400px] h-screen border-l border-zinc-700 flex flex-col gap-2 p-2">
+    <div className="w-[400px] h-screen border-l border-zinc-700 flex flex-col gap-2 p-2 bg-zinc-900">
       <Link href="/home/calendar">
         <CalendarDays size={20} className="cursor-pointer" />
       </Link>

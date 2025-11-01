@@ -27,7 +27,10 @@ const ProjectCard = ({
       projectId={projectId}
       data={data}
     >
-      <div className="bg-zinc-900 rounded-lg w-full md:w-[280px] h-[280px] md:h-[320px] flex flex-col overflow-hidden justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg">
+      <div
+        className="bg-zinc-900 rounded-lg w-full md:min-w-[280px] h-[280px] md:h-[320px] flex flex-col overflow-hidden flex-1
+      justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border-[1px] border-black"
+      >
         {firstImage && (
           <div className="w-full h-[70%] overflow-hidden relative">
             <Image

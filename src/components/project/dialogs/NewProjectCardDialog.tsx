@@ -23,6 +23,7 @@ import {
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
 import { Textarea } from '@/components/ui/textarea';
+import TextEditor from '@/components/utils/TextEditor';
 
 interface INewProjectCardDialogProps {
   submitProjectCard: (
@@ -83,7 +84,7 @@ const NewProjectCardDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-zinc-900">
+      <DialogContent className="w-[80%] bg-zinc-900">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} project card</DialogTitle>
@@ -92,25 +93,26 @@ const NewProjectCardDialog = ({
               you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-4 py-4">
+            <div className="items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
               <Input {...register('name')} id="name" className="col-span-3" />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="items-center gap-4">
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
-              <Textarea
+              {/* <Textarea
                 {...register('description')}
                 id="description"
                 className="col-span-3 resize-none"
                 rows={4}
-              />
+              /> */}
+              <TextEditor {...register('description')} id="description" />
             </div>
-            <div className="grid grid-cols-4 items-start gap-4">
+            <div className="items-start gap-4">
               <Label className="text-right pt-2">Image</Label>
               <div className="col-span-3">
                 <Dropzone
