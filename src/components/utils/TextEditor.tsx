@@ -2,6 +2,8 @@
 
 import { useEditor, EditorContent, Editor, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TextAlign from '@tiptap/extension-text-align';
+import { useEffect } from 'react';
 import {
   Bold,
   Italic,
@@ -13,8 +15,6 @@ import {
   List,
   ListOrdered,
   Code2,
-  Quote,
-  CornerDownLeft,
   Undo2,
   Redo2,
   AlignLeft,
@@ -24,9 +24,11 @@ import {
 
 interface ITextEditorProps {
   id: string;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-const TextEditor = ({ id }: ITextEditorProps) => {
+const TextEditor = ({ id, value = '', onChange }: ITextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -44,18 +46,36 @@ const TextEditor = ({ id }: ITextEditorProps) => {
           },
         },
       }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
     ],
-    content: '<p>Hello World!</p>',
+    content: value || '<p></p>',
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'h-[300px] w-full border-0 rounded-md p-2 bg-zinc-700 focus:outline-none',
+        class:
+          'h-[300px] w-full border-0 rounded-md p-2 px-4 bg-zinc-700 focus:outline-none overflow-auto',
       },
+    },
+    onUpdate: ({ editor }) => {
+      if (onChange) {
+        onChange(editor.getHTML());
+      }
     },
   });
 
+  useEffect(() => {
+    if (editor && value !== undefined) {
+      const currentContent = editor.getHTML();
+      if (currentContent !== value) {
+        editor.commands.setContent(value || '<p></p>');
+      }
+    }
+  }, [editor, value]);
+
   return (
-    <div className="space-y-2">
+    <div className="space-y-2 w-full max-w-full">
       <MenuBar editor={editor} />
       <EditorContent editor={editor} />
     </div>
@@ -95,7 +115,6 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
         isBulletList: ctx.editor?.isActive('bulletList') ?? false,
         isOrderedList: ctx.editor?.isActive('orderedList') ?? false,
         isCodeBlock: ctx.editor?.isActive('codeBlock') ?? false,
-        isBlockquote: ctx.editor?.isActive('blockquote') ?? false,
         canUndo: ctx.editor?.can().chain().undo().run() ?? false,
         canRedo: ctx.editor?.can().chain().redo().run() ?? false,
       };
@@ -125,18 +144,17 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
       onClick: (editor) => editor.chain().focus().toggleStrike().run(),
       isActive: (state) => state.isStrike,
       isDisabled: (state) => !state.canStrike,
+      separator: true,
     },
     {
       icon: AlignLeft,
       label: 'Align left',
       onClick: (editor) => editor.chain().focus().setTextAlign('left').run(),
-      separator: true,
     },
     {
       icon: AlignCenter,
       label: 'Align center',
       onClick: (editor) => editor.chain().focus().setTextAlign('center').run(),
-      separator: true,
     },
     {
       icon: AlignRight,
@@ -149,7 +167,6 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
       label: 'Paragraph',
       onClick: (editor) => editor.chain().focus().setParagraph().run(),
       isActive: (state) => state.isParagraph,
-      separator: true,
     },
     {
       icon: Heading1,
@@ -187,19 +204,6 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
       label: 'Code block',
       onClick: (editor) => editor.chain().focus().toggleCodeBlock().run(),
       isActive: (state) => state.isCodeBlock,
-    },
-    {
-      icon: Quote,
-      label: 'Blockquote',
-      onClick: (editor) => editor.chain().focus().toggleBlockquote().run(),
-      isActive: (state) => state.isBlockquote,
-      separator: true,
-    },
-    {
-      icon: CornerDownLeft,
-      label: 'Hard break',
-      onClick: (editor) => editor.chain().focus().setHardBreak().run(),
-      separator: true,
     },
     {
       icon: Undo2,

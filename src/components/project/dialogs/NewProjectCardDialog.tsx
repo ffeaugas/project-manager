@@ -14,7 +14,7 @@ import { Label } from '../../ui/label';
 import { Dropzone } from '../../ui/dropzone';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   NewProjectCardSchema,
   NewProjectCardType,
@@ -22,7 +22,6 @@ import {
 } from '@/app/api/projects/cards/types';
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
-import { Textarea } from '@/components/ui/textarea';
 import TextEditor from '@/components/utils/TextEditor';
 
 interface INewProjectCardDialogProps {
@@ -53,6 +52,7 @@ const NewProjectCardDialog = ({
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm<NewProjectCardType>({
     defaultValues: {
@@ -62,6 +62,20 @@ const NewProjectCardDialog = ({
     },
     resolver: zodResolver(NewProjectCardSchema),
   });
+
+  const descriptionValue = watch('description');
+
+  // Reset form when dialog opens or data changes
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        name: data?.name || '',
+        description: data?.description || '',
+        image: undefined,
+      });
+      setImageFile(null);
+    }
+  }, [isOpen, data, reset]);
 
   const handleFileSelect = (file: File | null) => {
     setImageFile(file);
@@ -104,13 +118,11 @@ const NewProjectCardDialog = ({
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
-              {/* <Textarea
-                {...register('description')}
+              <TextEditor
                 id="description"
-                className="col-span-3 resize-none"
-                rows={4}
-              /> */}
-              <TextEditor {...register('description')} id="description" />
+                value={descriptionValue}
+                onChange={(value) => setValue('description', value)}
+              />
             </div>
             <div className="items-start gap-4">
               <Label className="text-right pt-2">Image</Label>

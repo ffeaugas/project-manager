@@ -1,6 +1,10 @@
 import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
 import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import Image from 'next/image';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import TextAlign from '@tiptap/extension-text-align';
+import { useEffect } from 'react';
 
 interface IProjectCardProps {
   data: ProjectWithUrls['projectCards'][0];
@@ -19,6 +23,34 @@ const ProjectCard = ({
   projectId,
 }: IProjectCardProps) => {
   const firstImage = data.images?.[0];
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit.configure({
+        heading: {
+          levels: [1, 2, 3],
+        },
+      }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
+    ],
+    content: data.description || '<p></p>',
+    editable: false,
+    immediatelyRender: false,
+    editorProps: {
+      attributes: {
+        class:
+          'text-slate-400 text-xs md:text-sm break-words [&_p]:m-0 [&_p:last-child]:m-0 [&_h1]:text-sm [&_h1]:font-bold [&_h1]:mb-1 [&_h1]:mt-0 [&_h1]:text-slate-300 [&_h2]:text-xs [&_h2]:font-bold [&_h2]:mb-1 [&_h2]:mt-0 [&_h2]:text-slate-300 [&_h3]:text-xs [&_h3]:font-semibold [&_h3]:mb-1 [&_h3]:mt-0 [&_h3]:text-slate-300 [&_ul]:list-disc [&_ul]:pl-4 [&_ul]:my-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_ol]:my-1 [&_li]:my-0 [&_code]:bg-zinc-800 [&_code]:px-1 [&_code]:rounded [&_code]:text-xs [&_code]:font-mono [&_strong]:font-bold [&_strong]:text-slate-300 [&_em]:italic [&_s]:line-through',
+      },
+    },
+  });
+
+  useEffect(() => {
+    if (editor && data.description !== undefined) {
+      editor.commands.setContent(data.description || '<p></p>');
+    }
+  }, [editor, data.description]);
 
   return (
     <NewProjectCardDialog
@@ -46,9 +78,9 @@ const ProjectCard = ({
           <p className="text-white text-sm md:text-base font-bold line-clamp-2 break-words">
             {data.name}
           </p>
-          <p className="text-slate-400 text-xs md:text-sm line-clamp-2 md:line-clamp-3 break-words">
-            {data.description}
-          </p>
+          <div className="line-clamp-2 md:line-clamp-3 overflow-hidden">
+            <EditorContent editor={editor} />
+          </div>
         </div>
       </div>
     </NewProjectCardDialog>
