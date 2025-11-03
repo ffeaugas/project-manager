@@ -82,7 +82,7 @@ const CalendarEventSheet = ({
           onOpenChange(false);
         }
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
@@ -98,7 +98,7 @@ const CalendarEventSheet = ({
         reset();
         onOpenChange(false);
       }
-    } catch (error) {
+    } catch {
       toast.error('An error occurred. Please try again.');
     } finally {
       setIsLoading(false);

@@ -11,7 +11,7 @@ export default async function DynamicPage({ params }: ProjectProps) {
   const { id } = await params;
 
   return (
-    <div className="min-h-screen w-full overflow-hidden flex flex-row">
+    <div className="h-dvh w-full overflow-hidden flex flex-row">
       <ProjectBody projectId={id} />
       <ProjectReferencesSection projectId={id} />
     </div>

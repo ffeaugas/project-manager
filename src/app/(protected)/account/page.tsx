@@ -5,7 +5,7 @@ export default async function Account() {
   const user = await getUser();
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center">
+    <div className="w-full h-dvh flex flex-col items-center justify-center">
       <Card className="w-[400px] bg-zinc-800">
         <CardHeader>
           <CardTitle>Account</CardTitle>

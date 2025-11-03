@@ -17,7 +17,7 @@ const CalendarPage = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
-  const { events, createEvent, updateEvent, deleteEvent, isLoading } = useCalendar();
+  const { events, createEvent, updateEvent, deleteEvent } = useCalendar();
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
@@ -49,12 +49,6 @@ const CalendarPage = () => {
   const handleDayClick = (date: Date) => {
     setSelectedDate(date);
     setSelectedEvent(null);
-    setIsSheetOpen(true);
-  };
-
-  const handleEventClick = (event: CalendarEvent) => {
-    setSelectedEvent(event);
-    setSelectedDate(new Date(event.date));
     setIsSheetOpen(true);
   };
 
@@ -133,7 +127,12 @@ export default CalendarPage;
 
 interface IWeekDayColumnProps {
   weekDayIndex: number;
-  days: any[];
+  days: Array<{
+    date?: Date;
+    weekDayIndex: number;
+    events?: CalendarEvent[];
+    isEmpty?: boolean;
+  }>;
   onDayClick: (date: Date) => void;
 }
 
@@ -152,7 +151,7 @@ const WeekDayColumn = ({ weekDayIndex, days, onDayClick }: IWeekDayColumnProps) 
             <DayCard
               key={day.date!.toISOString()}
               date={day.date!}
-              events={day.events}
+              events={day.events || []}
               onClick={() => onDayClick(day.date!)}
             />
           );

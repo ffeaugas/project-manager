@@ -22,7 +22,7 @@ export const useReferences = (projectId: string) => {
         setError(errorData.error || 'Failed to fetch references');
         toast.error('Failed to fetch references');
       }
-    } catch (error) {
+    } catch {
       setError('Failed to fetch references');
       toast.error('Failed to fetch references');
     } finally {

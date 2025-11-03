@@ -34,7 +34,7 @@ const EmailVerificationResendContent = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-zinc-900 p-4">
+    <div className="flex items-center justify-center h-dvh bg-zinc-900 p-4">
       <Card className="w-full max-w-md space-y-6">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">

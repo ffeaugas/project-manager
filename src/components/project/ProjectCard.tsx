@@ -6,6 +6,7 @@ import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
 import { useEffect } from 'react';
+import { cn } from '@/lib/utils';
 
 interface IProjectCardProps {
   data: ProjectWithUrls['projectCards'][0];
@@ -64,7 +65,7 @@ const ProjectCard = ({
     >
       <div
         className="bg-zinc-900 rounded-lg w-full md:min-w-[280px] h-[280px] md:h-[320px] flex flex-col overflow-hidden flex-1
-      justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border-[1px] border-black"
+      justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border-[1px] border-black relative"
       >
         {firstImage && (
           <div className="w-full h-[70%] overflow-hidden relative">
@@ -77,13 +78,23 @@ const ProjectCard = ({
             />
           </div>
         )}
-        <div className="flex flex-col gap-2 p-3 flex-1">
-          <p className="text-white text-sm md:text-base font-bold line-clamp-2 break-words">
-            {data.name}
-          </p>
-          <div className="line-clamp-2 md:line-clamp-3 overflow-hidden">
+        <div className="flex flex-col gap-2 flex-1">
+          <div className="border-b-[1px] border-zinc-700 px-2 py-1">
+            <p className="text-white text-sm md:text-base font-bold line-clamp-2 break-words">
+              {data.name}
+            </p>
+          </div>
+          <div
+            className={cn(
+              'p-4 overflow-hidden',
+              firstImage ? 'line-clamp-2' : 'line-clamp-[11]',
+            )}
+          >
             <EditorContent editor={editor} />
           </div>
+          {!firstImage && (
+            <span className="bottom-0 right-0 z-10 absolute h-20 w-full bg-gradient-to-t from-zinc-900 via-zinc-900/70 via-50% to-transparent pointer-events-none" />
+          )}
         </div>
       </div>
     </NewProjectCardDialog>

@@ -7,7 +7,7 @@ export default function ErrorPage() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-zinc-900 text-white p-4 w-full">
+    <div className="flex flex-col items-center justify-center h-dvh bg-zinc-900 text-white p-4 w-full">
       <div className="text-center space-y-6">
         <h1 className="text-6xl font-bold text-red-500">Erreur</h1>
         <h2 className="text-2xl font-semibold">Une erreur s&apos;est produite</h2>

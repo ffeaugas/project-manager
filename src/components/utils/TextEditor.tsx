@@ -24,12 +24,11 @@ import {
 } from 'lucide-react';
 
 interface ITextEditorProps {
-  id: string;
   value?: string;
   onChange?: (value: string) => void;
 }
 
-const TextEditor = ({ id, value = '', onChange }: ITextEditorProps) => {
+const TextEditor = ({ value = '', onChange }: ITextEditorProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
@@ -87,12 +86,34 @@ const TextEditor = ({ id, value = '', onChange }: ITextEditorProps) => {
 
 export default TextEditor;
 
+interface EditorState {
+  color: string | undefined;
+  isWhite: boolean;
+  isRed: boolean;
+  isBlue: boolean;
+  isBold: boolean;
+  canBold: boolean;
+  isItalic: boolean;
+  canItalic: boolean;
+  isStrike: boolean;
+  canStrike: boolean;
+  isParagraph: boolean;
+  isHeading1: boolean;
+  isHeading2: boolean;
+  isHeading3: boolean;
+  isBulletList: boolean;
+  isOrderedList: boolean;
+  isCodeBlock: boolean;
+  canUndo: boolean;
+  canRedo: boolean;
+}
+
 interface MenuOption {
   icon?: React.ComponentType<{ size?: number; className?: string }>;
   color?: string;
   onClick: (editor: Editor) => void;
-  isActive?: (editorState: any) => boolean;
-  isDisabled?: (editorState: any) => boolean;
+  isActive?: (editorState: EditorState) => boolean;
+  isDisabled?: (editorState: EditorState) => boolean;
   label: string;
   separator?: boolean;
 }

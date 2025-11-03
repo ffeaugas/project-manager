@@ -1,6 +1,8 @@
+import { CalendarEvent } from '@prisma/client';
+
 interface IDayCardProps {
   date: Date;
-  events: any[];
+  events: CalendarEvent[];
   onClick?: () => void;
 }
 

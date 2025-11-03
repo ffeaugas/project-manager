@@ -23,7 +23,7 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
 
   if (error) {
     return (
-      <div className="text-red-500 w-full h-screen flex items-center justify-center">
+      <div className="text-red-500 w-full h-dvh flex items-center justify-center">
         {error}
       </div>
     );
@@ -34,7 +34,7 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
   }
 
   return (
-    <div className="flex flex-col h-screen flex-1">
+    <div className="flex flex-col h-dvh flex-1">
       <ProjectHeader
         submitProjectCard={submitProjectCard}
         project={project}

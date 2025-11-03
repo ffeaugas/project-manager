@@ -38,7 +38,7 @@ export function Spinner({ size, show, children, className }: SpinnerContentProps
   return (
     <span
       className={cn(
-        'h-screen w-full flex justify-center items-center',
+        'h-dvh w-full flex justify-center items-center',
         spinnerVariants({ show }),
         className,
       )}

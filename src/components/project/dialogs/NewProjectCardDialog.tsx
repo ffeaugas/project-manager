@@ -119,7 +119,6 @@ const NewProjectCardDialog = ({
                 Description
               </Label>
               <TextEditor
-                id="description"
                 value={descriptionValue}
                 onChange={(value) => setValue('description', value)}
               />

@@ -18,7 +18,7 @@ import {
 import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { NewColumnType } from '@/app/api/columns/types';
 
 const Kanban = () => {
   const {
@@ -52,7 +52,7 @@ const Kanban = () => {
   if (isLoading) return <Spinner size="large" />;
 
   return (
-    <div className="flex flex-col h-full flex-1 max-w-full md:max-w-[75%]">
+    <div className="flex flex-col flex-1 max-w-full md:max-w-[75%]">
       <TaskHeader />
       <div className="overflow-y-scroll overflow-x-auto">
         <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
@@ -98,15 +98,8 @@ const Kanban = () => {
                 />
               ) : null}
             </DragOverlay>
+            <EmptyColumn submitColumn={submitColumn} />
           </DndContext>
-          <NewColumnDialog submitColumn={submitColumn}>
-            <Button
-              variant="outline"
-              className="flex flex-col justify-center w-[250px] md:w-[300px] h-[200px] md:h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-xl my-[1px]"
-            >
-              Add Column
-            </Button>
-          </NewColumnDialog>
         </div>
       </div>
     </div>
@@ -114,3 +107,24 @@ const Kanban = () => {
 };
 
 export default Kanban;
+
+const EmptyColumn = ({
+  submitColumn,
+}: {
+  submitColumn: (
+    bodyData: NewColumnType,
+    options?: { columnId?: string },
+  ) => Promise<boolean>;
+}) => {
+  return (
+    <NewColumnDialog submitColumn={submitColumn}>
+      <Button
+        variant="outline"
+        className="flex flex-col justify-center w-[150px] h-[200px] md:h-[100px] bg-transparent border-dashed
+        border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-md my-[1px] mt-[.6rem]"
+      >
+        Add Column
+      </Button>
+    </NewColumnDialog>
+  );
+};

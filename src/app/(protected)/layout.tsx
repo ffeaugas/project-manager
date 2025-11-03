@@ -18,9 +18,9 @@ export default async function ProtectedLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex w-full h-full">
+      <div className="flex w-full h-dvh">
         <AppSidebar />
-        <main className="flex-1 h-full overflow-hidden py-12">
+        <main className="flex-1 h-dvh overflow-hidden py-12">
           <Header userData={user} />
           {children}
           <Toaster />
