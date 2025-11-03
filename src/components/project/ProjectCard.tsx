@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
+import { Color, TextStyle } from '@tiptap/extension-text-style';
 import { useEffect } from 'react';
 
 interface IProjectCardProps {
@@ -34,6 +35,8 @@ const ProjectCard = ({
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
+      TextStyle,
+      Color,
     ],
     content: data.description || '<p></p>',
     editable: false,

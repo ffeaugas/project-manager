@@ -3,6 +3,7 @@
 import { useEditor, EditorContent, Editor, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
+import { Color, TextStyle } from '@tiptap/extension-text-style';
 import { useEffect } from 'react';
 import {
   Bold,
@@ -49,6 +50,8 @@ const TextEditor = ({ id, value = '', onChange }: ITextEditorProps) => {
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
+      TextStyle,
+      Color,
     ],
     content: value || '<p></p>',
     immediatelyRender: false,
@@ -85,7 +88,8 @@ const TextEditor = ({ id, value = '', onChange }: ITextEditorProps) => {
 export default TextEditor;
 
 interface MenuOption {
-  icon: React.ComponentType<{ size?: number; className?: string }>;
+  icon?: React.ComponentType<{ size?: number; className?: string }>;
+  color?: string;
   onClick: (editor: Editor) => void;
   isActive?: (editorState: any) => boolean;
   isDisabled?: (editorState: any) => boolean;
@@ -102,6 +106,10 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
     editor,
     selector: (ctx) => {
       return {
+        color: ctx.editor?.getAttributes('textStyle').color,
+        isWhite: ctx.editor?.isActive('textStyle', { color: 'white' }) ?? false,
+        isRed: ctx.editor?.isActive('textStyle', { color: '#FBBC88' }) ?? false,
+        isBlue: ctx.editor?.isActive('textStyle', { color: '#85D1F5' }) ?? false,
         isBold: ctx.editor?.isActive('bold') ?? false,
         canBold: ctx.editor?.can().chain().toggleBold().run() ?? false,
         isItalic: ctx.editor?.isActive('italic') ?? false,
@@ -185,6 +193,25 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
       label: 'Heading 3',
       onClick: (editor) => editor.chain().focus().toggleHeading({ level: 3 }).run(),
       isActive: (state) => state.isHeading3,
+      separator: true,
+    },
+    {
+      color: '#FFFFFF',
+      label: 'Color',
+      onClick: (editor) => editor.chain().focus().setColor('white').run(),
+      isActive: (state) => state.isWhite,
+    },
+    {
+      color: '#FBBC88',
+      label: 'Color',
+      onClick: (editor) => editor.chain().focus().setColor('#FBBC88').run(),
+      isActive: (state) => state.isRed,
+    },
+    {
+      color: '#85D1F5',
+      label: 'Color',
+      onClick: (editor) => editor.chain().focus().setColor('#85D1F5').run(),
+      isActive: (state) => state.isBlue,
     },
     {
       icon: List,
@@ -243,7 +270,13 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
                 ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >
-              <Icon size={18} />
+              {Icon && <Icon size={18} />}
+              {option.color && (
+                <div
+                  className={`w-4 h-4 rounded-full`}
+                  style={{ backgroundColor: option.color }}
+                />
+              )}
             </button>
             {option.separator && <div className="w-px h-6 mx-1 bg-zinc-600" />}
           </div>
