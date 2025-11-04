@@ -21,14 +21,17 @@ import Link from 'next/link';
 import { useProjects } from '@/hooks/use-projects';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import LucidIcon from './utils/LucidIcon';
+import { User } from 'better-auth';
+import AuthButton from './auth/AuthButton';
 
-const AppSidebar = () => {
+const AppSidebar = ({ userData }: { userData: User }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
   const { projects, submitProject } = useProjects();
 
   return (
     <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200 z-20">
       <SidebarContent>
+        <AuthButton userData={userData} />
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

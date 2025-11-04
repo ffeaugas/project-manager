@@ -37,15 +37,13 @@ export type DeleteProjectInput = z.infer<typeof DeleteProjectSchema>;
 
 export type ProjectCategoryKey =
   | 'other'
-  | 'wood'
-  | 'diy'
-  | 'construction'
-  | 'nature'
-  | 'product'
+  | 'craft'
+  | 'art'
   | 'design'
-  | 'packaging'
+  | 'photography'
   | 'engineering'
-  | 'files'
+  | 'work'
+  | 'programming'
   | 'labeled';
 
 export type ProjectCategory = {

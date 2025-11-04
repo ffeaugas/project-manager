@@ -90,7 +90,7 @@ const NewProjectDialog = ({
                 {...register('description')}
                 id="description"
                 className="col-span-3"
-                placeholder="e.g., Q4 Marketing Campaign"
+                placeholder=""
               />
             </div>
             <CategorySelect selectedCategory={selectedCategory} register={register} />

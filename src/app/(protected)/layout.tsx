@@ -1,7 +1,6 @@
 import { SidebarProvider } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import { getUser } from '@/lib/auth-server';
-import Header from '@/components/auth/Header';
 import { Toaster } from 'sonner';
 import { redirect } from 'next/navigation';
 
@@ -19,9 +18,8 @@ export default async function ProtectedLayout({
   return (
     <SidebarProvider>
       <div className="flex w-full h-dvh">
-        <AppSidebar />
-        <main className="flex-1 h-dvh overflow-hidden py-12">
-          <Header userData={user} />
+        <AppSidebar userData={user} />
+        <main className="flex-1 h-dvh overflow-hidden">
           {children}
           <Toaster />
         </main>
