@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { SortableContext, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import TaskColumnDropdownMenu from './menus/TaskColumnDropdownMenu';
+import { useMemo } from 'react';
 
 interface ITaskColumnProps {
   data: TaskColumnWithTasks;
@@ -54,6 +55,8 @@ const TaskColumn = ({
     transform: CSS.Transform.toString(transform),
   };
 
+  const taskIds = useMemo(() => tasks.map((task) => task.id), [tasks]);
+
   return (
     <div
       ref={setNodeRef}
@@ -71,7 +74,7 @@ const TaskColumn = ({
         dragAttributes={attributes}
         dragListeners={listeners}
       />
-      <SortableContext items={tasks.map((task) => task.id)}>
+      <SortableContext items={taskIds}>
         {tasks.map((task) => (
           <TaskCard
             key={task.id}

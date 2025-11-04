@@ -19,6 +19,7 @@ import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
+import { useMemo } from 'react';
 
 const Kanban = () => {
   const {
@@ -37,7 +38,10 @@ const Kanban = () => {
     activeColumn,
   } = useTasks();
 
-  const columnIds = columns.map((col: TaskColumnWithTasks) => col.id);
+  const columnIds = useMemo(
+    () => columns.map((col: TaskColumnWithTasks) => col.id),
+    [columns],
+  );
 
   const sensors = useSensors(
     useSensor(PointerSensor, {

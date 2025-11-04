@@ -224,7 +224,7 @@ export const useTasks = () => {
     [fetchTaskColumns],
   );
 
-  const handleDragOver = (event: DragOverEvent) => {
+  const handleDragOver = useCallback((event: DragOverEvent) => {
     const { active, over } = event;
     if (!over) return;
 
@@ -273,7 +273,7 @@ export const useTasks = () => {
         return tasks;
       });
     }
-  };
+  }, []);
 
   const handleDragStart = (event: DragStartEvent) => {
     const { active } = event;
@@ -366,15 +366,6 @@ export const useTasks = () => {
       throw new Error('Failed to reorder task');
     }
   };
-
-  useEffect(() => {
-    setColumns((prevColumns) =>
-      prevColumns.map((col) => {
-        const columnTasks = tasks.filter((t) => t.columnId === col.id);
-        return { ...col, tasks: columnTasks };
-      }),
-    );
-  }, [tasks]);
 
   useEffect(() => {
     fetchTaskColumns();
