@@ -11,7 +11,7 @@ import {
   DragOverlay,
   KeyboardSensor,
   PointerSensor,
-  TouchSensor,
+  // TouchSensor,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -49,7 +49,7 @@ const Kanban = () => {
         distance: 5,
       },
     }),
-    useSensor(TouchSensor),
+    // useSensor(TouchSensor),
     useSensor(KeyboardSensor),
   );
 

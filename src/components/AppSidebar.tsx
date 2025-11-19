@@ -77,7 +77,11 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                                   />
                                 );
                               })()}
-                              <span className="text-sm">{project.name}</span>
+                              <span className="text-sm">
+                                {project.name.length > 18
+                                  ? project.name.slice(0, 18) + '...'
+                                  : project.name}
+                              </span>
                             </div>
                             <span className="text-xs text-zinc-400">
                               {project._count.projectCards}

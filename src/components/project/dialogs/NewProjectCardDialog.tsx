@@ -98,7 +98,7 @@ const NewProjectCardDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[80%] bg-zinc-900">
+      <DialogContent className="h-full md:h-auto w-full md:w-[80%] bg-zinc-900">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} project card</DialogTitle>
@@ -107,14 +107,14 @@ const NewProjectCardDialog = ({
               you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="items-center gap-4">
+          <div className="py-4 grid grid-cols-5 gap-4">
+            <div className="items-center gap-4 col-span-5">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input {...register('name')} id="name" className="col-span-3" />
+              <Input {...register('name')} id="name" />
             </div>
-            <div className="items-center gap-4">
+            <div className="items-center gap-4 col-span-5 lg:col-span-4 row-span-3">
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
@@ -123,16 +123,14 @@ const NewProjectCardDialog = ({
                 onChange={(value) => setValue('description', value)}
               />
             </div>
-            <div className="items-start gap-4">
+            <div className="items-start gap-4 col-span-5 lg:col-span-1">
               <Label className="text-right pt-2">Image</Label>
-              <div className="col-span-3">
-                <Dropzone
-                  onFileSelect={handleFileSelect}
-                  accept="image/*"
-                  maxSize={5}
-                  value={data?.images?.[0]?.url || imageFile}
-                />
-              </div>
+              <Dropzone
+                onFileSelect={handleFileSelect}
+                accept="image/*"
+                maxSize={5}
+                value={data?.images?.[0]?.url || imageFile}
+              />
             </div>
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
             {errors.description && (

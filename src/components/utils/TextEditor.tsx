@@ -22,6 +22,7 @@ import {
   AlignCenter,
   AlignRight,
 } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ITextEditorProps {
   value?: string;
@@ -123,6 +124,8 @@ interface IMenuBarProps {
 }
 
 const MenuBar = ({ editor }: IMenuBarProps) => {
+  const isMobile = useIsMobile();
+
   const editorState = useEditorState({
     editor,
     selector: (ctx) => {
@@ -268,7 +271,7 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-2 border border-zinc-700 rounded-md bg-zinc-800">
+    <div className="flex flex-wrap items-center gap-1 p-1 rounded-md bg-zinc-800">
       {menuOptions.map((option, index) => {
         const Icon = option.icon;
         const isActive = option.isActive?.(editorState) ?? false;
@@ -282,7 +285,7 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
               title={option.label}
               type="button"
               className={`
-                flex items-center justify-center p-2 rounded transition-colors
+                flex items-center justify-center py-1 px-2 rounded transition-colors
                 ${
                   isActive
                     ? 'bg-zinc-700 text-white'
@@ -291,7 +294,7 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
                 ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
             >
-              {Icon && <Icon size={18} />}
+              {Icon && <Icon size={isMobile ? 12 : 18} />}
               {option.color && (
                 <div
                   className={`w-4 h-4 rounded-full`}

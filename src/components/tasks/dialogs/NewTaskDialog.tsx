@@ -18,7 +18,7 @@ import {
   NewTaskType,
   TaskSelect,
 } from '../../../app/api/columns/tasks/types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Archive, Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
 import { toast } from 'sonner';
@@ -53,6 +53,15 @@ const NewTaskDialog = ({
     resolver: zodResolver(newTaskSchema),
   });
 
+  useEffect(() => {
+    if (isOpen) {
+      reset({
+        title: data?.title || '',
+        description: data?.description || '',
+      });
+    }
+  }, [isOpen, data, reset]);
+
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
     const success = data
       ? await updateTask(data.id, bodyData, columnId)
@@ -71,7 +80,7 @@ const NewTaskDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-zinc-900">
+      <DialogContent className="w-full h-full md:h-auto md:max-w-[625px] bg-zinc-900">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} task</DialogTitle>
@@ -80,22 +89,22 @@ const NewTaskDialog = ({
               you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-4 py-4">
+            <div className="items-center gap-4">
               <Label htmlFor="title" className="text-right">
                 Title
               </Label>
-              <Input {...register('title')} id="title" className="col-span-3" />
+              <Input {...register('title')} id="title" />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="items-center gap-4">
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
               <Textarea
                 {...register('description')}
                 id="description"
-                className="col-span-3 resize-none"
-                rows={4}
+                className="resize-none"
+                rows={8}
               />
             </div>
           </div>

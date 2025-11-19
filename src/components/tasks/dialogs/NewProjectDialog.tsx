@@ -75,23 +75,18 @@ const NewProjectDialog = ({
               done.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
+          <div className="space-y-4 py-4">
+            <div className="items-center gap-4">
               <Label htmlFor="name" className="text-right">
                 Name
               </Label>
-              <Input {...register('name')} id="name" className="col-span-3" />
+              <Input {...register('name')} id="name" />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
+            <div className="items-center gap-4">
               <Label htmlFor="description" className="text-right">
                 Description
               </Label>
-              <Input
-                {...register('description')}
-                id="description"
-                className="col-span-3"
-                placeholder=""
-              />
+              <Input {...register('description')} id="description" placeholder="" />
             </div>
             <CategorySelect selectedCategory={selectedCategory} register={register} />
             {errors.name && <span className="text-red-500">{errors.name.message}</span>}
@@ -120,11 +115,11 @@ interface ICategorySelectProps {
 
 const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) => {
   return (
-    <div className="grid grid-cols-4 items-center gap-4">
+    <div className="items-center gap-4">
       <Label htmlFor="category" className="text-right">
         Category
       </Label>
-      <div className="col-span-3 flex items-center gap-2">
+      <div className="flex items-center gap-2">
         <div className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-700">
           <LucidIcon
             icon={selectedCategory.icon}
