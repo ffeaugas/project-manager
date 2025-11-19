@@ -112,71 +112,61 @@ const CalendarEventForm = ({
         </SheetDescription>
       </SheetHeader>
 
-      <div className="grid gap-4 py-4">
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="description" className="text-right text-white">
-            Description
-          </Label>
+      <div className="space-y-4 py-4">
+        <div className="items-center gap-4">
+          <Label htmlFor="description">Description</Label>
           <Textarea
             {...register('description')}
             id="description"
-            className="col-span-3 bg-zinc-800 text-white resize-none"
+            className="w-full bg-zinc-800 text-white resize-none"
             rows={3}
           />
           {errors.description && (
-            <span className="col-span-4 text-right text-red-500 text-sm">
+            <span className="text-right text-red-500 text-sm">
               {errors.description.message}
             </span>
           )}
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="date" className="text-right text-white">
-            Date
-          </Label>
+        <div className="items-center gap-4">
+          <Label htmlFor="date">Date</Label>
           <Input
             {...register('date')}
             id="date"
             type="date"
-            className="col-span-3 bg-zinc-800 text-white"
+            className="w-full bg-zinc-800 text-white"
           />
           {errors.date && (
-            <span className="col-span-4 text-right text-red-500 text-sm">
-              {errors.date.message}
-            </span>
+            <span className="text-right text-red-500 text-sm">{errors.date.message}</span>
           )}
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="startTime" className="text-right text-white">
-            Start Time
-          </Label>
+        <div className="items-center gap-4">
+          <Label htmlFor="startTime">Start Time</Label>
           <Input
             {...register('startTime')}
             id="startTime"
             type="time"
-            className="col-span-3 bg-zinc-800 text-white"
+            className="bg-zinc-800 text-white"
           />
           {errors.startTime && (
-            <span className="col-span-4 text-right text-red-500 text-sm">
+            <span className="text-right text-red-500 text-sm">
               {errors.startTime.message}
             </span>
           )}
         </div>
 
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="duration" className="text-right text-white">
-            Duration (min)
-          </Label>
+        <div className="items-center gap-4">
+          <Label htmlFor="duration">Duration (min)</Label>
           <Input
             {...register('duration', { valueAsNumber: true })}
             id="duration"
             type="number"
-            className="col-span-3 bg-zinc-800 text-white"
+            className="bg-zinc-800 text-white"
             placeholder="60"
           />
           {errors.duration && (
-            <span className="col-span-4 text-right text-red-500 text-sm">
+            <span className="text-right text-red-500 text-sm">
               {errors.duration.message}
             </span>
           )}
@@ -205,11 +195,14 @@ const CalendarEventForm = ({
           )}
         </div>
         <div className="flex gap-2">
-          <SheetClose asChild>
-            <Button type="button" variant="outline" disabled={isLoading}>
-              Cancel
-            </Button>
-          </SheetClose>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isLoading}
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
+          </Button>
           <Button type="submit" disabled={isLoading}>
             Save{!event && ' event'}
           </Button>

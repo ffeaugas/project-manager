@@ -58,6 +58,7 @@ const CalendarSection = () => {
           onOpenChange={setIsSheetOpen}
           selectedDate={selectedDate}
           event={selectedEvent}
+          events={events}
           createEvent={createEvent}
           updateEvent={updateEvent}
           deleteEvent={deleteEvent}

@@ -23,7 +23,11 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
               {event.startTime && (
                 <p className="text-xs font-semibold text-white">{event.startTime}</p>
               )}
-              <p className="text-xs text-white truncate">{event.description}</p>
+              <p className="text-xs text-white truncate">
+                {event.description.length > 25
+                  ? event.description.slice(0, 25) + '...'
+                  : event.description}
+              </p>
             </div>
           ))}
           {filteredEvents.length > 3 && (
