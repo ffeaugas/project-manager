@@ -66,9 +66,11 @@ const TaskCard = ({
           <p className="text-xs md:text-sm font-bold text-white break-words line-clamp-2">
             {data.title}
           </p>
-          <p className="text-xs md:text-sm text-slate-400 break-words line-clamp-2 md:line-clamp-4">
-            {data.description}
-          </p>
+          {data.description && (
+            <p className="text-xs md:text-sm text-slate-400 break-words line-clamp-2 md:line-clamp-4">
+              {data.description}
+            </p>
+          )}
         </div>
         <p className="text-[10px] md:text-xs text-slate-400 text-right">
           {daysAgo} d ago

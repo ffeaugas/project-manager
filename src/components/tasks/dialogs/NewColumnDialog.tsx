@@ -75,18 +75,14 @@ const NewColumnDialog = ({
               Add a new column and its color. Click save when you&apos;re done.
             </DialogDescription>
           </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Name
-              </Label>
-              <Input {...register('name')} id="name" className="col-span-3" />
+          <div className="space-y-4 py-4">
+            <div className="items-center gap-4">
+              <Label htmlFor="name">Name</Label>
+              <Input {...register('name')} id="name" />
             </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="color" className="text-right">
-                Color
-              </Label>
-              <div className="col-span-3 space-y-2">
+            <div className="items-center gap-4">
+              <Label htmlFor="color">Color</Label>
+              <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   <div
                     className="w-8 h-8 rounded border border-gray-600"
@@ -103,6 +99,7 @@ const NewColumnDialog = ({
                   <HexColorPicker
                     color={selectedColor}
                     onChange={(color) => setValue('color', color)}
+                    className="w-full"
                   />
                 </div>
               </div>

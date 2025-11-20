@@ -41,7 +41,7 @@ export async function updateTask(data: NewTaskType, userId: string) {
 
   const updateData: {
     title: string;
-    description: string;
+    description?: string;
     columnId?: string;
   } = {
     title: data.title,

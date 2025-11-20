@@ -46,8 +46,9 @@ export async function POST(request: NextRequest) {
     const { name, description, projectId, imageFile } = parseFormData(formData);
 
     const validatedData = NewProjectCardSchema.parse({
-      name,
-      description,
+      name: name || undefined,
+      description: description || undefined,
+      image: imageFile || undefined,
       projectId: projectId!,
     });
 
@@ -75,7 +76,13 @@ export async function PATCH(request: NextRequest) {
     const raw = parseFormData(formData);
     const data = toUpdateData(raw);
 
-    const validatedData = NewProjectCardSchema.parse(data);
+    const validatedData = NewProjectCardSchema.parse({
+      id: data.id,
+      name: data.name || undefined,
+      description: data.description || undefined,
+      image: raw.imageFile || undefined,
+      projectId: data.projectId,
+    });
 
     const projectCard = await updateProjectCard(
       validatedData.id!,

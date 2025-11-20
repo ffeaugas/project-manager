@@ -8,7 +8,7 @@ interface NewColumnForm {
 
 const baseColumnSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  color: z.string().min(1, 'Color is required'),
+  color: z.string().regex(/^#([0-9a-fA-F]{6})$/, 'Color must be a valid hex color'),
 });
 
 export const reorderColumnSchema = z.object({

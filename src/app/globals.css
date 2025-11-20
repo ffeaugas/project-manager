@@ -191,3 +191,7 @@ ul {
 ol {
   list-style-type: decimal;
 }
+
+.react-colorful {
+  width: 100% !important;
+}

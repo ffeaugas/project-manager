@@ -71,7 +71,7 @@ const ProjectCard = ({
           <div className="w-full h-[70%] overflow-hidden relative">
             <Image
               src={firstImage.url}
-              alt={data.name}
+              alt={data.name || 'Project card image'}
               fill
               className="object-cover transition-transform hover:scale-105"
               sizes="(max-width: 768px) 100vw, 280px"
@@ -79,19 +79,23 @@ const ProjectCard = ({
           </div>
         )}
         <div className="flex flex-col gap-2 flex-1">
-          <div className="border-b-[1px] border-zinc-700 px-2 py-1">
-            <p className="text-white text-sm md:text-base font-bold line-clamp-2 break-words">
-              {data.name}
-            </p>
-          </div>
-          <div
-            className={cn(
-              'p-4 overflow-hidden',
-              firstImage ? 'line-clamp-2' : 'line-clamp-[11]',
-            )}
-          >
-            <EditorContent editor={editor} />
-          </div>
+          {data.name && (
+            <div className="border-b-[1px] border-zinc-700 px-2 py-1">
+              <p className="text-white text-sm md:text-base font-bold line-clamp-2 break-words">
+                {data.name}
+              </p>
+            </div>
+          )}
+          {data.description && (
+            <div
+              className={cn(
+                'p-4 overflow-hidden',
+                firstImage ? 'line-clamp-2' : 'line-clamp-[11]',
+              )}
+            >
+              <EditorContent editor={editor} />
+            </div>
+          )}
           {!firstImage && (
             <span className="bottom-0 right-0 z-10 absolute h-20 w-full bg-gradient-to-t from-zinc-900 via-zinc-900/70 via-50% to-transparent pointer-events-none" />
           )}

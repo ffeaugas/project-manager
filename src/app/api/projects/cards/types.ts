@@ -55,29 +55,42 @@ export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
 
 interface NewProjectCardForm {
   id?: string;
-  name: string;
-  description: string;
+  name?: string;
+  description?: string;
   image?: File;
   projectId?: string;
 }
 
-export const NewProjectCardSchema: ZodType<NewProjectCardForm> = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().min(1, 'Description is required'),
-  projectId: z.string().uuid().optional(),
-  image: z
-    .instanceof(File)
-    .refine(
-      (file) => file.size <= 5 * 1024 * 1024,
-      "La taille de l'image ne doit pas dépasser 5MB",
-    )
-    .refine(
-      (file) =>
-        ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type),
-      'Format accepté: JPG, PNG ou WebP',
-    )
-    .optional(),
-});
+export const NewProjectCardSchema: ZodType<NewProjectCardForm> = z
+  .object({
+    id: z.string().optional(),
+    name: z.string().optional(),
+    description: z.string().optional(),
+    projectId: z.string().uuid().optional(),
+    image: z
+      .instanceof(File)
+      .refine(
+        (file) => file.size <= 5 * 1024 * 1024,
+        "La taille de l'image ne doit pas dépasser 5MB",
+      )
+      .refine(
+        (file) =>
+          ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type),
+        'Format accepté: JPG, PNG ou WebP',
+      )
+      .optional(),
+  })
+  .refine(
+    (data) => {
+      const hasName = data.name && data.name.trim().length > 0;
+      const hasDescription = data.description && data.description.trim().length > 0;
+      const hasImage = data.image !== undefined && data.image !== null;
+      return hasName || hasDescription || hasImage;
+    },
+    {
+      message: 'At least one field (name, description, or image) must be provided',
+      path: ['name'], // Set path to first field for better error display
+    },
+  );
 
 export type NewProjectCardType = z.infer<typeof NewProjectCardSchema>;

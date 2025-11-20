@@ -65,7 +65,6 @@ const NewProjectCardDialog = ({
 
   const descriptionValue = watch('description');
 
-  // Reset form when dialog opens or data changes
   useEffect(() => {
     if (isOpen) {
       reset({
@@ -83,7 +82,13 @@ const NewProjectCardDialog = ({
   };
 
   const onSubmit: SubmitHandler<NewProjectCardType> = async (formData) => {
-    const success = await submitProjectCard(formData, {
+    const submitData = {
+      ...formData,
+      name: formData.name?.trim() || undefined,
+      description: formData.description?.trim() || undefined,
+    };
+
+    const success = await submitProjectCard(submitData, {
       projectCardId: data?.id,
       projectId: projectId,
     });

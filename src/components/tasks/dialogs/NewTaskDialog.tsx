@@ -63,9 +63,15 @@ const NewTaskDialog = ({
   }, [isOpen, data, reset]);
 
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
+    // Convert empty description to undefined for optional field
+    const submitData = {
+      ...bodyData,
+      description: bodyData.description?.trim() || undefined,
+    };
+
     const success = data
-      ? await updateTask(data.id, bodyData, columnId)
-      : await createTask(bodyData, columnId);
+      ? await updateTask(data.id, submitData, columnId)
+      : await createTask(submitData, columnId);
 
     if (success) {
       if (data) reset();

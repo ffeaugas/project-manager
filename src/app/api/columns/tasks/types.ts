@@ -4,7 +4,7 @@ import { z, ZodType } from 'zod';
 interface NewTaskForm {
   id?: string;
   title: string;
-  description: string;
+  description?: string;
 }
 
 export type EntityType = 'task-columns' | 'tasks' | 'projects' | 'project-cards';
@@ -12,7 +12,7 @@ export type EntityType = 'task-columns' | 'tasks' | 'projects' | 'project-cards'
 export const newTaskSchema: ZodType<NewTaskForm & { columnId?: string }> = z.object({
   id: z.string().optional(),
   title: z.string().min(1, 'Title is required'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().optional(),
   columnId: z.string().optional(),
 });
 

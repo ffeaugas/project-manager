@@ -41,10 +41,13 @@ export async function createProjectCard(
     throw new Error('File too large');
   }
 
+  const name = data.name?.trim() || undefined;
+  const description = data.description?.trim() || undefined;
+
   const projectCard = await prisma.projectCard.create({
     data: {
-      name: data.name,
-      description: data.description,
+      name,
+      description,
       projectId: project.id,
     },
   });
@@ -102,9 +105,36 @@ export async function updateProjectCard(
     throw new Error('File too large');
   }
 
+  const updateData: { name?: string; description?: string; projectId?: string } = {};
+  if (data.name !== undefined) {
+    updateData.name = data.name.trim() || undefined;
+  }
+  if (data.description !== undefined) {
+    updateData.description = data.description.trim() || undefined;
+  }
+  if (data.projectId !== undefined) {
+    updateData.projectId = data.projectId;
+  }
+
+  const finalName = updateData.name !== undefined ? updateData.name : existingCard.name;
+  const finalDescription =
+    updateData.description !== undefined
+      ? updateData.description
+      : existingCard.description;
+  const willHaveImage = imageFile !== undefined && imageFile !== null;
+  const hasExistingImage = existingCard.images.length > 0;
+
+  const hasName = finalName && finalName.trim().length > 0;
+  const hasDescription = finalDescription && finalDescription.trim().length > 0;
+  const hasImage = willHaveImage || hasExistingImage;
+
+  if (!hasName && !hasDescription && !hasImage) {
+    throw new Error('At least one field (name, description, or image) must be provided');
+  }
+
   await prisma.projectCard.update({
     where: { id },
-    data,
+    data: updateData,
   });
 
   if (imageFile && imageFile.size > 0) {
