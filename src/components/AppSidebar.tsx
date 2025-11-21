@@ -31,7 +31,10 @@ const AppSidebar = ({ userData }: { userData: User }) => {
   const pathname = usePathname();
 
   return (
-    <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200 z-20">
+    <Sidebar
+      collapsible="none"
+      className="bg-black border border-zinc-700 text-slate-200"
+    >
       <SidebarContent>
         <AuthButton userData={userData} />
         <SidebarGroup>

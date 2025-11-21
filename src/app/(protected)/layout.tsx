@@ -1,4 +1,4 @@
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger, SidebarInset } from '@/components/ui/sidebar';
 import AppSidebar from '@/components/AppSidebar';
 import { getUser } from '@/lib/auth-server';
 import { Toaster } from 'sonner';
@@ -17,13 +17,13 @@ export default async function ProtectedLayout({
 
   return (
     <SidebarProvider>
-      <div className="flex w-full h-dvh relative">
-        <SidebarTrigger className="absolute top-2 left-2 md:hidden bg-zinc-900 border-zinc-700 border-[1px] rounded-sm p-2" />
+      <div className="flex w-full h-dvh">
         <AppSidebar userData={user} />
-        <main className="flex-1 h-dvh overflow-hidden">
+        <SidebarInset className="h-dvh overflow-hidden flex-1">
+          <SidebarTrigger className="absolute top-2 left-2 md:hidden bg-zinc-900 border border-zinc-700 rounded-sm p-2 z-50" />
           {children}
           <Toaster />
-        </main>
+        </SidebarInset>
       </div>
     </SidebarProvider>
   );
