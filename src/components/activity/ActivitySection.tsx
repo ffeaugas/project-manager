@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
@@ -74,58 +74,36 @@ const ActivitySection = () => {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <AreaChart
-            data={data}
-            margin={{
-              left: 0,
-              right: 20,
-              top: 20,
-              bottom: 0,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+          <BarChart accessibilityLayer data={data}>
+            <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
               tickLine={false}
+              tickMargin={10}
               axisLine={false}
-              tickMargin={8}
               tickFormatter={(value) => {
                 const date = new Date(value);
                 return `${date.getMonth() + 1}/${date.getDate()}`;
               }}
             />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value.toString()}
-            />
             <ChartTooltip
               cursor={false}
-              content={<ChartTooltipContent indicator="dot" />}
+              content={<ChartTooltipContent indicator="dashed" />}
             />
-            <ChartLegend
-              content={({ payload, verticalAlign }) => (
-                <ChartLegendContent payload={payload} verticalAlign={verticalAlign} />
-              )}
-            />
-            <Area
+            <ChartLegend content={<ChartLegendContent />} />
+            <Bar
               dataKey="tasksArchived"
-              type="monotone"
+              stackId="a"
               fill="var(--color-tasksArchived)"
-              fillOpacity={0.4}
-              stroke="var(--color-tasksArchived)"
-              strokeWidth={2}
+              radius={[0, 0, 4, 4]}
             />
-            <Area
+            <Bar
               dataKey="projectCardsCreated"
-              type="monotone"
+              stackId="a"
               fill="var(--color-projectCardsCreated)"
-              fillOpacity={0.4}
-              stroke="var(--color-projectCardsCreated)"
-              strokeWidth={2}
+              radius={[4, 4, 0, 0]}
             />
-          </AreaChart>
+          </BarChart>
         </ChartContainer>
       </CardContent>
     </Card>

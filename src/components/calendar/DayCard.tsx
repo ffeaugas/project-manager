@@ -18,7 +18,7 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
       <h1 className="text-white text-lg font-bold p-2">{date.getDate()}</h1>
       {filteredEvents.length > 0 && (
         <div className="space-y-1">
-          {filteredEvents.slice(0, 3).map((event) => (
+          {filteredEvents.slice(0, 4).map((event) => (
             <div key={event.id} className="bg-blue-600 px-2 py-1">
               {event.startTime && (
                 <p className="text-xs font-semibold text-white">{event.startTime}</p>
@@ -30,9 +30,9 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
               </p>
             </div>
           ))}
-          {filteredEvents.length > 3 && (
+          {filteredEvents.length > 4 && (
             <p className="text-xs text-zinc-400 text-center">
-              +{filteredEvents.length - 3} more
+              +{filteredEvents.length - 4} more
             </p>
           )}
         </div>

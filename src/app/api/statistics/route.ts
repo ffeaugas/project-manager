@@ -15,7 +15,7 @@ export async function GET() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const thirtyDaysAgo = new Date(today);
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 7);
 
     const archivedTasks = await prisma.task.findMany({
       where: {
@@ -47,7 +47,7 @@ export async function GET() {
     const tasksByDate = new Map<string, number>();
     const cardsByDate = new Map<string, number>();
 
-    for (let i = 0; i <= 30; i++) {
+    for (let i = 0; i <= 7; i++) {
       const date = new Date(thirtyDaysAgo);
       date.setDate(date.getDate() + i);
       const dateKey = date.toISOString().split('T')[0];

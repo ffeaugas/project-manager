@@ -56,7 +56,7 @@ const Kanban = () => {
   if (isLoading) return <Spinner size="large" />;
 
   return (
-    <div className="flex flex-col flex-1 max-w-full md:max-w-[75%]">
+    <div className="flex flex-col flex-1 w-full">
       <TaskHeader />
       <div className="overflow-y-scroll overflow-x-auto">
         <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">

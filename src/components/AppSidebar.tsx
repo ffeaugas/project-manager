@@ -38,7 +38,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild isActive={pathname === '/home'}>
+                <SidebarMenuButton asChild isActive={pathname.includes('/home')}>
                   <Link href="/home">
                     <HomeIcon />
                     <span>Home</span>
