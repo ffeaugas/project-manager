@@ -48,13 +48,14 @@ const CalendarEventForm = ({
       date: selectedDate
         ? `${selectedDate.getFullYear()}-${String(selectedDate.getMonth() + 1).padStart(2, '0')}-${String(selectedDate.getDate()).padStart(2, '0')}`
         : '',
-      startTime: event?.startTime || '',
+      startTime: event?.startTime || undefined,
       duration: event?.duration || undefined,
     },
     resolver: zodResolver(NewCalendarEventSchema),
   });
 
   const onSubmit: SubmitHandler<NewCalendarEventType> = async (bodyData) => {
+    console.log('✅ Validated Form Data:', bodyData);
     setIsLoading(true);
     try {
       if (event) {
@@ -135,35 +136,36 @@ const CalendarEventForm = ({
           )}
         </div>
 
-        <div className="items-center gap-4">
-          <Label htmlFor="startTime">Start Time</Label>
-          <Input
-            {...register('startTime')}
-            id="startTime"
-            type="time"
-            className="bg-zinc-800 text-white"
-          />
-          {errors.startTime && (
-            <span className="text-right text-red-500 text-sm">
-              {errors.startTime.message}
-            </span>
-          )}
-        </div>
-
-        <div className="items-center gap-4">
-          <Label htmlFor="duration">Duration (min)</Label>
-          <Input
-            {...register('duration', { valueAsNumber: true })}
-            id="duration"
-            type="number"
-            className="bg-zinc-800 text-white"
-            placeholder="60"
-          />
-          {errors.duration && (
-            <span className="text-right text-red-500 text-sm">
-              {errors.duration.message}
-            </span>
-          )}
+        <div className="flex flex-row gap-4 w-full">
+          <div className="items-center gap-4 flex-1">
+            <Label htmlFor="startTime">Start Time</Label>
+            <Input
+              {...register('startTime')}
+              id="startTime"
+              type="time"
+              className="bg-zinc-800 text-white"
+            />
+            {errors.startTime && (
+              <span className="text-right text-red-500 text-sm">
+                {errors.startTime.message}
+              </span>
+            )}
+          </div>
+          <div className="items-center gap-4 flex-1">
+            <Label htmlFor="duration">Duration (min)</Label>
+            <Input
+              {...register('duration')}
+              id="duration"
+              type="number"
+              className="bg-zinc-800 text-white"
+              placeholder="60"
+            />
+            {errors.duration && (
+              <span className="text-right text-red-500 text-sm">
+                {errors.duration.message}
+              </span>
+            )}
+          </div>
         </div>
       </div>
 

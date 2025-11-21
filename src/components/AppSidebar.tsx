@@ -1,6 +1,7 @@
 'use client';
 
 import { Plus, Folder, ChevronDown, ChevronRight, HomeIcon } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 import {
   Sidebar,
@@ -27,6 +28,7 @@ import AuthButton from './auth/AuthButton';
 const AppSidebar = ({ userData }: { userData: User }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
   const { projects, submitProject } = useProjects();
+  const pathname = usePathname();
 
   return (
     <Sidebar className="bg-black border-[1px] border-zinc-700 text-slate-200 z-20">
@@ -36,11 +38,11 @@ const AppSidebar = ({ userData }: { userData: User }) => {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
-                  <a href="/home">
+                <SidebarMenuButton asChild isActive={pathname === '/home'}>
+                  <Link href="/home">
                     <HomeIcon />
                     <span>Home</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
@@ -61,7 +63,10 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                   <SidebarMenuSub>
                     {projects.map((project) => (
                       <SidebarMenuSubItem key={project.name}>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={pathname === `/project/${project.id}`}
+                        >
                           <Link
                             href={`/project/${project.id}`}
                             className="flex items-center gap-2 justify-between w-full"
