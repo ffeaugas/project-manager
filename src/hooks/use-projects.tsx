@@ -15,8 +15,15 @@ export const useProjects = (id?: string) => {
     options?: { projectCardId?: string; projectId?: string },
   ) => {
     const formData = new FormData();
-    formData.append('name', bodyData.name);
-    formData.append('description', bodyData.description);
+    const name = bodyData.name?.trim();
+    const description = bodyData.description?.trim();
+    if (name) {
+      formData.append('name', name);
+    }
+    if (description) {
+      formData.append('description', description);
+    }
+    formData.append('description', bodyData.description || '');
 
     if (options?.projectId) {
       formData.append('projectId', options.projectId);

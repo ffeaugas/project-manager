@@ -63,7 +63,7 @@ export const useTasks = () => {
         const tempTask = {
           id: taskId,
           title: bodyData.title,
-          description: bodyData.description,
+          description: bodyData.description ?? null,
           columnId,
           order: newOrder,
           createdAt: new Date(),
