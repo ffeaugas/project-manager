@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 const TaskHeader = () => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2">
+    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-background2 border-b border-borderColor shrink-0 gap-2">
       <Menu />
     </div>
   );
@@ -22,11 +22,11 @@ const Menu = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border-[1px] ">
+        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border ">
           <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48 bg-zinc-800">
+      <DropdownMenuContent className="w-48 bg-background">
         <DropdownMenuItem>
           <Link
             href="/archives"

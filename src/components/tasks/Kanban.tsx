@@ -125,7 +125,7 @@ const EmptyColumn = ({
       <Button
         variant="outline"
         className="flex flex-col justify-center w-[150px] h-[200px] md:h-[100px] bg-transparent border-dashed
-        border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-md my-[1px] mt-[.6rem]"
+        border-2 border-borderColor p-4 text-zinc-600 text-lg md:text-md my-px mt-[.6rem]"
       >
         Add Column
       </Button>

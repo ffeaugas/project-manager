@@ -34,11 +34,11 @@ const TaskColumnDropdownMenu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border-[1px] ">
+        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border ">
           <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 bg-zinc-800">
+      <DropdownMenuContent className="w-56 bg-background">
         <DropdownMenuLabel>{data.name}</DropdownMenuLabel>
         <DropdownMenuSeparator className="bg-zinc-700" />
         <DropdownMenuGroup>

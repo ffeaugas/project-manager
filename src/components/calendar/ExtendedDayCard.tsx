@@ -40,19 +40,19 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
 
   return (
     <div className="mb-6">
-      <h2 className="text-2xl font-bold text-white mb-4">{formatDate(date)}</h2>
+      <h2 className="text-2xl font-bold text-foreground mb-4">{formatDate(date)}</h2>
       <div className="space-y-2">
         {filteredEvents.length > 0 ? (
           filteredEvents.map((event) => (
             <div
               key={event.id}
               onClick={() => onEventClick(event)}
-              className="bg-blue-600 hover:bg-blue-700 rounded-lg p-3 cursor-pointer transition-colors border-[1px] border-blue-500"
+              className="bg-blue-600 hover:bg-blue-700 rounded-lg p-3 cursor-pointer transition-colors border border-blue-500"
             >
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1">
                   {event.startTime && (
-                    <p className="text-sm font-semibold text-white mb-1">
+                    <p className="text-sm font-semibold text-foreground mb-1">
                       {formatTime(event.startTime)}
                       {event.duration && (
                         <span className="text-xs font-normal text-blue-100 ml-2">
@@ -61,7 +61,7 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
                       )}
                     </p>
                   )}
-                  <p className="text-sm text-white break-words">
+                  <p className="text-sm text-foreground wrap-break-words">
                     {event.description.length > 110
                       ? event.description.slice(0, 110) + '...'
                       : event.description}

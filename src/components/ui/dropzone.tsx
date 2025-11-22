@@ -115,7 +115,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
             'relative cursor-pointer rounded-lg border-2 border-dashed transition-colors',
             isDragging
               ? 'border-primary bg-primary/5'
-              : 'border-zinc-700 hover:border-zinc-600',
+              : 'border-borderColor hover:border-zinc-600',
             error && 'border-red-500',
             preview ? 'p-2' : 'p-8',
           )}
@@ -132,12 +132,12 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
               <button
                 type="button"
                 onClick={handleRemove}
-                className="absolute top-2 right-2 p-1.5 bg-red-500 hover:bg-red-600 rounded-full text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                className="absolute top-2 right-2 p-1.5 bg-red-500 hover:bg-red-600 rounded-full text-foreground opacity-0 group-hover:opacity-100 transition-opacity z-10"
               >
                 <X className="h-4 w-4" />
               </button>
-              <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md flex items-center justify-center">
-                <p className="text-white text-sm">Click to change image</p>
+              <div className="absolute inset-0 bg-background3/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-md flex items-center justify-center">
+                <p className="text-foreground text-sm">Click to change image</p>
               </div>
             </div>
           ) : (

@@ -79,11 +79,11 @@ const CalendarPage = () => {
           onClick={handlePreviousMonth}
           variant="outline"
           size="icon"
-          className="bg-zinc-900 border-zinc-700"
+          className="bg-background2 border-borderColor"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
-        <h1 className="text-2xl font-bold text-white">
+        <h1 className="text-2xl font-bold text-foreground">
           {new Date(currentYear, currentMonth).toLocaleString('default', {
             month: 'long',
             year: 'numeric',
@@ -93,7 +93,7 @@ const CalendarPage = () => {
           onClick={handleNextMonth}
           variant="outline"
           size="icon"
-          className="bg-zinc-900 border-zinc-700"
+          className="bg-background2 border-borderColor"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

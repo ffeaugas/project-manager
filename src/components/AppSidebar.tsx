@@ -1,11 +1,12 @@
 'use client';
 
-import { Plus, Folder, ChevronDown, ChevronRight, HomeIcon } from 'lucide-react';
+import { Plus, Folder, ChevronDown, ChevronRight, HomeIcon, SunIcon } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarMenu,
@@ -30,10 +31,17 @@ const AppSidebar = ({ userData }: { userData: User }) => {
   const { projects, submitProject } = useProjects();
   const pathname = usePathname();
 
+  const toggleTheme = () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.theme = document.documentElement.classList.contains('dark')
+      ? 'dark'
+      : 'light';
+  };
+
   return (
     <Sidebar
       collapsible="none"
-      className="bg-black border border-zinc-700 text-slate-200"
+      className="bg-background3 border border-borderColor text-foreground2"
     >
       <SidebarContent>
         <AuthButton userData={userData} />
@@ -99,7 +107,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                       </SidebarMenuSubItem>
                     ))}
                     <NewProjectDialog submitProject={submitProject}>
-                      <Button className="mt-4 w-full bg-zinc-700 hover:bg-zinc-600 text-slate-200">
+                      <Button className="mt-4 w-full bg-zinc-700 hover:bg-zinc-600 text-foreground2">
                         <Plus size={16} className="mr-2" />
                         New Project
                       </Button>
@@ -110,6 +118,11 @@ const AppSidebar = ({ userData }: { userData: User }) => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+        <SidebarFooter>
+          <Button variant="ghost" size="icon" onClick={toggleTheme}>
+            <SunIcon />
+          </Button>
+        </SidebarFooter>
       </SidebarContent>
     </Sidebar>
   );

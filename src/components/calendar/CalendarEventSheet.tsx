@@ -85,7 +85,7 @@ const CalendarEventSheet = ({
     <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent
         side="right"
-        className="bg-zinc-900 w-full sm:max-w-xl overflow-y-auto"
+        className="bg-background2 w-full sm:max-w-xl overflow-y-auto"
       >
         <SheetTitle className="sr-only">{getTitle()}</SheetTitle>
         <ExtendedDayCard
@@ -100,7 +100,7 @@ const CalendarEventSheet = ({
               onClick={handleNewEventClick}
               variant="outline"
               className="w-full h-[80px] bg-transparent border-dashed
-        border-2 border-zinc-700 p-4 text-zinc-600 text-lg md:text-md my-[1px] mt-[.6rem]"
+        border-2 border-borderColor p-4 text-zinc-600 text-lg md:text-md my-[1px] mt-[.6rem]"
             >
               <Plus className="mr-2 h-4 w-4" />
               New Event

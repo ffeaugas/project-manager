@@ -20,10 +20,10 @@ const AuthButton = ({ userData }: { userData: User }) => {
       >
         <div>
           <div className="flex flex-row items-center gap-2">
-            <span className="text-black text-xs md:text-sm bg-blue-400 w-6 h-6 flex items-center justify-center rounded-sm">
+            <span className="text-foreground text-xs md:text-sm bg-blue-400 w-6 h-6 flex items-center justify-center rounded-sm">
               {userData.name.slice(0, 1)}
             </span>
-            <p className="text-slate-200 text-xs md:text-sm font-semibold">
+            <p className="text-foreground2 text-xs md:text-sm font-semibold">
               {userData.name}
             </p>
           </div>
@@ -31,7 +31,7 @@ const AuthButton = ({ userData }: { userData: User }) => {
 
         <Menu size={12} className="md:w-[14px] md:h-[14px]" />
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="shadow-xl mt-1 flex flex-col gap-2 bg-zinc-800 p-2 rounded-md w-48">
+      <DropdownMenuContent className="shadow-xl mt-1 flex flex-col gap-2 bg-background p-2 rounded-md w-48">
         <Button variant="auth" className="flex flex-row justify-between">
           <Link href="/account" className="text-xs md:text-sm">
             Account

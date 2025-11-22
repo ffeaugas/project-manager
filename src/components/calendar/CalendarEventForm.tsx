@@ -99,7 +99,7 @@ const CalendarEventForm = ({
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <SheetHeader>
-        <SheetTitle className="text-white">
+        <SheetTitle className="text-foreground">
           {event ? 'Edit event' : 'New event'}
         </SheetTitle>
         <SheetDescription className="text-zinc-400">
@@ -113,7 +113,7 @@ const CalendarEventForm = ({
           <Textarea
             {...register('description')}
             id="description"
-            className="w-full bg-zinc-800 text-white resize-none"
+            className="w-full bg-background text-foreground resize-none"
             rows={3}
           />
           {errors.description && (
@@ -129,7 +129,7 @@ const CalendarEventForm = ({
             {...register('date')}
             id="date"
             type="date"
-            className="w-full bg-zinc-800 text-white"
+            className="w-full bg-background text-foreground"
           />
           {errors.date && (
             <span className="text-right text-red-500 text-sm">{errors.date.message}</span>
@@ -143,7 +143,7 @@ const CalendarEventForm = ({
               {...register('startTime')}
               id="startTime"
               type="time"
-              className="bg-zinc-800 text-white"
+              className="bg-background text-foreground"
             />
             {errors.startTime && (
               <span className="text-right text-red-500 text-sm">
@@ -157,7 +157,7 @@ const CalendarEventForm = ({
               {...register('duration')}
               id="duration"
               type="number"
-              className="bg-zinc-800 text-white"
+              className="bg-background text-foreground"
               placeholder="60"
             />
             {errors.duration && (

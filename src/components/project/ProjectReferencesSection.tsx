@@ -61,8 +61,8 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
   };
 
   return (
-    <div className="w-[400px] h-dvh border-l border-zinc-700 flex flex-col bg-zinc-900">
-      <div className="h-14 px-4 border-b border-zinc-700 flex items-center justify-between bg-zinc-900">
+    <div className="w-[400px] h-dvh border-l border-borderColor flex flex-col bg-background2">
+      <div className="h-14 px-4 border-b border-borderColor flex items-center justify-between bg-background2">
         <h2 className="text-md font-semibold text-zinc-200">References</h2>
         <NewReferenceSheet
           onSave={
@@ -110,7 +110,7 @@ interface ReferenceCardProps {
 
 const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
   return (
-    <div className="bg-zinc-900 rounded-lg p-3 border border-zinc-800 hover:border-zinc-700 transition-colors group">
+    <div className="bg-background2 rounded-lg p-3 border border-zinc-800 hover:border-borderColor transition-colors group">
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-medium text-zinc-200 truncate flex-1">{reference.name}</h3>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -150,7 +150,7 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
         className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-colors"
       >
         <span className="truncate">{reference.url}</span>
-        <ExternalLink size={14} className="flex-shrink-0" />
+        <ExternalLink size={14} className="shrink-0" />
       </a>
     </div>
   );
@@ -209,7 +209,7 @@ const NewReferenceSheet = ({
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="bg-zinc-900 border-zinc-800 text-zinc-200 w-[400px] sm:w-[540px]"
+        className="bg-background2 border-zinc-800 text-zinc-200 w-[400px] sm:w-[540px]"
       >
         <SheetHeader>
           <SheetTitle>{editingReference ? 'Edit' : 'Add'} Reference</SheetTitle>

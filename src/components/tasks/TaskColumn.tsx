@@ -61,7 +61,7 @@ const TaskColumn = ({
     <div
       ref={setNodeRef}
       className={cn(
-        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md flex-shrink-0',
+        'flex flex-col justify-start-start gap-4 w-[300px] min-h-[400px] p-2 rounded-md shrink-0',
         isDragging && 'opacity-20',
       )}
       style={style}
@@ -89,7 +89,7 @@ const TaskColumn = ({
       <NewTaskDialog createTask={createTask} updateTask={updateTask} columnId={data.id}>
         <Button
           variant="outline"
-          className="flex flex-col justify-center w-full h-[80px] md:h-[100px] bg-transparent border-dashed border-2 border-zinc-700 p-4 text-zinc-500 text-xs md:text-sm"
+          className="flex flex-col justify-center w-full h-[80px] md:h-[100px] bg-transparent border-dashed border-2 border-borderColor p-4 text-zinc-500 text-xs md:text-sm"
         >
           Click to add a new task
         </Button>
@@ -125,14 +125,14 @@ const ColumnHeader = ({
   dragListeners,
 }: IColumnHeaderProps) => {
   return (
-    <div className="flex flex-row items-center group h-8 bg-zinc-800 rounded-md border-[1px] border-black">
+    <div className="flex flex-row items-center group h-8 bg-background rounded-md border hover:border-borderColor duration-200">
       <div
         className="px-2 flex flex-row gap-4 items-center flex-1"
         {...dragAttributes}
         {...dragListeners}
       >
         <div
-          className="size-4 rounded-full flex-shrink-0"
+          className="size-4 rounded-full shrink-0"
           style={{ backgroundColor: data.color }}
         ></div>
         <div className="flex items-center max-w-full">

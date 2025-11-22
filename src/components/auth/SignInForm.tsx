@@ -71,7 +71,7 @@ const SignInForm = () => {
   }
 
   return (
-    <div className="space-y-6 w-full max-w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl flex flex-col justify-center items-center">
+    <div className="space-y-6 w-full max-w-[400px] bg-background p-4 rounded-md shadow-2xl flex flex-col justify-center items-center">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
           <h1 className="text-lg md:text-xl font-bold text-center">Sign In</h1>
@@ -132,7 +132,7 @@ const SignInForm = () => {
       </Form>
       <p>or</p>
       <Button
-        className="bg-zinc-900 text-zinc-400 w-full"
+        className="bg-background2 text-zinc-400 w-full"
         onClick={() => socialSignIn('github')}
       >
         <GithubIcon className="w-4 h-4" />

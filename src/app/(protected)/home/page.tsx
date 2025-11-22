@@ -11,13 +11,13 @@ const HomePage = () => {
   return (
     <div className="flex flex-col w-full">
       <div className="flex flex-col-reverse md:flex-row h-dvh">
-        <ResizablePanelGroup direction="horizontal" className="w-full flex">
+        <ResizablePanelGroup direction="horizontal" className="w-full flex bg-dotted">
           <ResizablePanel minSize={60} defaultSize={80}>
             <Kanban />
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel minSize={15}>
-            <div className="w-full md:h-dvh border-l border-zinc-700 md:flex flex-col gap-2 p-2 bg-zinc-900 hidden">
+            <div className="w-full md:h-dvh border-l border-borderColor md:flex flex-col gap-2 p-2 bg-background2 hidden">
               <CalendarSection />
               <ActivitySection />
             </div>

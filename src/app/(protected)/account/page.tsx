@@ -6,17 +6,17 @@ export default async function Account() {
 
   return (
     <div className="w-full h-dvh flex flex-col items-center justify-center">
-      <Card className="w-[400px] bg-zinc-800">
+      <Card className="w-[400px] bg-background">
         <CardHeader>
           <CardTitle>Account</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col items-start justify-start w-full gap-1">
-            <h2 className="text-sm text-muted-foreground">Name</h2>
+            <h2 className="text-sm text-foreground">Name</h2>
             <p className="text-sm">{user?.name}</p>
           </div>
           <div className="flex flex-col items-start justify-start w-full gap-1">
-            <h2 className="text-sm text-muted-foreground">Email</h2>
+            <h2 className="text-sm text-foreground">Email</h2>
             <p className="text-sm">{user?.email}</p>
           </div>
         </CardContent>

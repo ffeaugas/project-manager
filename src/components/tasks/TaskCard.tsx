@@ -58,21 +58,21 @@ const TaskCard = ({
         {...attributes}
         data-task-card
         className={cn(
-          'flex flex-col rounded-md gap-2 px-2 py-2 bg-zinc-800 min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-xl cursor-pointer transition-opacity justify-between border-[1px] border-black',
+          'flex flex-col rounded-md gap-2 px-2 py-2 bg-background min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-md hover:shadow-2xl cursor-pointer justify-between border hover:border-borderColor duration-400',
           isDragging && 'opacity-20',
         )}
       >
         <div className="flex flex-col px-2 gap-1">
-          <p className="text-xs md:text-sm font-bold text-white break-words line-clamp-2">
+          <p className="text-xs md:text-sm font-bold text-foreground wrap-break-words line-clamp-2">
             {data.title}
           </p>
           {data.description && (
-            <p className="text-xs md:text-sm text-slate-400 break-words line-clamp-2 md:line-clamp-4">
+            <p className="text-xs md:text-sm text-foreground2 wrap-break-words line-clamp-2 md:line-clamp-4">
               {data.description}
             </p>
           )}
         </div>
-        <p className="text-[10px] md:text-xs text-slate-400 text-right">
+        <p className="text-[10px] md:text-xs text-foreground2 text-right">
           {daysAgo} d ago
         </p>
       </div>

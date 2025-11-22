@@ -103,7 +103,7 @@ const NewProjectCardDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="h-full md:h-auto w-full md:w-[80%] bg-zinc-900">
+      <DialogContent className="h-full md:h-auto w-full md:w-[80%] bg-background2">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} project card</DialogTitle>

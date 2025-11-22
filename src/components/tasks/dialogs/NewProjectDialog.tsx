@@ -66,7 +66,7 @@ const NewProjectDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-zinc-900">
+      <DialogContent className="sm:max-w-[425px] bg-background2">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} project</DialogTitle>
@@ -120,7 +120,7 @@ const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) =>
         Category
       </Label>
       <div className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-zinc-700">
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-borderColor">
           <LucidIcon
             icon={selectedCategory.icon}
             size={16}
@@ -129,7 +129,7 @@ const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) =>
         </div>
         <select
           id="category"
-          className="flex h-9 w-full rounded-md border border-zinc-700 bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-600"
+          className="flex h-9 w-full rounded-md border border-borderColor bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-600"
           {...register('category')}
           defaultValue="other"
         >

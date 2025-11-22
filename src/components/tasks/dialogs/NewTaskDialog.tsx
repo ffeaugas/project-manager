@@ -86,7 +86,7 @@ const NewTaskDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-full h-full md:h-auto md:max-w-[625px] bg-zinc-900">
+      <DialogContent className="w-full h-full md:h-auto md:max-w-[625px] bg-background2">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} task</DialogTitle>

@@ -29,13 +29,13 @@ const ProjectHeader = ({
   deleteProject,
 }: IProjectHeaderProps) => {
   return (
-    <div className="flex flex-row h-14 px-2 mx:p-4 justify-between w-full bg-zinc-900 border-b-[1px] border-zinc-700 flex-shrink-0 gap-2 items-center">
+    <div className="flex flex-row h-14 px-2 mx:p-4 justify-between w-full bg-background2 border-b border-borderColor shrink-0 gap-2 items-center">
       <div className="flex flex-row gap-4 items-center">
         <LucidIcon
           icon={getProjectCategory(project.category).icon}
           size={40}
           color={getProjectCategory(project.category).color}
-          className="border-[1px] border-zinc-700 rounded-sm p-2"
+          className="border border-borderColor rounded-sm p-2"
         />
         <span className="text-md md:text-lg font-semibold">{project.name}</span>
       </div>
@@ -44,7 +44,7 @@ const ProjectHeader = ({
           submitProjectCard={submitProjectCard}
           projectId={project.id}
         >
-          <Button variant="outline" className="bg-zinc-900 text-xs md:text-sm">
+          <Button variant="outline" className="bg-background2 text-xs md:text-sm">
             Add card
           </Button>
         </NewProjectCardDialog>
@@ -65,11 +65,11 @@ const Menu = ({ project, deleteProject }: IMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border-[1px] ">
+        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border ">
           <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-48 bg-zinc-800">
+      <DropdownMenuContent className="w-48 bg-background">
         <ConfirmDialog
           id={project.id}
           route="projects"

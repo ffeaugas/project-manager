@@ -73,7 +73,7 @@ export default function SignupForm() {
   }
 
   return (
-    <div className="space-y-6 w-full max-w-[400px] bg-zinc-800 p-4 rounded-md shadow-2xl">
+    <div className="space-y-6 w-full max-w-[400px] bg-background p-4 rounded-md shadow-2xl">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 w-full">
           <h1 className="text-lg md:text-xl font-bold text-center">Sign Up</h1>
@@ -148,7 +148,7 @@ export default function SignupForm() {
 
       <p className="text-center">or</p>
       <Button
-        className="bg-zinc-900 text-zinc-400 w-full"
+        className="bg-background2 text-zinc-400 w-full"
         onClick={() => socialSignIn('github')}
       >
         <GithubIcon className="w-4 h-4" />

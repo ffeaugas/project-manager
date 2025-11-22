@@ -271,7 +271,7 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-1 p-1 rounded-md bg-zinc-800">
+    <div className="flex flex-wrap items-center gap-1 p-1 rounded-md bg-background">
       {menuOptions.map((option, index) => {
         const Icon = option.icon;
         const isActive = option.isActive?.(editorState) ?? false;
@@ -288,8 +288,8 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
                 flex items-center justify-center py-1 px-2 rounded transition-colors
                 ${
                   isActive
-                    ? 'bg-zinc-700 text-white'
-                    : 'text-zinc-400 hover:bg-zinc-700 hover:text-white'
+                    ? 'bg-zinc-700 text-foreground'
+                    : 'text-zinc-400 hover:bg-zinc-700 hover:text-foreground'
                 }
                 ${isDisabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
               `}
