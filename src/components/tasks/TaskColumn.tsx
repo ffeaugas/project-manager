@@ -137,12 +137,14 @@ const ColumnHeader = ({
         ></div>
         <div className="flex items-center max-w-full">
           <span
-            className="text-sm md:text-md font-semibold text-zinc-500 truncate max-w-[110px] md:max-w-[160px] overflow-hidden whitespace-nowrap"
+            className="text-sm md:text-md font-semibold text-foreground3 truncate max-w-[110px] md:max-w-[160px] overflow-hidden whitespace-nowrap"
             title={data.name}
           >
             {data.name.length > 30 ? data.name.slice(0, 30) + '...' : data.name}
           </span>
-          <b className="font-normal text-zinc-600 text-xs md:text-sm ml-1">({nbTasks})</b>
+          <b className="font-normal text-foreground4 text-xs md:text-sm ml-1">
+            ({nbTasks})
+          </b>
         </div>
       </div>
       <TaskColumnDropdownMenu

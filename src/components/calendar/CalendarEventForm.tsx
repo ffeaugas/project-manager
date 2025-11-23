@@ -14,6 +14,11 @@ import { NewCalendarEventSchema } from '@/app/api/calendar/types';
 import { Trash } from 'lucide-react';
 import { toast } from 'sonner';
 import ConfirmDialog from '../utils/ConfirmDialog';
+import {
+  CALENDAR_EVENT_CATEGORIES,
+  type CalendarEventCategoryKey,
+} from '@/const/categories';
+import { cn } from '@/lib/utils';
 
 interface ICalendarEventFormProps {
   event: CalendarEvent | null;
@@ -41,6 +46,8 @@ const CalendarEventForm = ({
     register,
     handleSubmit,
     reset,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<NewCalendarEventType>({
     defaultValues: {
@@ -50,12 +57,14 @@ const CalendarEventForm = ({
         : '',
       startTime: event?.startTime || undefined,
       duration: event?.duration || undefined,
+      category: (event?.category as CalendarEventCategoryKey) || 'default',
     },
     resolver: zodResolver(NewCalendarEventSchema),
   });
 
+  const selectedCategory = watch('category') || 'default';
+
   const onSubmit: SubmitHandler<NewCalendarEventType> = async (bodyData) => {
-    console.log('✅ Validated Form Data:', bodyData);
     setIsLoading(true);
     try {
       if (event) {
@@ -123,6 +132,8 @@ const CalendarEventForm = ({
           )}
         </div>
 
+        <input type="hidden" {...register('category')} />
+
         <div className="items-center gap-4">
           <Label htmlFor="date">Date</Label>
           <Input
@@ -158,7 +169,7 @@ const CalendarEventForm = ({
               id="duration"
               type="number"
               className="bg-background text-foreground"
-              placeholder="60"
+              placeholder="0"
             />
             {errors.duration && (
               <span className="text-right text-red-500 text-sm">
@@ -166,6 +177,47 @@ const CalendarEventForm = ({
               </span>
             )}
           </div>
+        </div>
+
+        <div className="items-center gap-4">
+          <Label>Category</Label>
+          <div className="flex flex-row gap-2 flex-wrap">
+            {Object.values(CALENDAR_EVENT_CATEGORIES).map((category) => {
+              const Icon = category.icon;
+              const isSelected = selectedCategory === category.key;
+              return (
+                <button
+                  key={category.key}
+                  type="button"
+                  onClick={() => setValue('category', category.key)}
+                  className={cn(
+                    'w-10 h-10 rounded-md flex items-center justify-center transition-all',
+                    'border-2 hover:scale-110',
+                    isSelected
+                      ? 'border-foreground shadow-lg scale-110'
+                      : 'border-transparent hover:border-foreground/50',
+                  )}
+                  style={{
+                    backgroundColor: category.color,
+                  }}
+                  aria-label={category.name}
+                >
+                  <Icon
+                    size={20}
+                    className={cn(
+                      'text-white',
+                      isSelected ? 'opacity-100' : 'opacity-80',
+                    )}
+                  />
+                </button>
+              );
+            })}
+          </div>
+          {errors.category && (
+            <span className="text-right text-red-500 text-sm">
+              {errors.category.message}
+            </span>
+          )}
         </div>
       </div>
 

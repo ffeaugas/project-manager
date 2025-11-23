@@ -1,4 +1,5 @@
 import { CalendarEvent } from '@prisma/client';
+import { CALENDAR_EVENT_CATEGORIES, CalendarEventCategoryKey } from '@/const/categories';
 
 interface IDayCardProps {
   date: Date;
@@ -15,24 +16,36 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
       className="w-full bg-background2 rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors border "
       onClick={onClick}
     >
-      <h1 className="text-foreground text-lg font-bold p-2">{date.getDate()}</h1>
+      <h1 className="text-foreground text-md font-bold p-1">{date.getDate()}</h1>
       {filteredEvents.length > 0 && (
-        <div className="space-y-1">
-          {filteredEvents.slice(0, 4).map((event) => (
-            <div key={event.id} className="bg-blue-600 px-2 py-1">
-              {event.startTime && (
-                <p className="text-xs font-semibold text-foreground">{event.startTime}</p>
-              )}
-              <p className="text-xs text-foreground truncate">
-                {event.description.length > 25
-                  ? event.description.slice(0, 25) + '...'
-                  : event.description}
-              </p>
-            </div>
-          ))}
-          {filteredEvents.length > 4 && (
+        <div className="space-y-1 w-full flex flex-col justify-center">
+          {filteredEvents.slice(0, 3).map((event) => {
+            const category =
+              CALENDAR_EVENT_CATEGORIES[event.category as CalendarEventCategoryKey];
+            const categoryColor =
+              category?.color || CALENDAR_EVENT_CATEGORIES.default.color;
+            return (
+              <div
+                key={event.id}
+                className="px-2 py-1"
+                style={{ backgroundColor: categoryColor }}
+              >
+                {event.startTime && (
+                  <p className="text-xs font-semibold text-foreground">
+                    {event.startTime}
+                  </p>
+                )}
+                <p className="text-xs text-foreground truncate">
+                  {event.description.length > 25
+                    ? event.description.slice(0, 25) + '...'
+                    : event.description}
+                </p>
+              </div>
+            );
+          })}
+          {filteredEvents.length > 3 && (
             <p className="text-xs text-zinc-400 text-center">
-              +{filteredEvents.length - 4} more
+              +{filteredEvents.length - 3} more
             </p>
           )}
         </div>

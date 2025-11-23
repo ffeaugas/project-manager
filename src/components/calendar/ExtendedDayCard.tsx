@@ -1,6 +1,7 @@
 'use client';
 
 import { CalendarEvent } from '@prisma/client';
+import { CALENDAR_EVENT_CATEGORIES, CalendarEventCategoryKey } from '@/const/categories';
 
 interface IExtendedDayCardProps {
   date: Date | null;
@@ -43,33 +44,43 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
       <h2 className="text-2xl font-bold text-foreground mb-4">{formatDate(date)}</h2>
       <div className="space-y-2">
         {filteredEvents.length > 0 ? (
-          filteredEvents.map((event) => (
-            <div
-              key={event.id}
-              onClick={() => onEventClick(event)}
-              className="bg-blue-600 hover:bg-blue-700 rounded-lg p-3 cursor-pointer transition-colors border border-blue-500"
-            >
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1">
-                  {event.startTime && (
-                    <p className="text-sm font-semibold text-foreground mb-1">
-                      {formatTime(event.startTime)}
-                      {event.duration && (
-                        <span className="text-xs font-normal text-blue-100 ml-2">
-                          ({event.duration} min)
-                        </span>
-                      )}
+          filteredEvents.map((event) => {
+            const category =
+              CALENDAR_EVENT_CATEGORIES[event.category as CalendarEventCategoryKey];
+            const categoryColor =
+              category?.color || CALENDAR_EVENT_CATEGORIES.default.color;
+            return (
+              <div
+                key={event.id}
+                onClick={() => onEventClick(event)}
+                className="rounded-lg p-3 cursor-pointer transition-all hover:opacity-90 border-2"
+                style={{
+                  backgroundColor: categoryColor,
+                  borderColor: categoryColor,
+                }}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="flex-1">
+                    {event.startTime && (
+                      <p className="text-sm font-semibold text-foreground mb-1">
+                        {formatTime(event.startTime)}
+                        {event.duration && (
+                          <span className="text-xs font-normal text-white/80 ml-2">
+                            ({event.duration} min)
+                          </span>
+                        )}
+                      </p>
+                    )}
+                    <p className="text-sm text-foreground wrap-break-words">
+                      {event.description.length > 110
+                        ? event.description.slice(0, 110) + '...'
+                        : event.description}
                     </p>
-                  )}
-                  <p className="text-sm text-foreground wrap-break-words">
-                    {event.description.length > 110
-                      ? event.description.slice(0, 110) + '...'
-                      : event.description}
-                  </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            );
+          })
         ) : (
           <div className="text-center py-8 text-zinc-400">
             <p>No events scheduled for this day</p>

@@ -40,6 +40,7 @@ export async function createCalendarEvent(
       date: new Date(data.date),
       startTime: data.startTime || null,
       duration: data.duration || null,
+      category: data.category || 'default',
     },
   });
 
@@ -70,6 +71,7 @@ export async function updateCalendarEvent(
       date: data.date ? new Date(data.date) : undefined,
       startTime: data.startTime,
       duration: data.duration,
+      category: data.category,
     },
   });
 

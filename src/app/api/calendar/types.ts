@@ -20,6 +20,7 @@ export const NewCalendarEventSchema = z.object({
         : Number(val),
     z.number().int().positive('Duration must be a positive number').optional(),
   ),
+  category: z.string().default('default'),
 });
 
 export const UpdateCalendarEventSchema = z.object({
@@ -46,6 +47,7 @@ export const UpdateCalendarEventSchema = z.object({
         : Number(val),
     z.number().int().positive('Duration must be a positive number').optional(),
   ),
+  category: z.string().optional(),
 });
 
 export const DeleteCalendarEventSchema = z.object({

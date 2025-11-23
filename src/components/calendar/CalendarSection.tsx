@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, ChevronLeft } from 'lucide-react';
 import { DayCard } from './DayCard';
 import Link from 'next/link';
 import { useCalendar } from '@/hooks/use-calendar';
@@ -37,7 +37,11 @@ const CalendarSection = () => {
     <Card>
       <CardContent className="p-2 flex flex-col gap-2">
         <div className="flex flex-row items-center p-2">
-          <Link href="/home/calendar">
+          <Link
+            href="/home/calendar"
+            className="flex flex-row items-center gap-2 cursor-pointer"
+          >
+            <ChevronLeft size={20} />
             <CalendarDays size={20} className="cursor-pointer" />
           </Link>
         </div>

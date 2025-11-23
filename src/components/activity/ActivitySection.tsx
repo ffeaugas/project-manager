@@ -11,6 +11,7 @@ import {
   type ChartConfig,
 } from '@/components/ui/chart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { ChartNoAxesColumn } from 'lucide-react';
 
 interface StatisticsData {
   date: string;
@@ -21,11 +22,11 @@ interface StatisticsData {
 const chartConfig = {
   tasksArchived: {
     label: 'Task activity',
-    color: 'hsl(var(--chart-1))',
+    color: 'hsl(var(--color-custom1))',
   },
   projectCardsCreated: {
     label: 'Project activity',
-    color: 'hsl(var(--chart-2))',
+    color: 'hsl(var(--color-custom2))',
   },
 } satisfies ChartConfig;
 
@@ -56,7 +57,10 @@ const ActivitySection = () => {
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Activity</CardTitle>
+          <CardTitle className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
+            <ChartNoAxesColumn />
+            Activity
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex items-center justify-center h-[200px]">
@@ -70,7 +74,10 @@ const ActivitySection = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Activity</CardTitle>
+        <CardTitle className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
+          <ChartNoAxesColumn />
+          Activity
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -94,13 +101,13 @@ const ActivitySection = () => {
             <Bar
               dataKey="tasksArchived"
               stackId="a"
-              fill="var(--color-tasksArchived)"
+              fill="var(--color-custom3)"
               radius={[0, 0, 4, 4]}
             />
             <Bar
               dataKey="projectCardsCreated"
               stackId="a"
-              fill="var(--color-projectCardsCreated)"
+              fill="var(--color-custom4)"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

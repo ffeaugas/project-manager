@@ -64,7 +64,7 @@ const ProjectCard = ({
       data={data}
     >
       <div
-        className="bg-background2 rounded-lg w-full md:min-w-[280px] h-[280px] md:h-[320px] flex flex-col overflow-hidden flex-1
+        className="bg-background rounded-lg w-full md:min-w-[280px] h-[280px] md:h-[320px] flex flex-col overflow-hidden flex-1
       justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border  relative"
       >
         {firstImage && (
@@ -97,7 +97,7 @@ const ProjectCard = ({
             </div>
           )}
           {!firstImage && (
-            <span className="bottom-0 right-0 z-10 absolute h-20 w-full bg-linear-to-t from-background2 via-zinc-background2 via-70% to-transparent pointer-events-none" />
+            <span className="bottom-0 right-0 z-10 absolute h-20 w-full bg-linear-to-t from-background via-zinc-background via-70% to-transparent pointer-events-none" />
           )}
         </div>
       </div>
