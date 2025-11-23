@@ -20,28 +20,7 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
       {filteredEvents.length > 0 && (
         <div className="space-y-1 w-full flex flex-col justify-center">
           {filteredEvents.slice(0, 3).map((event) => {
-            const category =
-              CALENDAR_EVENT_CATEGORIES[event.category as CalendarEventCategoryKey];
-            const categoryColor =
-              category?.color || CALENDAR_EVENT_CATEGORIES.default.color;
-            return (
-              <div
-                key={event.id}
-                className="px-2 py-1"
-                style={{ backgroundColor: categoryColor }}
-              >
-                {event.startTime && (
-                  <p className="text-xs font-semibold text-foreground">
-                    {event.startTime}
-                  </p>
-                )}
-                <p className="text-xs text-foreground truncate">
-                  {event.description.length > 25
-                    ? event.description.slice(0, 25) + '...'
-                    : event.description}
-                </p>
-              </div>
-            );
+            return <EventCard event={event} key={event.id} />;
           })}
           {filteredEvents.length > 3 && (
             <p className="text-xs text-zinc-400 text-center">
@@ -56,4 +35,32 @@ export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
 
 export const NoDayCard = () => {
   return <div className="w-full h-[200px]" />;
+};
+
+interface IEventCardProps {
+  event: CalendarEvent;
+}
+
+const EventCard = ({ event }: IEventCardProps) => {
+  const category = CALENDAR_EVENT_CATEGORIES[event.category as CalendarEventCategoryKey];
+
+  const categoryColor = category?.color || CALENDAR_EVENT_CATEGORIES.default.color;
+  return (
+    <div
+      key={event.id}
+      className="px-2 py-1"
+      style={{
+        background: `linear-gradient(125deg, transparent, ${categoryColor})`,
+      }}
+    >
+      {event.startTime && (
+        <p className="text-xs font-semibold text-foreground">{event.startTime}</p>
+      )}
+      <p className="text-xs text-foreground truncate">
+        {event.description.length > 25
+          ? event.description.slice(0, 25) + '...'
+          : event.description}
+      </p>
+    </div>
+  );
 };

@@ -53,10 +53,9 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
               <div
                 key={event.id}
                 onClick={() => onEventClick(event)}
-                className="rounded-lg p-3 cursor-pointer transition-all hover:opacity-90 border-2"
+                className="rounded-lg p-3 cursor-pointer transition-all hover:opacity-70 border-2"
                 style={{
-                  backgroundColor: categoryColor,
-                  borderColor: categoryColor,
+                  background: `linear-gradient(90deg, transparent 1%, ${categoryColor})`,
                 }}
               >
                 <div className="flex items-start justify-between gap-2">
@@ -65,13 +64,13 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
                       <p className="text-sm font-semibold text-foreground mb-1">
                         {formatTime(event.startTime)}
                         {event.duration && (
-                          <span className="text-xs font-normal text-white/80 ml-2">
+                          <span className="text-xs font-normal text-foreground2 ml-2">
                             ({event.duration} min)
                           </span>
                         )}
                       </p>
                     )}
-                    <p className="text-sm text-foreground wrap-break-words">
+                    <p className="text-sm text-foreground2 wrap-break-words">
                       {event.description.length > 110
                         ? event.description.slice(0, 110) + '...'
                         : event.description}

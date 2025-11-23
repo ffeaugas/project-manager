@@ -13,7 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Plus, ExternalLink, Edit, Trash2 } from 'lucide-react';
+import { Plus, ExternalLink, Edit, Trash2, NotebookText } from 'lucide-react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -22,6 +22,7 @@ import {
 } from '@/app/api/projects/references/types';
 import ConfirmDialog from '@/components/utils/ConfirmDialog';
 import { useReferences } from '@/hooks/use-references';
+import { Card, CardContent } from '../ui/card';
 
 interface ProjectReferencesSectionProps {
   projectId: string;
@@ -61,9 +62,12 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
   };
 
   return (
-    <div className="w-[400px] h-dvh border-l border-borderColor flex flex-col bg-background2">
-      <div className="h-14 px-4 border-b border-borderColor flex items-center justify-between bg-background2">
-        <h2 className="text-md font-semibold text-zinc-200">References</h2>
+    <Card>
+      <CardContent className="p-2 flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <NotebookText size={16} />
+          <h2 className="text-md font-semibold text-foreground">References</h2>
+        </div>
         <NewReferenceSheet
           onSave={
             editingReference
@@ -77,28 +81,28 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
           }}
           isOpen={isSheetOpen}
         />
-      </div>
 
-      <div className="flex-1 overflow-auto p-4 space-y-2">
-        {isLoading ? (
-          <div className="text-zinc-500 text-sm">Loading...</div>
-        ) : references.length === 0 ? (
-          <div className="text-zinc-500 text-sm">No references yet</div>
-        ) : (
-          references.map((reference) => (
-            <ReferenceCard
-              key={reference.id}
-              reference={reference}
-              onEdit={() => {
-                setEditingReference(reference);
-                setIsSheetOpen(true);
-              }}
-              onDelete={handleDelete}
-            />
-          ))
-        )}
-      </div>
-    </div>
+        <div className="flex-1 overflow-auto space-y-2">
+          {isLoading ? (
+            <div className="text-foreground2 text-sm">Loading...</div>
+          ) : references.length === 0 ? (
+            <div className="text-foreground2 text-sm">No references yet</div>
+          ) : (
+            references.map((reference) => (
+              <ReferenceCard
+                key={reference.id}
+                reference={reference}
+                onEdit={() => {
+                  setEditingReference(reference);
+                  setIsSheetOpen(true);
+                }}
+                onDelete={handleDelete}
+              />
+            ))
+          )}
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 
@@ -112,12 +116,12 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
   return (
     <div className="bg-background2 rounded-lg p-3 border border-zinc-800 hover:border-borderColor transition-colors group">
       <div className="flex items-start justify-between gap-2 mb-2">
-        <h3 className="font-medium text-zinc-200 truncate flex-1">{reference.name}</h3>
+        <h3 className="font-medium text-foreground truncate flex-1">{reference.name}</h3>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 text-zinc-400 hover:text-zinc-200"
+            className="h-7 w-7 p-0 text-foreground2 hover:text-foreground"
             onClick={onEdit}
           >
             <Edit size={14} />
@@ -141,7 +145,9 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
         </div>
       </div>
       {reference.description && (
-        <p className="text-sm text-zinc-400 line-clamp-2 mb-2">{reference.description}</p>
+        <p className="text-sm text-foreground2 line-clamp-2 mb-2">
+          {reference.description}
+        </p>
       )}
       <a
         href={reference.url}

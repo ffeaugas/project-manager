@@ -38,10 +38,6 @@ body {
   --color-sidebar-ring: var(--sidebar-ring);
   --color-custom1: var(--custom1);
   --color-custom2: var(--custom2);
-  --color-custom3: var(--custom3);
-  --color-custom4: var(--custom4);
-  --color-custom5: var(--custom5);
-  --color-custom6: var(--custom6);
 }
 
 :root {
@@ -50,7 +46,7 @@ body {
   --background: oklch(98% 0.016 73.684);
   --background2: oklch(95.4% 0.038 75.164);
   --background3: oklch(90.1% 0.076 70.697);
-  --borderColor: oklch(37% 0.013 285.805);
+  --borderColor: oklch(37.4% 0.01 67.558);
   --foreground: oklch(21.6% 0.006 56.043);
   --foreground2: oklch(26.8% 0.007 34.298);
   --foreground3: oklch(55.3% 0.013 58.071);
@@ -62,7 +58,7 @@ body {
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
+  --border: oklch(55.3% 0.013 58.071);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.646 0.222 41.116);
@@ -70,12 +66,8 @@ body {
   --sidebar-border: oklch(37% 0.013 285.805 / 30%);
   --sidebar-accent: oklch(37% 0.013 285.805 / 30%);
   --sidebar-ring: oklch(37% 0.013 285.805 / 30%);
-  --custom1: oklch(89.7% 0.196 126.665); /* green */
-  --custom2: oklch(70.7% 0.165 254.624); /* red */
-  --custom3: oklch(74% 0.238 322.16); /* blue */
-  --custom4: oklch(85.2% 0.199 91.936); /* yellow */
-  --custom5: oklch(70.4% 0.191 22.216); /* purple */
-  --custom6: oklch(25.7% 0.09 281.288); /* orange */
+  --custom1: oklch(55.8% 0.288 302.321); /* purple */
+  --custom2: oklch(48.8% 0.243 264.376); /* darkBlue */
 }
 
 .dark {
@@ -83,7 +75,7 @@ body {
   --background2: oklch(21% 0.006 285.885);
   --background3: oklch(14.1% 0.005 285.823);
   --borderColor: oklch(37% 0.013 285.805);
-  --foreground: oklch(0.985 0 0);
+  --foreground: oklch(92% 0.004 286.32);
   --foreground2: oklch(86.9% 0.022 252.894);
   --foreground3: oklch(44.2% 0.017 285.786);
   --foreground4: oklch(55.3% 0.013 58.071);
@@ -218,4 +210,8 @@ ol {
 
 .react-colorful {
   width: 100% !important;
+}
+
+.shadow-bot {
+  box-shadow: 1px 13px 12px -1px color-mix(in srgb, var(--background3) 40%, transparent);
 }

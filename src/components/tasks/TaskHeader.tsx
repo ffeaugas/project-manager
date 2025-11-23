@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 const TaskHeader = () => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-background2 border-b border-borderColor shrink-0 gap-2">
+    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-background2 border-b border-borderColor shrink-0 gap-2 shadow-bot">
       <Menu />
     </div>
   );

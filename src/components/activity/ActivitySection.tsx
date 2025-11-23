@@ -101,13 +101,13 @@ const ActivitySection = () => {
             <Bar
               dataKey="tasksArchived"
               stackId="a"
-              fill="var(--color-custom3)"
+              fill="var(--color-custom1)"
               radius={[0, 0, 4, 4]}
             />
             <Bar
               dataKey="projectCardsCreated"
               stackId="a"
-              fill="var(--color-custom4)"
+              fill="var(--color-custom2)"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>
