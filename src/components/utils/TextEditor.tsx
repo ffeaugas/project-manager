@@ -132,8 +132,12 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
       return {
         color: ctx.editor?.getAttributes('textStyle').color,
         isWhite: ctx.editor?.isActive('textStyle', { color: 'white' }) ?? false,
-        isRed: ctx.editor?.isActive('textStyle', { color: '#FBBC88' }) ?? false,
-        isBlue: ctx.editor?.isActive('textStyle', { color: '#85D1F5' }) ?? false,
+        isRed:
+          ctx.editor?.isActive('textStyle', { color: 'oklch(64.6% 0.222 41.116)' }) ??
+          false,
+        isBlue:
+          ctx.editor?.isActive('textStyle', { color: 'oklch(55.8% 0.288 302.321)' }) ??
+          false,
         isBold: ctx.editor?.isActive('bold') ?? false,
         canBold: ctx.editor?.can().chain().toggleBold().run() ?? false,
         isItalic: ctx.editor?.isActive('italic') ?? false,
@@ -226,15 +230,17 @@ const MenuBar = ({ editor }: IMenuBarProps) => {
       isActive: (state) => state.isWhite,
     },
     {
-      color: '#FBBC88',
+      color: 'oklch(64.6% 0.222 41.116)',
       label: 'Color',
-      onClick: (editor) => editor.chain().focus().setColor('#FBBC88').run(),
+      onClick: (editor) =>
+        editor.chain().focus().setColor('oklch(64.6% 0.222 41.116)').run(),
       isActive: (state) => state.isRed,
     },
     {
-      color: '#85D1F5',
+      color: 'oklch(55.8% 0.288 302.321)',
       label: 'Color',
-      onClick: (editor) => editor.chain().focus().setColor('#85D1F5').run(),
+      onClick: (editor) =>
+        editor.chain().focus().setColor('oklch(55.8% 0.288 302.321)').run(),
       isActive: (state) => state.isBlue,
     },
     {

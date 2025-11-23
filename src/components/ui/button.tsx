@@ -13,7 +13,7 @@ const buttonVariants = cva(
         auth: 'bg-background text-zinc-200 hover:bg-zinc-700 text-xs leading-none',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'border border-input bg-background hover:bg-accent hover:text-accent-foreground',
+          'flex flex-col items-center justify-center bg-transparent border-dashed border-2 border-borderColor/70 p-4 text-zinc-500 text-xs md:text-sm hover:bg-accent hover:text-accent-foreground',
         secondary: 'text-sm bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
           'border-none bg-transparent hover:border-foreground4 hover:text-accent-foreground focus-visible:bg-accent focus-visible:ring-0 focus-visible:ring-offset-0',

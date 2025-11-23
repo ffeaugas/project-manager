@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DayCard, NoDayCard } from '@/components/calendar/DayCard';
 import CalendarEventSheet from '@/components/calendar/CalendarEventSheet';
 import { useCalendar } from '@/hooks/use-calendar';
@@ -16,8 +16,18 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [monthYearLabel, setMonthYearLabel] = useState<string>('');
 
   const { events, createEvent, updateEvent, deleteEvent } = useCalendar();
+
+  useEffect(() => {
+    setMonthYearLabel(
+      new Date(currentYear, currentMonth).toLocaleString('default', {
+        month: 'long',
+        year: 'numeric',
+      }),
+    );
+  }, [currentYear, currentMonth]);
 
   const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
   const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
@@ -77,23 +87,21 @@ const CalendarPage = () => {
       <div className="flex items-center justify-between mb-4">
         <Button
           onClick={handlePreviousMonth}
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="bg-background2 border-borderColor"
+          className="bg-background3 border-borderColor"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
         <h1 className="text-2xl font-bold text-foreground">
-          {new Date(currentYear, currentMonth).toLocaleString('default', {
-            month: 'long',
-            year: 'numeric',
-          })}
+          {monthYearLabel ||
+            `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`}
         </h1>
         <Button
           onClick={handleNextMonth}
-          variant="outline"
+          variant="ghost"
           size="icon"
-          className="bg-background2 border-borderColor"
+          className="bg-background3 border-borderColor"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

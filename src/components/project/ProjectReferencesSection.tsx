@@ -23,6 +23,7 @@ import {
 import ConfirmDialog from '@/components/utils/ConfirmDialog';
 import { useReferences } from '@/hooks/use-references';
 import { Card, CardContent } from '../ui/card';
+import { Spinner } from '../ui/spinner';
 
 interface ProjectReferencesSectionProps {
   projectId: string;
@@ -63,7 +64,7 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
 
   return (
     <Card>
-      <CardContent className="p-2 flex flex-col gap-2">
+      <CardContent className="p-2 flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <NotebookText size={16} />
           <h2 className="text-md font-semibold text-foreground">References</h2>
@@ -84,9 +85,9 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
 
         <div className="flex-1 overflow-auto space-y-2">
           {isLoading ? (
-            <div className="text-foreground2 text-sm">Loading...</div>
+            <Spinner size="small" className="h-[100px]" />
           ) : references.length === 0 ? (
-            <div className="text-foreground2 text-sm">No references yet</div>
+            <div className="text-foreground3 text-sm">No references yet</div>
           ) : (
             references.map((reference) => (
               <ReferenceCard
@@ -209,8 +210,13 @@ const NewReferenceSheet = ({
   return (
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-[30px] flex flex-row items-center justify-center"
+        >
           <Plus size={14} />
+          Add Reference
         </Button>
       </SheetTrigger>
       <SheetContent

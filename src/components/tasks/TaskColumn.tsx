@@ -87,10 +87,7 @@ const TaskColumn = ({
         ))}
       </SortableContext>
       <NewTaskDialog createTask={createTask} updateTask={updateTask} columnId={data.id}>
-        <Button
-          variant="outline"
-          className="flex flex-col justify-center w-full h-[80px] md:h-[100px] bg-transparent border-dashed border-2 border-borderColor p-4 text-zinc-500 text-xs md:text-sm"
-        >
+        <Button variant="outline" className="h-[100px]">
           Click to add a new task
         </Button>
       </NewTaskDialog>

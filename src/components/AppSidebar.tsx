@@ -107,7 +107,10 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                       </SidebarMenuSubItem>
                     ))}
                     <NewProjectDialog submitProject={submitProject}>
-                      <Button className="mt-4 w-full bg-zinc-700 hover:bg-zinc-600 text-foreground2">
+                      <Button
+                        variant="outline"
+                        className="flex flex-row items-center justify-center mt-2"
+                      >
                         <Plus size={16} className="mr-2" />
                         New Project
                       </Button>

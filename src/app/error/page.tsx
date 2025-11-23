@@ -19,7 +19,7 @@ export default function ErrorPage() {
           <Button
             onClick={() => router.back()}
             variant="outline"
-            className="border-gray-600 text-gray-300 hover:bg-gray-800"
+            className="w-full h-[80px] md:h-[100px] border-gray-600 text-gray-300 hover:bg-gray-800"
           >
             Retour
           </Button>
