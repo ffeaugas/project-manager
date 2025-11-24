@@ -7,7 +7,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '../ui/dropdown-menu';
-import { GripVertical, Trash } from 'lucide-react';
+import { GripVertical, Trash, NotebookText } from 'lucide-react';
 import ConfirmDialog from '../utils/ConfirmDialog';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
@@ -21,12 +21,14 @@ interface IProjectHeaderProps {
   ) => Promise<boolean>;
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
+  onShowReferences?: () => void;
 }
 
 const ProjectHeader = ({
   submitProjectCard,
   project,
   deleteProject,
+  onShowReferences,
 }: IProjectHeaderProps) => {
   return (
     <div className="flex flex-row p-2 md:p-4 justify-between w-full bg-background2 border-b border-borderColor shrink-0 gap-2 shadow-bot z-10">
@@ -48,7 +50,11 @@ const ProjectHeader = ({
             Add card
           </Button>
         </NewProjectCardDialog>
-        <Menu project={project} deleteProject={deleteProject} />
+        <Menu
+          project={project}
+          deleteProject={deleteProject}
+          onShowReferences={onShowReferences}
+        />
       </div>
     </div>
   );
@@ -59,9 +65,10 @@ export default ProjectHeader;
 interface IMenuProps {
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
+  onShowReferences?: () => void;
 }
 
-const Menu = ({ project, deleteProject }: IMenuProps) => {
+const Menu = ({ project, deleteProject, onShowReferences }: IMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -70,6 +77,15 @@ const Menu = ({ project, deleteProject }: IMenuProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 bg-background">
+        {onShowReferences && (
+          <DropdownMenuItem
+            className="w-full flex justify-between text-foreground2 cursor-pointer md:hidden"
+            onSelect={onShowReferences}
+          >
+            References
+            <NotebookText size={16} />
+          </DropdownMenuItem>
+        )}
         <ConfirmDialog
           id={project.id}
           route="projects"
@@ -83,7 +99,7 @@ const Menu = ({ project, deleteProject }: IMenuProps) => {
           }}
         >
           <DropdownMenuItem
-            className="w-full flex justify-between text-zinc-300 cursor-pointer"
+            className="w-full flex justify-between text-foreground2 cursor-pointer"
             onSelect={(e) => {
               e.preventDefault();
             }}

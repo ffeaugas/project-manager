@@ -99,7 +99,7 @@ const CalendarEventSheet = ({
             <Button
               onClick={handleNewEventClick}
               variant="outline"
-              className="h-[80px] md:h-[100px] text-lg md:text-md my-px mt-[.6rem]"
+              className="h-[60px] md:h-[80px] text-lg w-full flex flex-row justify-center items-center"
             >
               <Plus className="mr-2 h-4 w-4" />
               New Event

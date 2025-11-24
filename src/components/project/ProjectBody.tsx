@@ -6,12 +6,15 @@ import { Spinner } from '../ui/spinner';
 import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
 import ProjectCard from './ProjectCard';
 import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import { useState } from 'react';
+import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
 
 interface IProjectBodyProps {
   projectId: string;
+  referencesSlot?: React.ReactNode;
 }
 
-const ProjectBody = ({ projectId }: IProjectBodyProps) => {
+const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
   const {
     project,
     isLoading,
@@ -20,6 +23,8 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
     deleteProjectCard,
     error,
   } = useProjects(projectId);
+
+  const [isReferencesOpen, setIsReferencesOpen] = useState(false);
 
   if (error) {
     return (
@@ -39,6 +44,7 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
         submitProjectCard={submitProjectCard}
         project={project}
         deleteProject={deleteProject}
+        onShowReferences={referencesSlot ? () => setIsReferencesOpen(true) : undefined}
       />
       <CardList
         cards={project.projectCards}
@@ -46,6 +52,14 @@ const ProjectBody = ({ projectId }: IProjectBodyProps) => {
         deleteProjectCard={deleteProjectCard}
         projectId={projectId}
       />
+      {referencesSlot && (
+        <Sheet open={isReferencesOpen} onOpenChange={setIsReferencesOpen}>
+          <SheetTitle />
+          <SheetContent className="bg-background2 w-full sm:w-[540px] overflow-y-auto p-0">
+            <div className="p-6">{referencesSlot}</div>
+          </SheetContent>
+        </Sheet>
+      )}
     </div>
   );
 };

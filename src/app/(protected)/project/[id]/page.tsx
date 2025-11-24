@@ -19,7 +19,10 @@ export default async function DynamicPage({ params }: ProjectProps) {
     <div className="h-dvh w-full overflow-hidden flex flex-row">
       <ResizablePanelGroup direction="horizontal" className="w-full flex bg-dotted">
         <ResizablePanel minSize={60} defaultSize={80}>
-          <ProjectBody projectId={id} />
+          <ProjectBody
+            projectId={id}
+            referencesSlot={<ProjectReferencesSection projectId={id} />}
+          />
         </ResizablePanel>
         <ResizableHandle withHandle className="hidden md:flex" />
         <ResizablePanel minSize={15} className="hidden md:block">

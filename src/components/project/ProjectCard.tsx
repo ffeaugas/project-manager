@@ -45,7 +45,7 @@ const ProjectCard = ({
     editorProps: {
       attributes: {
         class:
-          'h-[300px] w-full p-2 bg-background focus:outline-none overflow-auto text-xs [&_h1]:text-xs',
+          'h-[300px] w-full p-2 bg-zinc-800 focus:outline-none overflow-auto text-xs [&_h1]:text-xs',
       },
     },
   });

@@ -223,7 +223,7 @@ const NewReferenceSheet = ({
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="bg-background2 border-zinc-800 text-zinc-200 w-[400px] sm:w-[540px]"
+        className="bg-background2 border-zinc-800 text-foreground2 w-[400px] sm:w-[540px]"
       >
         <SheetHeader>
           <SheetTitle>{editingReference ? 'Edit' : 'Add'} Reference</SheetTitle>
@@ -272,7 +272,9 @@ const NewReferenceSheet = ({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit" isSubmitting={isSubmitting}>{editingReference ? 'Save' : 'Add'} Reference</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>
+              {editingReference ? 'Save' : 'Add'} Reference
+            </Button>
           </div>
         </form>
       </SheetContent>

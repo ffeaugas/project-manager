@@ -32,14 +32,17 @@ const ConfirmDialog = ({
   children,
 }: IConfirmDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const handleConfirm = async () => {
+    setIsSubmitting(true);
     const success = await action(id, route);
 
     if (success) {
       setIsOpen(false);
       onSuccess();
     }
+
+    setIsSubmitting(false);
   };
 
   const handleCancel = () => {
@@ -58,7 +61,9 @@ const ConfirmDialog = ({
           <Button variant="secondary" onClick={handleCancel}>
             Cancel
           </Button>
-          <Button onClick={handleConfirm}>{confirmLabel}</Button>
+          <Button onClick={handleConfirm} isSubmitting={isSubmitting}>
+            {confirmLabel}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

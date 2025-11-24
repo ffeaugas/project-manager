@@ -21,7 +21,11 @@ import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
 import { useMemo } from 'react';
 
-const Kanban = () => {
+interface KanbanProps {
+  openSidebar?: () => void;
+}
+
+const Kanban = ({ openSidebar }: KanbanProps) => {
   const {
     columns,
     tasks,
@@ -57,7 +61,7 @@ const Kanban = () => {
 
   return (
     <div className="flex flex-col flex-1 w-full">
-      <TaskHeader />
+      <TaskHeader openSidebar={openSidebar} />
       <div className="overflow-y-scroll overflow-x-auto">
         <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
           <DndContext

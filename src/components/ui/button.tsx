@@ -11,7 +11,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90 text-sm',
-        auth: 'bg-background text-zinc-200 hover:bg-zinc-700 text-xs leading-none',
+        auth: 'bg-background text-foreground2nd2 hover:bg-zinc-700 text-xs leading-none',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
           'flex flex-col items-center justify-center bg-transparent border-dashed border-2 border-borderColor/70 p-4 text-zinc-500 text-xs md:text-sm hover:bg-accent hover:text-accent-foreground',

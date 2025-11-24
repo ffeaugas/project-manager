@@ -47,7 +47,7 @@ const TaskColumnDropdownMenu = ({
         <DropdownMenuGroup>
           <NewColumnDialog submitColumn={submitColumn} data={data}>
             <DropdownMenuItem
-              className="flex justify-between text-zinc-300"
+              className="flex justify-between text-foreground2"
               onSelect={(event) => event.preventDefault()}
             >
               Edit
@@ -64,7 +64,7 @@ const TaskColumnDropdownMenu = ({
           >
             <DropdownMenuItem
               onSelect={(event) => event.preventDefault()}
-              className="flex justify-between text-zinc-300"
+              className="flex justify-between text-foreground2"
             >
               Delete
               <Trash />

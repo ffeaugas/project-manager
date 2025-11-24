@@ -4,21 +4,26 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuSeparator,
 } from '../ui/dropdown-menu';
-import { Archive, GripVertical } from 'lucide-react';
+import { Archive, GripVertical, PanelsTopLeft } from 'lucide-react';
 import Link from 'next/link';
 
-const TaskHeader = () => {
+interface TaskHeaderProps {
+  openSidebar?: () => void;
+}
+
+const TaskHeader = ({ openSidebar }: TaskHeaderProps) => {
   return (
     <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-background2 border-b border-borderColor shrink-0 gap-2 shadow-bot">
-      <Menu />
+      <Menu openSidebar={openSidebar} />
     </div>
   );
 };
 
 export default TaskHeader;
 
-const Menu = () => {
+const Menu = ({ openSidebar }: TaskHeaderProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -36,6 +41,18 @@ const Menu = () => {
             <Archive size={16} />
           </Link>
         </DropdownMenuItem>
+        {openSidebar && (
+          <>
+            <DropdownMenuSeparator className="md:hidden" />
+            <DropdownMenuItem
+              className="md:hidden flex justify-between items-center cursor-pointer"
+              onSelect={openSidebar}
+            >
+              <span>Dashboard</span>
+              <PanelsTopLeft size={16} />
+            </DropdownMenuItem>
+          </>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );
