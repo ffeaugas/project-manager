@@ -145,20 +145,22 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
           </ConfirmDialog>
         </div>
       </div>
-      {reference.description && (
-        <p className="text-sm text-foreground2 line-clamp-2 mb-2">
-          {reference.description}
-        </p>
-      )}
-      <a
-        href={reference.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="flex items-center gap-1 text-sm text-blue-400 hover:text-blue-300 transition-colors"
-      >
-        <span className="truncate">{reference.url}</span>
-        <ExternalLink size={14} className="shrink-0" />
-      </a>
+      <div className="flex flex-row justify-between gap-2">
+        {reference.description && (
+          <p className="text-sm text-foreground2 line-clamp-2 mb-2">
+            {reference.description}
+          </p>
+        )}
+        <a
+          href={reference.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-1 text-sm text-custom1 hover:text-custom1/40 transition-colors"
+        >
+          <span className="truncate">Go to link</span>
+          <ExternalLink size={14} className="shrink-0" />
+        </a>
+      </div>
     </div>
   );
 };
