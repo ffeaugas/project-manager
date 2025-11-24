@@ -1,19 +1,24 @@
 import { CalendarEvent } from '@prisma/client';
 import { CALENDAR_EVENT_CATEGORIES, CalendarEventCategoryKey } from '@/const/categories';
+import { cn } from '@/lib/utils';
 
 interface IDayCardProps {
   date: Date;
   events: CalendarEvent[];
   onClick?: () => void;
+  className?: string;
 }
 
-export const DayCard = ({ date, events, onClick }: IDayCardProps) => {
+export const DayCard = ({ date, events, onClick, className }: IDayCardProps) => {
   const filteredEvents = events.filter(
     (event) => new Date(event.date).toDateString() === date.toDateString(),
   );
   return (
     <div
-      className="w-full bg-background2 rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors border "
+      className={cn(
+        'min-w-[100px] max-w-[300px] bg-background2 rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors border flex-1',
+        className,
+      )}
       onClick={onClick}
     >
       <h1 className="text-foreground text-md font-bold p-1">{date.getDate()}</h1>

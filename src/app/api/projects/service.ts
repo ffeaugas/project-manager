@@ -13,7 +13,7 @@ export async function listProjects(userId: string | number) {
 
 export async function createProject(
   userId: string | number,
-  data: { name: string; description: string; category?: string },
+  data: { name: string; description?: string; category?: string },
 ) {
   const uid = String(userId);
   const created = await prisma.project.create({

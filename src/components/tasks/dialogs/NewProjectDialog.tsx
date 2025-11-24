@@ -23,7 +23,7 @@ import { ProjectCategory } from '@/app/api/projects/types';
 import LucidIcon from '@/components/utils/LucidIcon';
 
 interface INewProjectDialogProps {
-  data?: { id: string; name: string; description: string } | null;
+  data?: { id: string; name: string; description?: string } | null;
   submitProject: (bodyData: NewProjectType, projectId?: string) => Promise<boolean>;
   children: React.ReactNode;
 }

@@ -46,7 +46,7 @@ user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 model Project {
   id          String @id @default(uuid())
   name        String
-  description String
+  description String?
   category    String @default("other")
 
   projectCards ProjectCard[]

@@ -45,7 +45,7 @@ const CalendarSection = () => {
             <CalendarDays size={20} className="cursor-pointer" />
           </Link>
         </div>
-        <div className="flex flex-row gap-2">
+        <div className="flex flex-wrap gap-2">
           <DayCard
             date={today}
             events={todayEvents}

@@ -83,8 +83,8 @@ const CalendarPage = () => {
   };
 
   return (
-    <div className="flex flex-col w-full p-4">
-      <div className="flex items-center justify-between mb-4">
+    <div className="flex flex-col w-full h-dvh overflow-y-auto p-4 bg-dotted">
+      <div className="flex items-center justify-between mb-4 shrink-0">
         <Button
           onClick={handlePreviousMonth}
           variant="ghost"
@@ -162,6 +162,7 @@ const WeekDayColumn = ({ weekDayIndex, days, onDayClick }: IWeekDayColumnProps) 
               date={day.date!}
               events={day.events || []}
               onClick={() => onDayClick(day.date!)}
+              className="bg-background"
             />
           );
         })

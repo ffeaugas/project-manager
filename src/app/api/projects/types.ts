@@ -16,14 +16,14 @@ export type ProjectSelectType = Prisma.ProjectGetPayload<{
 
 export const NewProjectSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().optional(),
   category: z.string().default('other'),
 });
 
 export const UpdateProjectSchema = z.object({
   id: z.string().uuid('Id must be a valid UUID'),
   name: z.string().min(1, 'Name is required').optional(),
-  description: z.string().min(1, 'Description is required').optional(),
+  description: z.string().optional(),
   category: z.string().optional(),
 });
 
@@ -57,7 +57,7 @@ export type ProjectCategory = {
 export const newProjectSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, 'Name is required'),
-  description: z.string().min(1, 'Description is required'),
+  description: z.string().optional(),
   category: z.string().default('other'),
 });
 

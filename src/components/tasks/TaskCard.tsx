@@ -58,7 +58,7 @@ const TaskCard = ({
         {...attributes}
         data-task-card
         className={cn(
-          'flex flex-col rounded-md gap-2 px-2 py-2 bg-background min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-md hover:shadow-2xl cursor-pointer justify-between border hover:border-borderColor duration-400',
+          'flex flex-col rounded-md gap-2 px-2 py-2 bg-background min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-md hover:shadow-2xl cursor-pointer justify-between border hover:border-borderColor duration-400 select-none',
           isDragging && 'opacity-20',
         )}
       >
