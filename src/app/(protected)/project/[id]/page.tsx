@@ -21,7 +21,7 @@ export default async function DynamicPage({ params }: ProjectProps) {
         <ResizablePanel minSize={60} defaultSize={80}>
           <ProjectBody projectId={id} />
         </ResizablePanel>
-        <ResizableHandle withHandle className="hidden md:block" />
+        <ResizableHandle withHandle className="hidden md:flex" />
         <ResizablePanel minSize={15} className="hidden md:block">
           <div className="w-full md:h-dvh border-l border-borderColor md:flex flex-col gap-2 p-2 bg-background2 hidden">
             <ProjectReferencesSection projectId={id} />
