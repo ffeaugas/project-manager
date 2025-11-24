@@ -25,11 +25,14 @@ import { getProjectCategory } from '@/app/api/projects/utils';
 import LucidIcon from './utils/LucidIcon';
 import { User } from 'better-auth';
 import AuthButton from './auth/AuthButton';
+import { ProjectSelectType } from '@/app/api/projects/types';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const AppSidebar = ({ userData }: { userData: User }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
   const { projects, submitProject } = useProjects();
   const pathname = usePathname();
+  const isMobile = useIsMobile();
 
   const toggleTheme = () => {
     document.documentElement.classList.toggle('dark');
@@ -40,7 +43,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
 
   return (
     <Sidebar
-      collapsible="none"
+      collapsible={isMobile ? 'offcanvas' : 'none'}
       className="bg-background3 border border-borderColor text-foreground2"
     >
       <SidebarContent>
@@ -73,38 +76,11 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                 {projectsExpanded && (
                   <SidebarMenuSub>
                     {projects.map((project) => (
-                      <SidebarMenuSubItem key={project.name}>
-                        <SidebarMenuSubButton
-                          asChild
-                          isActive={pathname === `/project/${project.id}`}
-                        >
-                          <Link
-                            href={`/project/${project.id}`}
-                            className="flex items-center gap-2 justify-between w-full"
-                          >
-                            <div className="flex items-center gap-2">
-                              {(() => {
-                                const category = getProjectCategory(project.category);
-                                return (
-                                  <LucidIcon
-                                    icon={category.icon}
-                                    size={16}
-                                    color={category.color}
-                                  />
-                                );
-                              })()}
-                              <span className="text-sm">
-                                {project.name.length > 18
-                                  ? project.name.slice(0, 18) + '...'
-                                  : project.name}
-                              </span>
-                            </div>
-                            <span className="text-xs text-zinc-400">
-                              {project._count.projectCards}
-                            </span>
-                          </Link>
-                        </SidebarMenuSubButton>
-                      </SidebarMenuSubItem>
+                      <ProjectItem
+                        key={project.id}
+                        project={project}
+                        pathname={pathname}
+                      />
                     ))}
                     <NewProjectDialog submitProject={submitProject}>
                       <Button
@@ -132,3 +108,34 @@ const AppSidebar = ({ userData }: { userData: User }) => {
 };
 
 export default AppSidebar;
+
+interface IProjectItemProps {
+  project: ProjectSelectType;
+  pathname: string;
+}
+
+const ProjectItem = ({ project, pathname }: IProjectItemProps) => {
+  return (
+    <SidebarMenuSubItem key={project.name}>
+      <SidebarMenuSubButton asChild isActive={pathname === `/project/${project.id}`}>
+        <Link
+          href={`/project/${project.id}`}
+          className="flex items-center gap-2 justify-between w-full"
+        >
+          <div className="flex items-center gap-2">
+            {(() => {
+              const category = getProjectCategory(project.category);
+              return <LucidIcon icon={category.icon} size={16} color={category.color} />;
+            })()}
+            <span className="text-sm">
+              {project.name.length > 18
+                ? project.name.slice(0, 18) + '...'
+                : project.name}
+            </span>
+          </div>
+          <span className="text-xs text-zinc-400">{project._count.projectCards}</span>
+        </Link>
+      </SidebarMenuSubButton>
+    </SidebarMenuSubItem>
+  );
+};
