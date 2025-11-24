@@ -1,6 +1,6 @@
 'use client';
 
-import { ProjectSelectType } from '@/app/api/projects/types';
+import { NewProjectType, ProjectSelectType } from '@/app/api/projects/types';
 import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -75,10 +75,7 @@ export const useProjects = (id?: string) => {
     return true;
   };
 
-  const submitProject = async (
-    bodyData: { name: string; description: string; category?: string },
-    projectId?: string,
-  ) => {
+  const submitProject = async (bodyData: NewProjectType, projectId?: string) => {
     try {
       const requestBody = projectId ? { ...bodyData, id: projectId } : bodyData;
       const response = await fetch('/api/projects', {

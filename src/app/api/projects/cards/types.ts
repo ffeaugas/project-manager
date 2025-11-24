@@ -89,7 +89,7 @@ export const NewProjectCardSchema: ZodType<NewProjectCardForm> = z
     },
     {
       message: 'At least one field (name, description, or image) must be provided',
-      path: ['name'], // Set path to first field for better error display
+      path: ['name'],
     },
   );
 

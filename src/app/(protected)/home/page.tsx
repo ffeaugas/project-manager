@@ -9,8 +9,8 @@ import {
 
 const HomePage = () => {
   return (
-    <div className="flex flex-col w-full">
-      <div className="flex flex-col-reverse md:flex-row h-dvh">
+    <div className="flex flex-col w-full h-dvh overflow-y-auto">
+      <div className="flex flex-col-reverse md:flex-row">
         <ResizablePanelGroup direction="horizontal" className="w-full flex bg-dotted">
           <ResizablePanel minSize={60} defaultSize={80}>
             <Kanban />
