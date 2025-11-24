@@ -8,7 +8,6 @@ import { Input } from '../ui/input';
 import { useRouter } from 'next/navigation';
 import { Button } from '../ui/button';
 import { useState } from 'react';
-import { Spinner } from '../ui/spinner';
 import { GithubIcon } from 'lucide-react';
 import { signIn } from '@/lib/auth-client';
 import Link from 'next/link';
@@ -110,13 +109,9 @@ const SignInForm = () => {
             )}
           />
           <div className="flex justify-center w-full">
-            {isLoading ? (
-              <Spinner className="w-fit h-fit" />
-            ) : (
-              <Button type="submit" className="w-full">
-                Sign In
-              </Button>
-            )}
+            <Button type="submit" className="w-full" isSubmitting={isLoading}>
+              Sign In
+            </Button>
           </div>
         </form>
 

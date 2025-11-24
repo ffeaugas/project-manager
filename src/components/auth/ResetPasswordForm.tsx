@@ -38,6 +38,8 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
     },
   });
 
+  const { isSubmitting } = form.formState;
+
   async function onSubmit(values: ResetPasswordFormValues) {
     const password = values.password;
 
@@ -79,7 +81,7 @@ const ResetPasswordForm = ({ token }: { token: string }) => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" isSubmitting={isSubmitting}>
             Reset Password
           </Button>
         </form>

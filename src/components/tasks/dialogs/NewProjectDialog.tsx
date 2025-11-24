@@ -38,7 +38,7 @@ const NewProjectDialog = ({
     handleSubmit,
     reset,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<NewProjectType>({
     defaultValues: {
       name: data?.name || '',
@@ -98,7 +98,7 @@ const NewProjectDialog = ({
             )}
           </div>
           <DialogFooter>
-            <Button type="submit">Save {!data && 'project'}</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>Save {!data && 'project'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

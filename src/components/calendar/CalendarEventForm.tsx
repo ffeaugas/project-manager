@@ -48,7 +48,7 @@ const CalendarEventForm = ({
     reset,
     watch,
     setValue,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<NewCalendarEventType>({
     defaultValues: {
       description: event?.description || '',
@@ -251,7 +251,7 @@ const CalendarEventForm = ({
           >
             Cancel
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button type="submit" isSubmitting={isSubmitting}>
             Save{!event && ' event'}
           </Button>
         </div>

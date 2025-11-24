@@ -28,6 +28,8 @@ const ForgotPasswordForm = () => {
     },
   });
 
+  const { isSubmitting } = form.formState;
+
   async function onSubmit(values: ForgotPasswordFormValues) {
     const email = values.email;
 
@@ -66,7 +68,7 @@ const ForgotPasswordForm = () => {
             )}
           />
 
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full" isSubmitting={isSubmitting}>
             Reset Password
           </Button>
         </form>

@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { signIn, signUp } from '@/lib/auth-client';
 import { GithubIcon } from 'lucide-react';
 import { useState } from 'react';
-import { Spinner } from '../ui/spinner';
+
 
 type ProviderEnum = Parameters<typeof signIn.social>[0]['provider'];
 
@@ -126,13 +126,9 @@ export default function SignupForm() {
             )}
           />
           <div className="flex justify-center w-full">
-            {isLoading ? (
-              <Spinner className="w-fit h-fit" />
-            ) : (
-              <Button type="submit" className="w-full">
-                Sign Up
-              </Button>
-            )}
+            <Button type="submit" className="w-full" isSubmitting={isLoading}>
+              Sign Up
+            </Button>
           </div>
         </form>
         <div className="mt-4 text-center text-sm text-zinc-500">

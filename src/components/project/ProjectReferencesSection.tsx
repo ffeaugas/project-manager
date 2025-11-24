@@ -182,7 +182,7 @@ const NewReferenceSheet = ({
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(NewProjectReferenceSchema),
     defaultValues: {
@@ -272,7 +272,7 @@ const NewReferenceSheet = ({
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Cancel
             </Button>
-            <Button type="submit">{editingReference ? 'Save' : 'Add'} Reference</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>{editingReference ? 'Save' : 'Add'} Reference</Button>
           </div>
         </form>
       </SheetContent>

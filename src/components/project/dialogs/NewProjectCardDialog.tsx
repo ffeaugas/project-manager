@@ -53,7 +53,7 @@ const NewProjectCardDialog = ({
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<NewProjectCardType>({
     defaultValues: {
       name: data?.name || '',
@@ -161,7 +161,9 @@ const NewProjectCardDialog = ({
                 </Button>
               </ConfirmDialog>
             )}
-            <Button type="submit">Save{!data && ' project card'}</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>
+              Save{!data && ' project card'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

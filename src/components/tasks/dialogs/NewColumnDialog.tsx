@@ -41,7 +41,7 @@ const NewColumnDialog = ({
     reset,
     setValue,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<NewColumnType>({
     defaultValues: {
       name: data?.name || '',
@@ -108,7 +108,7 @@ const NewColumnDialog = ({
             {errors.color && <span className="text-red-500">{errors.color.message}</span>}
           </div>
           <DialogFooter>
-            <Button type="submit">Save {!data && 'column'}</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>Save {!data && 'column'}</Button>
           </DialogFooter>
         </form>
       </DialogContent>

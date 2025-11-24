@@ -48,7 +48,12 @@ const NewTaskDialog = ({
   archiveItem,
 }: INewTaskDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { register, handleSubmit, reset } = useForm<NewTaskType>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = useForm<NewTaskType>({
     defaultValues: { title: data?.title || '', description: data?.description || '' },
     resolver: zodResolver(newTaskSchema),
   });
@@ -149,7 +154,9 @@ const NewTaskDialog = ({
                 </ConfirmDialog>
               </>
             )}
-            <Button type="submit">Save{!data && ' task'}</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>
+              Save{!data && ' task'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
