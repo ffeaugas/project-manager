@@ -58,7 +58,7 @@ const TextEditor = ({ value = '', onChange }: ITextEditorProps) => {
     editorProps: {
       attributes: {
         class:
-          'h-[300px] w-full border-0 rounded-md p-2 px-4 bg-zinc-700 focus:outline-none overflow-auto',
+          'h-[500px] w-full border-0 rounded-md p-2 px-4 bg-zinc-700 focus:outline-none overflow-auto',
       },
     },
     onUpdate: ({ editor }) => {
