@@ -6,10 +6,11 @@ import {
   createProjectCard,
   updateProjectCard,
   deleteProjectCard,
+  getUserTotalFileSize,
 } from './service';
 import { parseFormData, toUpdateData } from './utils';
 import {
-  NewProjectCardSchema,
+  CreateProjectCardSchema,
   DeleteProjectCardSchema,
   UpdateProjectCardSchema,
 } from './types';
@@ -48,8 +49,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const { name, description, projectId, imageFile } = parseFormData(formData);
-
-    const validatedData = NewProjectCardSchema.parse({
+    const validatedData = CreateProjectCardSchema.parse({
       name: name || undefined,
       description: description || undefined,
       image: imageFile || undefined,
@@ -64,6 +64,7 @@ export async function POST(request: NextRequest) {
       statusMap: {
         'Project not found': 404,
         'File too large': 400,
+        'User storage limit exceeded': 400,
       },
     });
   }
@@ -85,11 +86,11 @@ export async function PATCH(request: NextRequest) {
       name: data.name || undefined,
       description: data.description || undefined,
       image: raw.imageFile || undefined,
-      projectId: data.projectId,
     });
+    console.log({ validatedData });
 
     const projectCard = await updateProjectCard(
-      validatedData.id!,
+      validatedData.id,
       validatedData,
       user.id,
       raw.imageFile,

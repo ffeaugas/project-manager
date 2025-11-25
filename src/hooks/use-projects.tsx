@@ -2,7 +2,7 @@
 
 import { NewProjectType, ProjectSelectType } from '@/app/api/projects/types';
 import {
-  NewProjectCardType,
+  CreateProjectCardType,
   ProjectWithUrls,
   UpdateProjectCardType,
 } from '@/app/api/projects/cards/types';
@@ -14,7 +14,7 @@ export const useProjects = (id?: string) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const createProjectCard = async (bodyData: NewProjectCardType) => {
+  const createProjectCard = async (bodyData: CreateProjectCardType) => {
     const formData = new FormData();
 
     formData.append('name', bodyData.name?.trim() || '');

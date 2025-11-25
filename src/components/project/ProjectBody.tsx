@@ -3,16 +3,15 @@
 import { useProjects } from '@/hooks/use-projects';
 import ProjectHeader from './ProjectHeader';
 import { Spinner } from '../ui/spinner';
-import NewProjectCardDialog from './dialogs/CreateProjectCardDialog';
+import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 import ProjectCard from './ProjectCard';
 import {
-  NewProjectCardType,
+  CreateProjectCardType,
   ProjectWithUrls,
   UpdateProjectCardType,
 } from '@/app/api/projects/cards/types';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
-import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 
 interface IProjectBodyProps {
   projectId: string;
@@ -75,7 +74,7 @@ export default ProjectBody;
 
 interface ICardListProps {
   cards: ProjectWithUrls['projectCards'];
-  createProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
+  createProjectCard: (bodyData: CreateProjectCardType) => Promise<boolean>;
   updateProjectCard: (bodyData: UpdateProjectCardType) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
   projectId: string;
@@ -113,7 +112,7 @@ const CardList = ({
 };
 
 interface IEmptyCardProps {
-  createProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
+  createProjectCard: (bodyData: CreateProjectCardType) => Promise<boolean>;
   projectId: string;
 }
 

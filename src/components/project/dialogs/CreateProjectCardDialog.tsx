@@ -13,11 +13,14 @@ import { Button } from '../../ui/button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
-import { NewProjectCardType, NewProjectCardSchema } from '@/app/api/projects/cards/types';
+import {
+  CreateProjectCardType,
+  CreateProjectCardSchema,
+} from '@/app/api/projects/cards/types';
 import ProjectCardForm from './ProjectCardForm';
 
 interface CreateProjectCardDialogProps {
-  onSubmit: (data: NewProjectCardType, projectId: string) => Promise<boolean>;
+  onSubmit: (data: CreateProjectCardType, projectId: string) => Promise<boolean>;
   children: React.ReactNode;
   projectId: string;
 }
@@ -37,13 +40,14 @@ const CreateProjectCardDialog = ({
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<NewProjectCardType>({
+    getValues,
+  } = useForm<CreateProjectCardType>({
     defaultValues: {
       name: '',
       description: '',
       image: undefined,
     },
-    resolver: zodResolver(NewProjectCardSchema),
+    resolver: zodResolver(CreateProjectCardSchema),
   });
 
   useEffect(() => {
@@ -62,7 +66,8 @@ const CreateProjectCardDialog = ({
     setValue('image', file || undefined);
   };
 
-  const handleFormSubmit: SubmitHandler<NewProjectCardType> = async (formData) => {
+  const handleFormSubmit: SubmitHandler<CreateProjectCardType> = async (formData) => {
+    console.log(formData);
     const success = await onSubmit(formData, projectId);
 
     if (success) {
@@ -93,8 +98,16 @@ const CreateProjectCardDialog = ({
             onFileSelect={handleFileSelect}
           />
 
+          {errors.root && (
+            <div className="text-red-500 text-sm mt-2">{errors.root.message}</div>
+          )}
+
           <DialogFooter className="flex flex-row justify-end gap-2">
-            <Button type="submit" isSubmitting={isSubmitting}>
+            <Button
+              type="submit"
+              isSubmitting={isSubmitting}
+              onClick={() => console.log(getValues())}
+            >
               Save project card
             </Button>
           </DialogFooter>

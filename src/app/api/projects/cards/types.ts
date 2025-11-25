@@ -54,31 +54,40 @@ export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
   >;
 };
 
-export const NewProjectCardSchema = z
-  .object({
-    name: nameSchema.optional(),
-    description: descriptionSchema.optional(),
-    projectId: uuidSchema.optional(),
-    image: imageSchema.optional(),
-  })
-  .refine(
-    (data) => {
-      const hasName = data.name && data.name.trim().length > 0;
-      const hasDescription = data.description && data.description.trim().length > 0;
-      const hasImage = data.image !== undefined && data.image !== null;
-      return hasName || hasDescription || hasImage;
-    },
-    {
-      message: 'At least one field must be provided',
-    },
-  );
-
-export const UpdateProjectCardSchema = z.object({
-  id: uuidSchema,
+const ProjectCardSchema = z.object({
   name: nameSchema.optional(),
   description: descriptionSchema.optional(),
   image: imageSchema.optional(),
+  projectId: uuidSchema.optional(),
 });
 
-export type NewProjectCardType = z.infer<typeof NewProjectCardSchema>;
+export const CreateProjectCardSchema = ProjectCardSchema.superRefine((data, ctx) => {
+  const hasName = data.name && data.name.trim().length > 0;
+  const hasDescription = data.description && data.description.trim().length > 0;
+  const hasImage = data.image !== undefined && data.image !== null;
+  if (!hasName && !hasDescription && !hasImage) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'At least one field must be provided',
+      path: ['image'],
+    });
+  }
+});
+
+export const UpdateProjectCardSchema = ProjectCardSchema.extend({
+  id: uuidSchema,
+}).superRefine((data, ctx) => {
+  const hasName = data.name && data.name.trim().length > 0;
+  const hasDescription = data.description && data.description.trim().length > 0;
+  const hasImage = data.image !== undefined && data.image !== null;
+  if (!hasName && !hasDescription && !hasImage) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'At least one field must be provided',
+      path: ['image'],
+    });
+  }
+});
+
+export type CreateProjectCardType = z.infer<typeof CreateProjectCardSchema>;
 export type UpdateProjectCardType = z.infer<typeof UpdateProjectCardSchema>;

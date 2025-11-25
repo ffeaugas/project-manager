@@ -1,6 +1,5 @@
 import { Button } from '../ui/button';
-import NewProjectCardDialog from './dialogs/CreateProjectCardDialog';
-import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import { CreateProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -16,7 +15,7 @@ import { getProjectCategory } from '@/app/api/projects/utils';
 import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 
 interface IProjectHeaderProps {
-  createProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
+  createProjectCard: (bodyData: CreateProjectCardType) => Promise<boolean>;
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
   onShowReferences?: () => void;

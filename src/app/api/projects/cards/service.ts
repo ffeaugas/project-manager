@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { s3UploadFile, s3DeleteFolder } from '@/lib/s3';
-import { NewProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
+import { CreateProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const USER_STORAGE_LIMIT = 100 * 1024 * 1024; // 100MB
 
 export async function getProjectWithCards(projectId: string, userId: string) {
   const project = await prisma.project.findUnique({
@@ -25,7 +26,7 @@ export async function getProjectWithCards(projectId: string, userId: string) {
 }
 
 export async function createProjectCard(
-  data: NewProjectCardType,
+  data: CreateProjectCardType,
   userId: string,
   imageFile?: File | null,
 ) {
@@ -41,8 +42,17 @@ export async function createProjectCard(
     throw new Error('File too large');
   }
 
-  const name = data.name?.trim() || undefined;
-  const description = data.description?.trim() || undefined;
+  if (imageFile) {
+    const userTotalFileSize = await getUserTotalFileSize(userId);
+    console.log({ userTotalFileSize, imageFileSize: imageFile.size });
+    if (userTotalFileSize + imageFile.size > USER_STORAGE_LIMIT) {
+      throw new Error('User storage limit exceeded');
+    }
+  }
+
+  const name = data.name?.trim() === '' ? null : data.name?.trim();
+  const description =
+    data.description?.trim() === '<p></p>' ? null : data.description?.trim();
 
   const projectCard = await prisma.projectCard.create({
     data: {
@@ -74,12 +84,12 @@ export async function createProjectCard(
 
 export async function updateProjectCard(
   id: string,
-  data: { name?: string; description?: string; projectId?: string },
+  data: { name?: string; description?: string },
   userId: string,
   imageFile?: File | null,
 ) {
   const existingCard = await prisma.projectCard.findUnique({
-    where: { id },
+    where: { id, project: { userId } },
     include: { project: true, images: true },
   });
 
@@ -87,54 +97,28 @@ export async function updateProjectCard(
     throw new Error('Project card not found');
   }
 
-  if (existingCard.project.userId !== userId) {
-    throw new Error('Unauthorized');
-  }
-
-  if (data.projectId !== undefined) {
-    const project = await prisma.project.findUnique({
-      where: { id: data.projectId, userId },
-    });
-
-    if (!project) {
-      throw new Error('Project not found');
-    }
-  }
-
   if (imageFile && imageFile.size > MAX_FILE_SIZE) {
     throw new Error('File too large');
   }
 
-  const updateData: { name?: string; description?: string; projectId?: string } = {};
-  if (data.name !== undefined) {
-    updateData.name = data.name.trim() || undefined;
-  }
-  if (data.description !== undefined) {
-    updateData.description = data.description.trim() || undefined;
-  }
-  if (data.projectId !== undefined) {
-    updateData.projectId = data.projectId;
+  if (imageFile) {
+    const userTotalFileSize = await getUserTotalFileSize(userId);
+    if (userTotalFileSize + imageFile.size > USER_STORAGE_LIMIT) {
+      throw new Error('User storage limit exceeded');
+    }
   }
 
-  const finalName = updateData.name !== undefined ? updateData.name : existingCard.name;
-  const finalDescription =
-    updateData.description !== undefined
-      ? updateData.description
-      : existingCard.description;
-  const willHaveImage = imageFile !== undefined && imageFile !== null;
-  const hasExistingImage = existingCard.images.length > 0;
-
-  const hasName = finalName && finalName.trim().length > 0;
-  const hasDescription = finalDescription && finalDescription.trim().length > 0;
-  const hasImage = willHaveImage || hasExistingImage;
-
-  if (!hasName && !hasDescription && !hasImage) {
-    throw new Error('At least one field (name, description, or image) must be provided');
-  }
+  const description =
+    data.description?.trim() === '' || data.description === '<p></p>'
+      ? null
+      : data.description?.trim();
 
   await prisma.projectCard.update({
     where: { id },
-    data: updateData,
+    data: {
+      name: data.name?.trim() || null,
+      description,
+    },
   });
 
   if (imageFile && imageFile.size > 0) {
@@ -144,7 +128,7 @@ export async function updateProjectCard(
 
     const storageKey = await s3UploadFile({
       file: imageFile,
-      prefix: `${userId}/projects/${data.projectId || existingCard.projectId}/project-cards/${id}/`,
+      prefix: `${userId}/projects/${existingCard.projectId}/project-cards/${id}/`,
     });
 
     await prisma.image.create({
@@ -184,6 +168,17 @@ export async function deleteProjectCard(id: string, userId: string) {
   });
 
   return { deletedImagesCount: existingCard.images.length };
+}
+
+export async function getUserTotalFileSize(userId: string) {
+  const images = await prisma.image.findMany({
+    where: { projectCard: { project: { userId } } },
+    select: {
+      size: true,
+    },
+  });
+
+  return images.reduce((acc, curr) => acc + curr.size, 0);
 }
 
 async function getProjectCardWithUrls(id: string) {
