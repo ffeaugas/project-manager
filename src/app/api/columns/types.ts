@@ -1,11 +1,5 @@
 import z, { ZodType } from 'zod';
 
-interface NewColumnForm {
-  id?: string;
-  name: string;
-  color: string;
-}
-
 const baseColumnSchema = z.object({
   name: z.string().min(1, 'Name is required'),
   color: z.string().regex(/^#([0-9a-fA-F]{6})$/, 'Color must be a valid hex color'),
@@ -17,7 +11,7 @@ export const reorderColumnSchema = z.object({
   beforeColumnId: z.string().optional(),
 });
 
-export const newColumnSchema: ZodType<NewColumnForm> = baseColumnSchema.extend({
+export const newColumnSchema = baseColumnSchema.extend({
   id: z.string().optional(),
 });
 

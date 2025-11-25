@@ -3,11 +3,16 @@
 import { useProjects } from '@/hooks/use-projects';
 import ProjectHeader from './ProjectHeader';
 import { Spinner } from '../ui/spinner';
-import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
+import NewProjectCardDialog from './dialogs/CreateProjectCardDialog';
 import ProjectCard from './ProjectCard';
-import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import {
+  NewProjectCardType,
+  ProjectWithUrls,
+  UpdateProjectCardType,
+} from '@/app/api/projects/cards/types';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
+import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 
 interface IProjectBodyProps {
   projectId: string;
@@ -18,7 +23,8 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
   const {
     project,
     isLoading,
-    submitProjectCard,
+    createProjectCard,
+    updateProjectCard,
     deleteProject,
     deleteProjectCard,
     error,
@@ -41,14 +47,15 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
   return (
     <div className="flex flex-col h-dvh flex-1">
       <ProjectHeader
-        submitProjectCard={submitProjectCard}
+        createProjectCard={createProjectCard}
         project={project}
         deleteProject={deleteProject}
         onShowReferences={referencesSlot ? () => setIsReferencesOpen(true) : undefined}
       />
       <CardList
         cards={project.projectCards}
-        submitProjectCard={submitProjectCard}
+        createProjectCard={createProjectCard}
+        updateProjectCard={updateProjectCard}
         deleteProjectCard={deleteProjectCard}
         projectId={projectId}
       />
@@ -68,17 +75,16 @@ export default ProjectBody;
 
 interface ICardListProps {
   cards: ProjectWithUrls['projectCards'];
-  submitProjectCard: (
-    bodyData: NewProjectCardType,
-    options?: { projectCardId?: string; projectId?: string },
-  ) => Promise<boolean>;
+  createProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
+  updateProjectCard: (bodyData: UpdateProjectCardType) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
   projectId: string;
 }
 
 const CardList = ({
   cards = [],
-  submitProjectCard,
+  createProjectCard,
+  updateProjectCard,
   deleteProjectCard,
   projectId,
 }: ICardListProps) => {
@@ -94,13 +100,12 @@ const CardList = ({
               <ProjectCard
                 key={card.id}
                 data={card}
-                submitProjectCard={submitProjectCard}
+                updateProjectCard={updateProjectCard}
                 deleteProjectCard={deleteProjectCard}
-                projectId={projectId}
               />
             ))
         ) : (
-          <EmptyCard submitProjectCard={submitProjectCard} projectId={projectId} />
+          <EmptyCard createProjectCard={createProjectCard} projectId={projectId} />
         )}
       </div>
     </div>
@@ -108,19 +113,16 @@ const CardList = ({
 };
 
 interface IEmptyCardProps {
-  submitProjectCard: (
-    bodyData: NewProjectCardType,
-    options?: { projectCardId?: string; projectId?: string },
-  ) => Promise<boolean>;
+  createProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
   projectId: string;
 }
 
-const EmptyCard = ({ submitProjectCard, projectId }: IEmptyCardProps) => {
+const EmptyCard = ({ createProjectCard, projectId }: IEmptyCardProps) => {
   return (
-    <NewProjectCardDialog submitProjectCard={submitProjectCard} projectId={projectId}>
+    <CreateProjectCardDialog onSubmit={createProjectCard} projectId={projectId}>
       <div className="rounded-lg w-full md:w-[280px] h-[280px] md:h-[320px] flex flex-col justify-center items-center overflow-hidden bg-transparent border-dashed border-2 border-borderColor hover:border-zinc-600 p-4 text-zinc-600 text-sm md:text-lg cursor-pointer transition-colors">
         <p className="text-zinc-400">ajouter une carte</p>
       </div>
-    </NewProjectCardDialog>
+    </CreateProjectCardDialog>
   );
 };

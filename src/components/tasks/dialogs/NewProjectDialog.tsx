@@ -16,7 +16,7 @@ import { SubmitHandler, useForm, UseFormRegister } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { newProjectSchema, NewProjectType } from '@/app/api/projects/types';
+import { NewProjectSchema, NewProjectType } from '@/app/api/projects/types';
 import { PROJECT_CATEGORIES, PROJECT_CATEGORY_KEYS } from '@/const/categories';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import { ProjectCategory } from '@/app/api/projects/types';
@@ -45,7 +45,7 @@ const NewProjectDialog = ({
       description: data?.description || '',
       category: 'other',
     },
-    resolver: zodResolver(newProjectSchema),
+    resolver: zodResolver(NewProjectSchema),
   });
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
@@ -98,7 +98,9 @@ const NewProjectDialog = ({
             )}
           </div>
           <DialogFooter>
-            <Button type="submit" isSubmitting={isSubmitting}>Save {!data && 'project'}</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>
+              Save {!data && 'project'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

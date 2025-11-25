@@ -1,5 +1,6 @@
 import { z, ZodType } from 'zod';
 import { Prisma } from '@prisma/client';
+import { descriptionSchema, imageSchema, nameSchema, uuidSchema } from '@/lib/zodUtils';
 
 export const DeleteProjectCardSchema = z.object({
   id: z.string().uuid('Id must be a valid UUID'),
@@ -53,32 +54,12 @@ export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
   >;
 };
 
-interface NewProjectCardForm {
-  id?: string;
-  name?: string;
-  description?: string;
-  image?: File;
-  projectId?: string;
-}
-
-export const NewProjectCardSchema: ZodType<NewProjectCardForm> = z
+export const NewProjectCardSchema = z
   .object({
-    id: z.string().optional(),
-    name: z.string().optional(),
-    description: z.string().optional(),
-    projectId: z.string().uuid().optional(),
-    image: z
-      .instanceof(File)
-      .refine(
-        (file) => file.size <= 5 * 1024 * 1024,
-        "La taille de l'image ne doit pas dépasser 5MB",
-      )
-      .refine(
-        (file) =>
-          ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type),
-        'Format accepté: JPG, PNG ou WebP',
-      )
-      .optional(),
+    name: nameSchema.optional(),
+    description: descriptionSchema.optional(),
+    projectId: uuidSchema.optional(),
+    image: imageSchema.optional(),
   })
   .refine(
     (data) => {
@@ -88,9 +69,16 @@ export const NewProjectCardSchema: ZodType<NewProjectCardForm> = z
       return hasName || hasDescription || hasImage;
     },
     {
-      message: 'At least one field (name, description, or image) must be provided',
-      path: ['name'],
+      message: 'At least one field must be provided',
     },
   );
 
+export const UpdateProjectCardSchema = z.object({
+  id: uuidSchema,
+  name: nameSchema.optional(),
+  description: descriptionSchema.optional(),
+  image: imageSchema.optional(),
+});
+
 export type NewProjectCardType = z.infer<typeof NewProjectCardSchema>;
+export type UpdateProjectCardType = z.infer<typeof UpdateProjectCardSchema>;

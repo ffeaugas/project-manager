@@ -8,7 +8,11 @@ import {
   deleteProjectCard,
 } from './service';
 import { parseFormData, toUpdateData } from './utils';
-import { NewProjectCardSchema, DeleteProjectCardSchema } from './types';
+import {
+  NewProjectCardSchema,
+  DeleteProjectCardSchema,
+  UpdateProjectCardSchema,
+} from './types';
 
 export async function GET(request: NextRequest) {
   const user = await getUser();
@@ -76,7 +80,7 @@ export async function PATCH(request: NextRequest) {
     const raw = parseFormData(formData);
     const data = toUpdateData(raw);
 
-    const validatedData = NewProjectCardSchema.parse({
+    const validatedData = UpdateProjectCardSchema.parse({
       id: data.id,
       name: data.name || undefined,
       description: data.description || undefined,

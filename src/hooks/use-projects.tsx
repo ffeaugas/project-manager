@@ -1,7 +1,11 @@
 'use client';
 
 import { NewProjectType, ProjectSelectType } from '@/app/api/projects/types';
-import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import {
+  NewProjectCardType,
+  ProjectWithUrls,
+  UpdateProjectCardType,
+} from '@/app/api/projects/cards/types';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useProjects = (id?: string) => {
@@ -10,46 +14,64 @@ export const useProjects = (id?: string) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const submitProjectCard = async (
-    bodyData: NewProjectCardType,
-    options?: { projectCardId?: string; projectId?: string },
-  ) => {
+  const createProjectCard = async (bodyData: NewProjectCardType) => {
     const formData = new FormData();
-    const name = bodyData.name?.trim();
-    const description = bodyData.description?.trim();
-    if (name) {
-      formData.append('name', name);
-    }
-    if (description) {
-      formData.append('description', description);
-    }
-    formData.append('description', bodyData.description || '');
 
-    if (options?.projectId) {
-      formData.append('projectId', options.projectId);
-    }
-
+    formData.append('name', bodyData.name?.trim() || '');
+    formData.append('description', bodyData.description?.trim() || '');
+    formData.append('projectId', id || '');
     if (bodyData.image) {
       formData.append('image', bodyData.image);
     }
 
-    const method = options?.projectCardId ? 'PATCH' : 'POST';
-    if (options?.projectCardId) {
-      formData.append('id', options.projectCardId);
+    try {
+      const response = await fetch('/api/projects/cards', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        return false;
+      }
+
+      await fetchProject();
+      return true;
+    } catch (error) {
+      console.error('Failed to create project card:', error);
+      return false;
+    }
+  };
+
+  const updateProjectCard = async (bodyData: UpdateProjectCardType) => {
+    const formData = new FormData();
+
+    formData.append('id', bodyData.id);
+    formData.append('name', bodyData.name?.trim() || '');
+    formData.append('description', bodyData.description?.trim() || '');
+    if (bodyData.image) {
+      formData.append('image', bodyData.image);
     }
 
-    const response = await fetch(`/api/projects/cards`, {
-      method,
-      body: formData,
-    });
+    try {
+      const response = await fetch('/api/projects/cards', {
+        method: 'PATCH',
+        body: formData,
+      });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('API Error:', errorData);
-      throw new Error('Failed to create project card');
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        return false;
+      }
+
+      await fetchProject();
+      return true;
+    } catch (error) {
+      console.error('Failed to update project card:', error);
+      return false;
     }
-    await fetchProject();
-    return true;
   };
 
   const deleteProjectCard = async (id: string) => {
@@ -130,7 +152,8 @@ export const useProjects = (id?: string) => {
     project,
     projects,
     isLoading,
-    submitProjectCard,
+    createProjectCard,
+    updateProjectCard,
     deleteProjectCard,
     deleteProject,
     submitProject,

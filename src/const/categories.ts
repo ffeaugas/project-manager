@@ -1,4 +1,4 @@
-import { ProjectCategory, ProjectCategoryKey } from '@/app/api/projects/types';
+import { ProjectCategory } from '@/app/api/projects/types';
 import { LucideIcon } from 'lucide-react';
 import {
   Axe,
@@ -28,7 +28,20 @@ const COLOR_MAP: Readonly<Record<string, string>> = {
   gray: 'oklch(27.9% 0.041 260.031)',
 };
 
-export const PROJECT_CATEGORIES: Readonly<Record<string, ProjectCategory>> = {
+export const PROJECT_CATEGORY_KEYS = [
+  'other',
+  'wood',
+  'art',
+  'design',
+  'photography',
+  'engineering',
+  'work',
+  'programming',
+] as const;
+
+export type ProjectCategoryKey = (typeof PROJECT_CATEGORY_KEYS)[number];
+
+export const PROJECT_CATEGORIES: Readonly<Record<ProjectCategoryKey, ProjectCategory>> = {
   other: {
     key: 'other',
     name: 'Other',
@@ -37,7 +50,7 @@ export const PROJECT_CATEGORIES: Readonly<Record<string, ProjectCategory>> = {
     icon: LoaderPinwheel,
   },
   wood: {
-    key: 'craft',
+    key: 'wood',
     name: 'Craft',
     description: 'Crafting projects',
     color: COLOR_MAP.orange,
@@ -86,10 +99,6 @@ export const PROJECT_CATEGORIES: Readonly<Record<string, ProjectCategory>> = {
     icon: Cpu,
   },
 } as const;
-
-export const PROJECT_CATEGORY_KEYS = Object.keys(
-  PROJECT_CATEGORIES,
-) as ProjectCategoryKey[];
 
 export type CalendarEventCategoryKey =
   | 'default'

@@ -1,5 +1,4 @@
-import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
-import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import { ProjectWithUrls, UpdateProjectCardType } from '@/app/api/projects/cards/types';
 import Image from 'next/image';
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -7,22 +6,18 @@ import TextAlign from '@tiptap/extension-text-align';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
 import { useEffect } from 'react';
 import { NotebookText } from 'lucide-react';
+import EditProjectCardDialog from './dialogs/EditProjectCardDialog';
 
 interface IProjectCardProps {
   data: ProjectWithUrls['projectCards'][0];
-  submitProjectCard: (
-    bodyData: NewProjectCardType,
-    options?: { projectCardId?: string; projectId?: string },
-  ) => Promise<boolean>;
+  updateProjectCard: (bodyData: UpdateProjectCardType) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
-  projectId: string;
 }
 
 const ProjectCard = ({
   data,
-  submitProjectCard,
+  updateProjectCard,
   deleteProjectCard,
-  projectId,
 }: IProjectCardProps) => {
   const firstImage = data.images?.[0];
 
@@ -63,10 +58,9 @@ const ProjectCard = ({
   );
 
   return (
-    <NewProjectCardDialog
-      submitProjectCard={submitProjectCard}
-      deleteProjectCard={deleteProjectCard}
-      projectId={projectId}
+    <EditProjectCardDialog
+      onSubmit={updateProjectCard}
+      onDelete={deleteProjectCard}
       data={data}
     >
       <div
@@ -75,7 +69,7 @@ const ProjectCard = ({
       >
         {displayAlternative}
       </div>
-    </NewProjectCardDialog>
+    </EditProjectCardDialog>
   );
 };
 

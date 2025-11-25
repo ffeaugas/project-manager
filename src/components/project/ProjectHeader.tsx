@@ -1,5 +1,5 @@
 import { Button } from '../ui/button';
-import NewProjectCardDialog from './dialogs/NewProjectCardDialog';
+import NewProjectCardDialog from './dialogs/CreateProjectCardDialog';
 import { NewProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import {
   DropdownMenu,
@@ -13,19 +13,17 @@ import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 import LucidIcon from '../utils/LucidIcon';
 import { getProjectCategory } from '@/app/api/projects/utils';
+import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 
 interface IProjectHeaderProps {
-  submitProjectCard: (
-    bodyData: NewProjectCardType,
-    options?: { projectCardId?: string; projectId?: string },
-  ) => Promise<boolean>;
+  createProjectCard: (bodyData: NewProjectCardType) => Promise<boolean>;
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
   onShowReferences?: () => void;
 }
 
 const ProjectHeader = ({
-  submitProjectCard,
+  createProjectCard,
   project,
   deleteProject,
   onShowReferences,
@@ -42,14 +40,11 @@ const ProjectHeader = ({
         <span className="text-md md:text-lg font-semibold">{project.name}</span>
       </div>
       <div className="flex flex-row gap-2">
-        <NewProjectCardDialog
-          submitProjectCard={submitProjectCard}
-          projectId={project.id}
-        >
+        <CreateProjectCardDialog onSubmit={createProjectCard} projectId={project.id}>
           <Button variant="outline" className="bg-background2 text-xs md:text-sm">
             Add card
           </Button>
-        </NewProjectCardDialog>
+        </CreateProjectCardDialog>
         <Menu
           project={project}
           deleteProject={deleteProject}
