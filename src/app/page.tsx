@@ -6,7 +6,7 @@ const HomePage = async () => {
   const user = await getUser();
 
   return (
-    <div className="flex flex-col items-center justify-center h-dvh w-full gap-4">
+    <div className="flex flex-col items-center justify-center h-dvh w-full gap-4 bg-dotted">
       <h1 className="text-4xl font-bold">Project Manager</h1>
       {user ? (
         <div className="flex flex-col items-center gap-4">

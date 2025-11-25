@@ -55,7 +55,7 @@ const ActivitySection = () => {
 
   if (loading) {
     return (
-      <Card>
+      <Card className="bg-gradient">
         <CardHeader>
           <CardTitle className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
             <ChartNoAxesColumn />
@@ -72,7 +72,7 @@ const ActivitySection = () => {
   }
 
   return (
-    <Card>
+    <Card className="bg-gradient rounded-lg">
       <CardHeader>
         <CardTitle className="text-lg font-semibold leading-none tracking-tight flex items-center gap-2">
           <ChartNoAxesColumn />

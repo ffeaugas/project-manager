@@ -45,7 +45,7 @@ const ProjectCard = ({
     editorProps: {
       attributes: {
         class:
-          'h-[300px] w-full p-2 bg-zinc-800 focus:outline-none overflow-auto text-xs [&_h1]:text-xs',
+          'h-[300px] w-full p-2 focus:outline-none overflow-auto text-xs [&_h1]:text-xs',
       },
     },
   });
@@ -70,7 +70,7 @@ const ProjectCard = ({
       data={data}
     >
       <div
-        className="bg-background rounded-lg w-full md:min-w-[280px] h-[280px] max-w-[400px] md:h-[320px] flex flex-col overflow-hidden flex-1
+        className="bg-gradient2 rounded-lg w-full md:min-w-[280px] h-[280px] max-w-[400px] md:h-[320px] flex flex-col overflow-hidden flex-1
       justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border relative"
       >
         {displayAlternative}

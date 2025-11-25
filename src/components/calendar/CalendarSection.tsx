@@ -34,7 +34,7 @@ const CalendarSection = () => {
   const tomorrow = new Date(today.getTime() + 24 * 60 * 60 * 1000);
 
   return (
-    <Card>
+    <Card className="bg-gradient rounded-lg">
       <CardContent className="p-2 flex flex-col gap-2">
         <div className="flex flex-row items-center p-2">
           <Link

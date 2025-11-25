@@ -215,3 +215,25 @@ ol {
 .shadow-bot {
   box-shadow: 1px 13px 12px -1px color-mix(in srgb, var(--background3) 40%, transparent);
 }
+
+.bg-gradient {
+  background: linear-gradient(70deg in oklab, var(--background) 34%, var(--background2));
+}
+
+.bg-gradient2 {
+  background: radial-gradient(
+    farthest-corner ellipse at 9% 14% in oklab,
+    transparent 23%,
+    transparent 57% 27%,
+    var(--background3)
+  );
+}
+
+.bg-gradient3 {
+  background: radial-gradient(
+    farthest-corner ellipse at 9% 14% in oklab,
+    var(--background) 23%,
+    var(--background) 57% 27%,
+    var(--background2)
+  );
+}

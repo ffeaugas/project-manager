@@ -16,7 +16,7 @@ const EmailVerificationContent = () => {
   const email = searchParams.get('email');
 
   return (
-    <div className="flex items-center justify-center h-dvh bg-background2 p-4">
+    <div className="flex items-center justify-center h-dvh p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
           <div className="flex justify-center mb-4">
