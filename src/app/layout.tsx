@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
+import { ThemeProvider } from 'next-themes';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -17,17 +18,20 @@ export const metadata: Metadata = {
   title: 'Project Manager',
   description: 'A simple life and side project manager by franci',
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased w-full h-dvh flex overflow-hidden`}
       >
-        {children}
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );

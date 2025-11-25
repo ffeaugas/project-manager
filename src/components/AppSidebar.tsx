@@ -1,6 +1,14 @@
 'use client';
 
-import { Plus, Folder, ChevronDown, ChevronRight, HomeIcon, SunIcon } from 'lucide-react';
+import {
+  Plus,
+  Folder,
+  ChevronDown,
+  ChevronRight,
+  HomeIcon,
+  SunIcon,
+  Moon,
+} from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import {
@@ -27,19 +35,14 @@ import { User } from 'better-auth';
 import AuthButton from './auth/AuthButton';
 import { ProjectSelectType } from '@/app/api/projects/types';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useTheme } from 'next-themes';
 
 const AppSidebar = ({ userData }: { userData: User }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
   const { projects, submitProject } = useProjects();
   const pathname = usePathname();
   const isMobile = useIsMobile();
-
-  const toggleTheme = () => {
-    document.documentElement.classList.toggle('dark');
-    localStorage.theme = document.documentElement.classList.contains('dark')
-      ? 'dark'
-      : 'light';
-  };
+  const { theme, setTheme } = useTheme();
 
   return (
     <Sidebar
@@ -98,8 +101,17 @@ const AppSidebar = ({ userData }: { userData: User }) => {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarFooter>
-          <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            <SunIcon />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            suppressHydrationWarning
+          >
+            {theme === 'dark' ? (
+              <SunIcon suppressHydrationWarning />
+            ) : (
+              <Moon suppressHydrationWarning />
+            )}
           </Button>
         </SidebarFooter>
       </SidebarContent>

@@ -16,11 +16,7 @@ export default function ErrorPage() {
           Veuillez réessayer ou contacter l&apos;administrateur si le problème persiste.
         </p>
         <div className="space-x-4">
-          <Button
-            onClick={() => router.back()}
-            variant="outline"
-            className="w-full h-[80px] md:h-[100px] border-gray-600 text-gray-300 hover:bg-gray-800"
-          >
+          <Button onClick={() => router.back()} variant="secondary">
             Retour
           </Button>
           <Button
