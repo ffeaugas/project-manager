@@ -93,8 +93,8 @@ const ImageDisplay = ({
       <Image
         src={firstImage.url}
         alt={data.name || 'Project card image'}
-        width={500}
-        height={500}
+        width={400}
+        height={400}
         className="object-cover w-full h-full object-center"
       />
       {data.name && (

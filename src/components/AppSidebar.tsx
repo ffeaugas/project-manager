@@ -25,7 +25,7 @@ import {
   SidebarMenuSubItem,
 } from './ui/sidebar';
 import { Button } from './ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
 import Link from 'next/link';
 import { useProjects } from '@/hooks/use-projects';
@@ -42,12 +42,17 @@ const AppSidebar = ({ userData }: { userData: User }) => {
   const { projects, submitProject } = useProjects();
   const pathname = usePathname();
   const isMobile = useIsMobile();
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <Sidebar
       collapsible={isMobile ? 'offcanvas' : 'none'}
-      className="bg-background3 border border-borderColor text-foreground2"
+      className="bg-background3 border border-borderColor text-foreground2 w-[300px]"
     >
       <SidebarContent>
         <AuthButton userData={userData} />
@@ -100,21 +105,17 @@ const AppSidebar = ({ userData }: { userData: User }) => {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
-        <SidebarFooter>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            suppressHydrationWarning
-          >
-            {theme === 'dark' ? (
-              <SunIcon suppressHydrationWarning />
-            ) : (
-              <Moon suppressHydrationWarning />
-            )}
-          </Button>
-        </SidebarFooter>
       </SidebarContent>
+      <SidebarFooter>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          suppressHydrationWarning
+        >
+          {mounted && resolvedTheme === 'dark' ? <SunIcon /> : <Moon />}
+        </Button>
+      </SidebarFooter>
     </Sidebar>
   );
 };
