@@ -1,6 +1,7 @@
 import { prisma } from '@/lib/prisma';
-import { s3UploadFile, s3DeleteFolder } from '@/lib/s3';
+import { s3UploadFile, s3DeleteFolder, s3DeleteFile } from '@/lib/s3';
 import { CreateProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
+import { ProjectCategoryKey } from '@/const/categories';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const USER_STORAGE_LIMIT = 100 * 1024 * 1024; // 100MB
@@ -15,6 +16,8 @@ export async function getProjectWithCards(projectId: string, userId: string) {
 
   return {
     ...project,
+    // Type assertion: Prisma enum values match ProjectCategoryKey
+    category: project.category as ProjectCategoryKey,
     projectCards: project.projectCards.map((card) => ({
       ...card,
       images: card.images.map((image) => ({
@@ -125,6 +128,10 @@ export async function updateProjectCard(
     await prisma.image.deleteMany({
       where: { projectCardId: id },
     });
+
+    await s3DeleteFolder(
+      `${userId}/projects/${existingCard.projectId}/project-cards/${id}/`,
+    );
 
     const storageKey = await s3UploadFile({
       file: imageFile,

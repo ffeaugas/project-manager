@@ -1,6 +1,10 @@
 'use client';
 
-import { NewProjectType, ProjectSelectType } from '@/app/api/projects/types';
+import {
+  NewProjectType,
+  ProjectSelectType,
+  UpdateProjectType,
+} from '@/app/api/projects/types';
 import {
   CreateProjectCardType,
   ProjectWithUrls,
@@ -97,13 +101,12 @@ export const useProjects = (id?: string) => {
     return true;
   };
 
-  const submitProject = async (bodyData: NewProjectType, projectId?: string) => {
+  const createProject = async (bodyData: NewProjectType) => {
     try {
-      const requestBody = projectId ? { ...bodyData, id: projectId } : bodyData;
       const response = await fetch('/api/projects', {
-        method: projectId ? 'PATCH' : 'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(requestBody),
+        body: JSON.stringify(bodyData),
       });
       if (!response.ok) {
         throw new Error('Failed to create project');
@@ -114,6 +117,29 @@ export const useProjects = (id?: string) => {
     } catch (e) {
       console.error('Error creating project:', e);
       throw e;
+    }
+  };
+
+  const updateProject = async (bodyData: UpdateProjectType) => {
+    try {
+      const response = await fetch('/api/projects', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyData),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('API Error:', errorData);
+        return false;
+      }
+      await fetchProjects();
+      if (id) {
+        await fetchProject();
+      }
+      return true;
+    } catch (error) {
+      console.error('Failed to update project:', error);
+      return false;
     }
   };
 
@@ -156,7 +182,8 @@ export const useProjects = (id?: string) => {
     updateProjectCard,
     deleteProjectCard,
     deleteProject,
-    submitProject,
+    createProject,
+    updateProject,
     error,
   };
 };

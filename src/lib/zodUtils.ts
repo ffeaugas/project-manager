@@ -1,4 +1,4 @@
-import { PROJECT_CATEGORY_KEYS } from '@/const/categories';
+import { ProjectCategoryKey } from '@prisma/client';
 import { z } from 'zod';
 
 export const imageSchema = z
@@ -15,7 +15,7 @@ export const imageSchema = z
 
 export const uuidSchema = z.string().uuid('Id must be a valid UUID');
 
-export const projectCategorySchema = z.enum(PROJECT_CATEGORY_KEYS);
+export const projectCategorySchema = z.nativeEnum(ProjectCategoryKey);
 export const descriptionSchema = z
   .string()
   .max(2000, 'Description must be less than 1000 characters');

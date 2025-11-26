@@ -26,6 +26,7 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
     updateProjectCard,
     deleteProject,
     deleteProjectCard,
+    updateProject,
     error,
   } = useProjects(projectId);
 
@@ -49,6 +50,7 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
         createProjectCard={createProjectCard}
         project={project}
         deleteProject={deleteProject}
+        updateProject={updateProject}
         onShowReferences={referencesSlot ? () => setIsReferencesOpen(true) : undefined}
       />
       <CardList

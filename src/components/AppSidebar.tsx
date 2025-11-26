@@ -26,7 +26,7 @@ import {
 } from './ui/sidebar';
 import { Button } from './ui/button';
 import { useState, useEffect } from 'react';
-import NewProjectDialog from './tasks/dialogs/NewProjectDialog';
+import CreateProjectDialog from './project/dialogs/CreateProjectDialog';
 import Link from 'next/link';
 import { useProjects } from '@/hooks/use-projects';
 import { getProjectCategory } from '@/app/api/projects/utils';
@@ -39,7 +39,7 @@ import { useTheme } from 'next-themes';
 
 const AppSidebar = ({ userData }: { userData: User }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
-  const { projects, submitProject } = useProjects();
+  const { projects, createProject } = useProjects();
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const { theme, setTheme, resolvedTheme } = useTheme();
@@ -90,7 +90,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                         pathname={pathname}
                       />
                     ))}
-                    <NewProjectDialog submitProject={submitProject}>
+                    <CreateProjectDialog onSubmit={createProject}>
                       <Button
                         variant="outline"
                         className="flex flex-row items-center justify-center mt-2"
@@ -98,7 +98,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                         <Plus size={16} className="mr-2" />
                         New Project
                       </Button>
-                    </NewProjectDialog>
+                    </CreateProjectDialog>
                   </SidebarMenuSub>
                 )}
               </SidebarMenuItem>

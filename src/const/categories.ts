@@ -1,4 +1,5 @@
 import { ProjectCategory } from '@/app/api/projects/types';
+import { ProjectCategoryKey } from '@prisma/client';
 import { LucideIcon } from 'lucide-react';
 import {
   Axe,
@@ -28,7 +29,7 @@ const COLOR_MAP: Readonly<Record<string, string>> = {
   gray: 'oklch(27.9% 0.041 260.031)',
 };
 
-export const PROJECT_CATEGORY_KEYS = [
+export const PROJECT_CATEGORY_KEYS: ProjectCategoryKey[] = [
   'other',
   'wood',
   'art',
@@ -38,8 +39,6 @@ export const PROJECT_CATEGORY_KEYS = [
   'work',
   'programming',
 ] as const;
-
-export type ProjectCategoryKey = (typeof PROJECT_CATEGORY_KEYS)[number];
 
 export const PROJECT_CATEGORIES: Readonly<Record<ProjectCategoryKey, ProjectCategory>> = {
   other: {

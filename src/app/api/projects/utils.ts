@@ -1,5 +1,6 @@
 import { PROJECT_CATEGORIES } from '@/const/categories';
-import { ProjectCategory, ProjectCategoryKey } from './types';
+import { ProjectCategory } from './types';
+import { ProjectCategoryKey } from '@prisma/client';
 
 export function getProjectCategory(key?: string): ProjectCategory {
   if (!key) return PROJECT_CATEGORIES.other;

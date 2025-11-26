@@ -8,6 +8,17 @@ datasource db {
   url       = env("DATABASE_URL")
 }
 
+enum ProjectCategoryKey {
+  other
+  wood
+  art
+  design
+  photography
+  engineering
+  work
+  programming
+}
+
 model Task {
   id    String  @id
   title       String
@@ -47,7 +58,7 @@ model Project {
   id          String @id @default(uuid())
   name        String
   description String?
-  category    String @default("other")
+  category    ProjectCategoryKey @default(other)
 
   projectCards ProjectCard[]
   projectReferences ProjectReference[]

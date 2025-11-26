@@ -6,18 +6,21 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '../ui/dropdown-menu';
-import { GripVertical, Trash, NotebookText } from 'lucide-react';
+import { GripVertical, Trash, NotebookText, Pencil } from 'lucide-react';
 import ConfirmDialog from '../utils/ConfirmDialog';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
 import LucidIcon from '../utils/LucidIcon';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
+import EditProjectDialog from './dialogs/EditProjectDialog';
+import { UpdateProjectType } from '@/app/api/projects/types';
 
 interface IProjectHeaderProps {
   createProjectCard: (bodyData: CreateProjectCardType) => Promise<boolean>;
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
+  updateProject: (bodyData: UpdateProjectType) => Promise<boolean>;
   onShowReferences?: () => void;
 }
 
@@ -25,6 +28,7 @@ const ProjectHeader = ({
   createProjectCard,
   project,
   deleteProject,
+  updateProject,
   onShowReferences,
 }: IProjectHeaderProps) => {
   return (
@@ -47,6 +51,7 @@ const ProjectHeader = ({
         <Menu
           project={project}
           deleteProject={deleteProject}
+          updateProject={updateProject}
           onShowReferences={onShowReferences}
         />
       </div>
@@ -59,10 +64,16 @@ export default ProjectHeader;
 interface IMenuProps {
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
+  updateProject: (bodyData: UpdateProjectType) => Promise<boolean>;
   onShowReferences?: () => void;
 }
 
-const Menu = ({ project, deleteProject, onShowReferences }: IMenuProps) => {
+const Menu = ({
+  project,
+  deleteProject,
+  updateProject,
+  onShowReferences,
+}: IMenuProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -80,6 +91,17 @@ const Menu = ({ project, deleteProject, onShowReferences }: IMenuProps) => {
             <NotebookText size={16} />
           </DropdownMenuItem>
         )}
+        <EditProjectDialog onSubmit={updateProject} project={project}>
+          <DropdownMenuItem
+            className="w-full flex justify-between text-foreground2 cursor-pointer"
+            onSelect={(e) => {
+              e.preventDefault();
+            }}
+          >
+            Edit project
+            <Pencil size={16} />
+          </DropdownMenuItem>
+        </EditProjectDialog>
         <ConfirmDialog
           id={project.id}
           route="projects"

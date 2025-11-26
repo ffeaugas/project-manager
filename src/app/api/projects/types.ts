@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { LucideIcon } from 'lucide-react';
 import { z } from 'zod';
-import { ProjectCategoryKey } from '@/const/categories';
+import { ProjectCategoryKey } from '@prisma/client';
 import {
   descriptionSchema,
   nameSchema,
@@ -16,9 +16,16 @@ export const ProjectSelect = {
   _count: { select: { projectCards: true } },
 } as const;
 
-export type ProjectSelectType = Prisma.ProjectGetPayload<{
-  select: typeof ProjectSelect;
-}>;
+// Prisma enum maps to ProjectCategoryKey - they should match
+// This type ensures compatibility between Prisma's enum and our ProjectCategoryKey
+export type ProjectSelectType = Omit<
+  Prisma.ProjectGetPayload<{
+    select: typeof ProjectSelect;
+  }>,
+  'category'
+> & {
+  category: ProjectCategoryKey;
+};
 
 export const NewProjectSchema = z.object({
   name: nameSchema,
@@ -28,7 +35,6 @@ export const NewProjectSchema = z.object({
 
 export const UpdateProjectSchema = NewProjectSchema.extend({
   id: uuidSchema,
-  name: nameSchema.optional(),
 });
 
 export const DeleteProjectSchema = z.object({
