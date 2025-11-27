@@ -1,22 +1,29 @@
 import { z } from 'zod';
 import { Prisma } from '@prisma/client';
+import {
+  descriptionSchema,
+  requiredDescriptionSchema,
+  requiredNameSchema,
+  urlSchema,
+  uuidSchema,
+} from '@/lib/zodUtils';
 
 export const NewProjectReferenceSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  description: z.string().optional(),
-  url: z.string().url('Invalid URL').optional(),
-  projectId: z.string().uuid().optional(),
+  name: requiredNameSchema,
+  description: descriptionSchema.optional(),
+  url: urlSchema.optional(),
+  projectId: uuidSchema.optional(),
 });
 
 export const UpdateProjectReferenceSchema = z.object({
-  id: z.string().uuid('Id must be a valid UUID'),
-  name: z.string().min(1, 'Name is required').optional(),
-  description: z.string().min(1, 'Description is required').optional(),
-  url: z.string().url('Invalid URL').optional(),
+  id: uuidSchema,
+  name: requiredNameSchema.optional(),
+  description: requiredDescriptionSchema.optional(),
+  url: urlSchema.optional(),
 });
 
 export const DeleteProjectReferenceSchema = z.object({
-  id: z.string().uuid('Id must be a valid UUID'),
+  id: uuidSchema,
 });
 
 export const ProjectReferenceSelect = {

@@ -223,7 +223,7 @@ const NewReferenceSheet = ({
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="bg-background2 border-zinc-800 text-foreground2 w-[400px] sm:w-[540px]"
+        className="bg-background border text-foreground2 w-full md:w-[400px] sm:w-[540px] h-dvh overflow-y-auto"
       >
         <SheetHeader>
           <SheetTitle>{editingReference ? 'Edit' : 'Add'} Reference</SheetTitle>

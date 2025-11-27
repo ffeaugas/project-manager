@@ -1,8 +1,8 @@
 'use client';
 
 import { CalendarEvent } from '@prisma/client';
-import { CALENDAR_EVENT_CATEGORIES, CalendarEventCategoryKey } from '@/const/categories';
-
+import { CALENDAR_EVENT_CATEGORIES } from '@/const/categories';
+import { CalendarEventCategoryKey } from '@prisma/client';
 interface IExtendedDayCardProps {
   date: Date | null;
   events: CalendarEvent[];

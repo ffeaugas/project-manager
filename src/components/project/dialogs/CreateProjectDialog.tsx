@@ -14,11 +14,11 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { NewProjectSchema, NewProjectType } from '@/app/api/projects/types';
+import { ProjectSchema, ProjectType } from '@/app/api/projects/types';
 import ProjectForm from './ProjectForm';
 
 interface CreateProjectDialogProps {
-  onSubmit: (data: NewProjectType) => Promise<string>;
+  onSubmit: (data: ProjectType) => Promise<string>;
   children: React.ReactNode;
 }
 
@@ -32,13 +32,13 @@ const CreateProjectDialog = ({ onSubmit, children }: CreateProjectDialogProps) =
     reset,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<NewProjectType>({
+  } = useForm<ProjectType>({
     defaultValues: {
       name: '',
       description: '',
       category: 'other',
     },
-    resolver: zodResolver(NewProjectSchema),
+    resolver: zodResolver(ProjectSchema),
   });
 
   useEffect(() => {
@@ -51,7 +51,7 @@ const CreateProjectDialog = ({ onSubmit, children }: CreateProjectDialogProps) =
     }
   }, [isOpen, reset]);
 
-  const handleFormSubmit: SubmitHandler<NewProjectType> = async (formData) => {
+  const handleFormSubmit: SubmitHandler<ProjectType> = async (formData) => {
     try {
       const projectId = await onSubmit(formData);
       reset();

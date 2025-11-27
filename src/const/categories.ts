@@ -1,5 +1,5 @@
 import { ProjectCategory } from '@/app/api/projects/types';
-import { ProjectCategoryKey } from '@prisma/client';
+import { CalendarEventCategoryKey, ProjectCategoryKey } from '@prisma/client';
 import { LucideIcon } from 'lucide-react';
 import {
   Axe,
@@ -40,7 +40,7 @@ export const PROJECT_CATEGORY_KEYS: ProjectCategoryKey[] = [
   'programming',
 ] as const;
 
-export const PROJECT_CATEGORIES: Readonly<Record<ProjectCategoryKey, ProjectCategory>> = {
+export const PROJECT_CATEGORIES = {
   other: {
     key: 'other',
     name: 'Other',
@@ -97,15 +97,7 @@ export const PROJECT_CATEGORIES: Readonly<Record<ProjectCategoryKey, ProjectCate
     color: COLOR_MAP.purple,
     icon: Cpu,
   },
-} as const;
-
-export type CalendarEventCategoryKey =
-  | 'default'
-  | 'social'
-  | 'work'
-  | 'birthday'
-  | 'important'
-  | 'culture';
+} as const satisfies Record<ProjectCategoryKey, ProjectCategory>;
 
 export const CALENDAR_EVENT_CATEGORIES = {
   default: {

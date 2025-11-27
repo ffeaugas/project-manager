@@ -106,7 +106,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="bg-background3">
         <Button
           variant="ghost"
           size="icon"

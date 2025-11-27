@@ -6,7 +6,6 @@ import {
   createProjectCard,
   updateProjectCard,
   deleteProjectCard,
-  getUserTotalFileSize,
 } from './service';
 import { parseFormData, toUpdateData } from './utils';
 import {

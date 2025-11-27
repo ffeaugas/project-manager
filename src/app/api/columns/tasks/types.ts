@@ -1,5 +1,11 @@
 import { Prisma } from '@prisma/client';
 import { z, ZodType } from 'zod';
+import {
+  descriptionSchema,
+  optionalIdSchema,
+  requiredIdSchema,
+  requiredTitleSchema,
+} from '@/lib/zodUtils';
 
 interface NewTaskForm {
   id?: string;
@@ -10,14 +16,14 @@ interface NewTaskForm {
 export type EntityType = 'task-columns' | 'tasks' | 'projects' | 'project-cards';
 
 export const newTaskSchema: ZodType<NewTaskForm & { columnId?: string }> = z.object({
-  id: z.string().optional(),
-  title: z.string().min(1, 'Title is required'),
-  description: z.string().optional(),
-  columnId: z.string().optional(),
+  id: optionalIdSchema,
+  title: requiredTitleSchema,
+  description: descriptionSchema.optional(),
+  columnId: optionalIdSchema,
 });
 
 export const reorderTaskSchema = z.object({
-  activeTaskId: z.string().min(1, 'Active task ID is required'),
+  activeTaskId: requiredIdSchema,
   beforeTaskId: z.string().optional(),
   afterTaskId: z.string().optional(),
   targetColumnId: z.string(),

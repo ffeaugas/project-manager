@@ -38,15 +38,9 @@ export const ProjectSelect = {
   },
 } as const;
 
-// Prisma enum maps to ProjectCategoryKey - ensure type compatibility
-export type ProjectSelectType = Omit<
-  Prisma.ProjectGetPayload<{
-    select: typeof ProjectSelect;
-  }>,
-  'category'
-> & {
-  category: ProjectCategoryKey;
-};
+export type ProjectSelectType = Prisma.ProjectGetPayload<{
+  select: typeof ProjectSelect;
+}>;
 
 export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
   category: ProjectCategoryKey;
@@ -99,5 +93,5 @@ export const UpdateProjectCardSchema = ProjectCardSchema.extend({
   isProjectCardEmpty(data, ctx);
 });
 
-export type CreateProjectCardType = z.infer<typeof CreateProjectCardSchema>;
+export type ProjectCardType = z.infer<typeof CreateProjectCardSchema>;
 export type UpdateProjectCardType = z.infer<typeof UpdateProjectCardSchema>;

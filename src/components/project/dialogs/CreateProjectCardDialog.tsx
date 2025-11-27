@@ -13,14 +13,11 @@ import { Button } from '../../ui/button';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
-import {
-  CreateProjectCardType,
-  CreateProjectCardSchema,
-} from '@/app/api/projects/cards/types';
+import { ProjectCardType, CreateProjectCardSchema } from '@/app/api/projects/cards/types';
 import ProjectCardForm from './ProjectCardForm';
 
 interface CreateProjectCardDialogProps {
-  onSubmit: (data: CreateProjectCardType, projectId: string) => Promise<boolean>;
+  onSubmit: (data: ProjectCardType, projectId: string) => Promise<boolean>;
   children: React.ReactNode;
   projectId: string;
 }
@@ -41,7 +38,7 @@ const CreateProjectCardDialog = ({
     watch,
     formState: { errors, isSubmitting },
     getValues,
-  } = useForm<CreateProjectCardType>({
+  } = useForm<ProjectCardType>({
     defaultValues: {
       name: '',
       description: '',
@@ -66,7 +63,7 @@ const CreateProjectCardDialog = ({
     setValue('image', file || undefined);
   };
 
-  const handleFormSubmit: SubmitHandler<CreateProjectCardType> = async (formData) => {
+  const handleFormSubmit: SubmitHandler<ProjectCardType> = async (formData) => {
     console.log(formData);
     const success = await onSubmit(formData, projectId);
 

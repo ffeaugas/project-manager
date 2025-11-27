@@ -1,26 +1,32 @@
-import z, { ZodType } from 'zod';
+import z from 'zod';
+import {
+  hexColorSchema,
+  optionalIdSchema,
+  requiredIdSchema,
+  requiredNameSchema,
+} from '@/lib/zodUtils';
 
 const baseColumnSchema = z.object({
-  name: z.string().min(1, 'Name is required'),
-  color: z.string().regex(/^#([0-9a-fA-F]{6})$/, 'Color must be a valid hex color'),
+  name: requiredNameSchema,
+  color: hexColorSchema,
 });
 
 export const reorderColumnSchema = z.object({
-  activeColumnId: z.string().min(1, 'Active column ID is required'),
+  activeColumnId: requiredIdSchema,
   afterColumnId: z.string().optional(),
   beforeColumnId: z.string().optional(),
 });
 
 export const newColumnSchema = baseColumnSchema.extend({
-  id: z.string().optional(),
+  id: optionalIdSchema,
 });
 
 export const editColumnSchema = baseColumnSchema.extend({
-  id: z.string().min(1, 'ID is required'),
+  id: requiredIdSchema,
 });
 
 export const deleteColumnSchema = z.object({
-  id: z.string().min(1, 'Id is required'),
+  id: requiredIdSchema,
 });
 
 export type NewColumnType = z.infer<typeof newColumnSchema>;

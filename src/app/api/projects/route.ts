@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth-server';
 import { handleApiError } from '@/lib/api-error-handler';
 import { createProject, deleteProject, listProjects, updateProject } from './service';
-import { DeleteProjectSchema, NewProjectSchema, UpdateProjectSchema } from './types';
+import { DeleteProjectSchema, ProjectSchema, UpdateProjectSchema } from './types';
 
 export async function GET() {
   const user = await getUser();
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const validatedData = NewProjectSchema.parse(body);
+    const validatedData = ProjectSchema.parse(body);
     const created = await createProject(user.id, validatedData);
     return NextResponse.json({ id: created.id }, { status: 201 });
   } catch (error) {

@@ -16,32 +16,25 @@ export const ProjectSelect = {
   _count: { select: { projectCards: true } },
 } as const;
 
-// Prisma enum maps to ProjectCategoryKey - they should match
-// This type ensures compatibility between Prisma's enum and our ProjectCategoryKey
-export type ProjectSelectType = Omit<
-  Prisma.ProjectGetPayload<{
-    select: typeof ProjectSelect;
-  }>,
-  'category'
-> & {
-  category: ProjectCategoryKey;
-};
+export type ProjectSelectType = Prisma.ProjectGetPayload<{
+  select: typeof ProjectSelect;
+}>;
 
-export const NewProjectSchema = z.object({
+export const ProjectSchema = z.object({
   name: nameSchema,
   description: descriptionSchema.optional(),
   category: projectCategorySchema,
 });
 
-export const UpdateProjectSchema = NewProjectSchema.extend({
+export const UpdateProjectSchema = ProjectSchema.extend({
   id: uuidSchema,
 });
 
 export const DeleteProjectSchema = z.object({
-  id: z.string().uuid('Id must be a valid UUID'),
+  id: uuidSchema,
 });
 
-export type NewProjectType = z.infer<typeof NewProjectSchema>;
+export type ProjectType = z.infer<typeof ProjectSchema>;
 export type UpdateProjectType = z.infer<typeof UpdateProjectSchema>;
 export type DeleteProjectType = z.infer<typeof DeleteProjectSchema>;
 

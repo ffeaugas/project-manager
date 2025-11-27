@@ -1,5 +1,5 @@
 import { CalendarEvent } from '@prisma/client';
-import { CALENDAR_EVENT_CATEGORIES, CalendarEventCategoryKey } from '@/const/categories';
+import { CALENDAR_EVENT_CATEGORIES } from '@/const/categories';
 import { cn } from '@/lib/utils';
 
 interface IDayCardProps {
@@ -47,7 +47,7 @@ interface IEventCardProps {
 }
 
 const EventCard = ({ event }: IEventCardProps) => {
-  const category = CALENDAR_EVENT_CATEGORIES[event.category as CalendarEventCategoryKey];
+  const category = CALENDAR_EVENT_CATEGORIES[event.category];
 
   const categoryColor = category?.color || CALENDAR_EVENT_CATEGORIES.default.color;
   return (

@@ -4,12 +4,19 @@ import { Label } from '../../ui/label';
 import { Input } from '../../ui/input';
 import { Dropzone } from '../../ui/dropzone';
 import TextEditor from '@/components/utils/TextEditor';
+import {
+  UseFormRegister,
+  UseFormSetValue,
+  UseFormWatch,
+  FieldErrors,
+} from 'react-hook-form';
+import { ProjectCardType } from '@/app/api/projects/cards/types';
 
 interface ProjectCardFormProps {
-  register: any;
-  setValue: any;
-  watch: any;
-  errors: any;
+  register: UseFormRegister<ProjectCardType>;
+  setValue: UseFormSetValue<ProjectCardType>;
+  watch: UseFormWatch<ProjectCardType>;
+  errors: FieldErrors<ProjectCardType>;
   imageFile: File | null;
   onFileSelect: (file: File | null) => void;
   existingImageUrl?: string;

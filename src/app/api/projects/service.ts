@@ -1,8 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { s3DeleteFolder } from '@/lib/s3';
 import { ProjectSelect } from './types';
-import { ProjectCategoryKey } from '@/const/categories';
-import { Prisma } from '@prisma/client';
+import { ProjectCategoryKey } from '@prisma/client';
 
 export async function listProjects(userId: string | number) {
   const uid = String(userId);
@@ -12,11 +11,7 @@ export async function listProjects(userId: string | number) {
     orderBy: { createdAt: 'desc' },
   });
 
-  // Type assertion: Prisma enum values match ProjectCategoryKey
-  return projects.map((project) => ({
-    ...project,
-    category: project.category as ProjectCategoryKey,
-  }));
+  return projects;
 }
 
 export async function createProject(
@@ -28,7 +23,7 @@ export async function createProject(
     data: {
       name: data.name,
       description: data.description,
-      category: (data.category ?? 'other') as Prisma.ProjectCategory,
+      category: (data.category ?? 'other') satisfies ProjectCategoryKey,
       userId: uid,
     },
     select: { id: true },
@@ -56,7 +51,7 @@ export async function updateProject(
     data: {
       name: data.name,
       description: data.description,
-      ...(data.category && { category: data.category as Prisma.ProjectCategory }),
+      ...(data.category && { category: data.category satisfies ProjectCategoryKey }),
     },
     select: { id: true },
   });

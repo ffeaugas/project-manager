@@ -14,16 +14,16 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useState, useEffect } from 'react';
 import {
-  UpdateProjectCardType,
   UpdateProjectCardSchema,
   ProjectWithUrls,
+  ProjectCardType,
 } from '@/app/api/projects/cards/types';
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
 import ProjectCardForm from './ProjectCardForm';
 
 interface EditProjectCardDialogProps {
-  onSubmit: (data: UpdateProjectCardType) => Promise<boolean>;
+  onSubmit: (bodyData: ProjectCardType, id: string) => Promise<boolean>;
   onDelete: (id: string) => Promise<boolean>;
   children: React.ReactNode;
   data: ProjectWithUrls['projectCards'][0];
@@ -45,9 +45,8 @@ const EditProjectCardDialog = ({
     setValue,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<UpdateProjectCardType>({
+  } = useForm<ProjectCardType>({
     defaultValues: {
-      id: data.id,
       name: data.name || '',
       description: data.description || '',
       image: undefined,
@@ -58,7 +57,6 @@ const EditProjectCardDialog = ({
   useEffect(() => {
     if (isOpen) {
       reset({
-        id: data.id,
         name: data.name || '',
         description: data.description || '',
         image: undefined,
@@ -72,11 +70,8 @@ const EditProjectCardDialog = ({
     setValue('image', file || undefined);
   };
 
-  const handleFormSubmit: SubmitHandler<UpdateProjectCardType> = async (formData) => {
-    const success = await onSubmit({
-      ...formData,
-      id: data.id,
-    });
+  const handleFormSubmit: SubmitHandler<ProjectCardType> = async (formData) => {
+    const success = await onSubmit(formData, data.id);
 
     if (success) {
       setIsOpen(false);

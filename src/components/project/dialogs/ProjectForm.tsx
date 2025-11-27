@@ -3,29 +3,19 @@
 import { Label } from '../../ui/label';
 import { Input } from '../../ui/input';
 import { UseFormRegister, UseFormWatch, FieldErrors } from 'react-hook-form';
-import {
-  NewProjectType,
-  UpdateProjectType,
-  ProjectCategory,
-} from '@/app/api/projects/types';
+import { ProjectType, ProjectCategory } from '@/app/api/projects/types';
 import { PROJECT_CATEGORIES, PROJECT_CATEGORY_KEYS } from '@/const/categories';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import LucidIcon from '@/components/utils/LucidIcon';
 
-type ProjectFormType = NewProjectType | UpdateProjectType;
-
-type T = UseFormRegister<ProjectFormType>;
-
 interface ProjectFormProps {
-  register: UseFormRegister<ProjectFormType>;
-  watch: UseFormWatch<ProjectFormType>;
-  errors: FieldErrors<ProjectFormType>;
+  register: UseFormRegister<ProjectType>;
+  watch: UseFormWatch<ProjectType>;
+  errors: FieldErrors<ProjectType>;
 }
 
 const ProjectForm = ({ register, watch, errors }: ProjectFormProps) => {
-  const selectedCategoryKey = watch('category' as keyof ProjectFormType) as
-    | string
-    | undefined;
+  const selectedCategoryKey = watch('category');
   const selectedCategory = getProjectCategory(selectedCategoryKey);
 
   return (
@@ -58,7 +48,7 @@ export default ProjectForm;
 
 interface ICategorySelectProps {
   selectedCategory: ProjectCategory;
-  register: UseFormRegister<ProjectFormType>;
+  register: UseFormRegister<ProjectType>;
 }
 
 const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) => {

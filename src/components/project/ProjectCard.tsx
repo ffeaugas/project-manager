@@ -1,4 +1,4 @@
-import { ProjectWithUrls, UpdateProjectCardType } from '@/app/api/projects/cards/types';
+import { ProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import Image from 'next/image';
 import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -10,7 +10,7 @@ import EditProjectCardDialog from './dialogs/EditProjectCardDialog';
 
 interface IProjectCardProps {
   data: ProjectWithUrls['projectCards'][0];
-  updateProjectCard: (bodyData: UpdateProjectCardType) => Promise<boolean>;
+  updateProjectCard: (bodyData: ProjectCardType, id: string) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
 }
 

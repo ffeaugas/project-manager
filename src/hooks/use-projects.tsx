@@ -1,15 +1,7 @@
 'use client';
 
-import {
-  NewProjectType,
-  ProjectSelectType,
-  UpdateProjectType,
-} from '@/app/api/projects/types';
-import {
-  CreateProjectCardType,
-  ProjectWithUrls,
-  UpdateProjectCardType,
-} from '@/app/api/projects/cards/types';
+import { ProjectType, ProjectSelectType } from '@/app/api/projects/types';
+import { ProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import { useCallback, useEffect, useState } from 'react';
 
 export const useProjects = (id?: string) => {
@@ -18,7 +10,7 @@ export const useProjects = (id?: string) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const createProjectCard = async (bodyData: CreateProjectCardType) => {
+  const createProjectCard = async (bodyData: ProjectCardType) => {
     const formData = new FormData();
 
     formData.append('name', bodyData.name?.trim() || '');
@@ -48,10 +40,10 @@ export const useProjects = (id?: string) => {
     }
   };
 
-  const updateProjectCard = async (bodyData: UpdateProjectCardType) => {
+  const updateProjectCard = async (bodyData: ProjectCardType, id: string) => {
     const formData = new FormData();
 
-    formData.append('id', bodyData.id);
+    formData.append('id', id);
     formData.append('name', bodyData.name?.trim() || '');
     formData.append('description', bodyData.description?.trim() || '');
     if (bodyData.image) {
@@ -101,7 +93,7 @@ export const useProjects = (id?: string) => {
     return true;
   };
 
-  const createProject = async (bodyData: NewProjectType) => {
+  const createProject = async (bodyData: ProjectType) => {
     try {
       const response = await fetch('/api/projects', {
         method: 'POST',
@@ -120,12 +112,12 @@ export const useProjects = (id?: string) => {
     }
   };
 
-  const updateProject = async (bodyData: UpdateProjectType) => {
+  const updateProject = async (bodyData: ProjectType, id: string) => {
     try {
       const response = await fetch('/api/projects', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
+        body: JSON.stringify({ ...bodyData, id }),
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -162,10 +154,15 @@ export const useProjects = (id?: string) => {
   }, [id]);
 
   const fetchProjects = useCallback(async () => {
-    const response = await fetch('/api/projects');
-    const data = await response.json();
-    setProjects(data);
-  }, []);
+    try {
+      const response = await fetch('/api/projects');
+      const data = await response.json();
+      setProjects(data);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      setError(error as string);
+    }
+  }, [setError]);
 
   useEffect(() => {
     fetchProjects();

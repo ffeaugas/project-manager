@@ -19,6 +19,15 @@ enum ProjectCategoryKey {
   programming
 }
 
+enum CalendarEventCategoryKey {
+  default
+  social
+  work
+  birthday
+  important
+  culture
+}
+
 model Task {
   id    String  @id
   title       String
@@ -129,7 +138,7 @@ model CalendarEvent {
   duration    Int?     
   
   description String   @db.Text
-  category    String   @default("default")
+  category    CalendarEventCategoryKey   @default(default)
   
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")

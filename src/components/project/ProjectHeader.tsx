@@ -1,5 +1,5 @@
 import { Button } from '../ui/button';
-import { CreateProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import { ProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -14,13 +14,13 @@ import LucidIcon from '../utils/LucidIcon';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 import EditProjectDialog from './dialogs/EditProjectDialog';
-import { UpdateProjectType } from '@/app/api/projects/types';
+import { ProjectType } from '@/app/api/projects/types';
 
 interface IProjectHeaderProps {
-  createProjectCard: (bodyData: CreateProjectCardType) => Promise<boolean>;
+  createProjectCard: (bodyData: ProjectCardType) => Promise<boolean>;
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
-  updateProject: (bodyData: UpdateProjectType) => Promise<boolean>;
+  updateProject: (bodyData: ProjectType, id: string) => Promise<boolean>;
   onShowReferences?: () => void;
 }
 
@@ -64,7 +64,7 @@ export default ProjectHeader;
 interface IMenuProps {
   project: ProjectWithUrls;
   deleteProject: (id: string) => Promise<boolean>;
-  updateProject: (bodyData: UpdateProjectType) => Promise<boolean>;
+  updateProject: (bodyData: ProjectType, id: string) => Promise<boolean>;
   onShowReferences?: () => void;
 }
 

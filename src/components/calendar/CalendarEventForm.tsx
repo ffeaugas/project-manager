@@ -8,16 +8,13 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Textarea } from '../ui/textarea';
 import { Label } from '../ui/label';
-import { CalendarEvent } from '@prisma/client';
+import { CalendarEvent, CalendarEventCategoryKey } from '@prisma/client';
 import { NewCalendarEventType, UpdateCalendarEventType } from '@/app/api/calendar/types';
 import { NewCalendarEventSchema } from '@/app/api/calendar/types';
 import { Trash } from 'lucide-react';
 import { toast } from 'sonner';
 import ConfirmDialog from '../utils/ConfirmDialog';
-import {
-  CALENDAR_EVENT_CATEGORIES,
-  type CalendarEventCategoryKey,
-} from '@/const/categories';
+import { CALENDAR_EVENT_CATEGORIES } from '@/const/categories';
 import { cn } from '@/lib/utils';
 
 interface ICalendarEventFormProps {
