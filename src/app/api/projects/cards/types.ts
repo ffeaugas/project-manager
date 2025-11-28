@@ -1,6 +1,11 @@
 import { z } from 'zod';
 import { Prisma, ProjectCategoryKey } from '@prisma/client';
-import { descriptionSchema, imageSchema, nameSchema, uuidSchema } from '@/lib/zodUtils';
+import {
+  imageSchema,
+  nameSchema,
+  projectCardDescriptionSchema,
+  uuidSchema,
+} from '@/lib/zodUtils';
 
 export const DeleteProjectCardSchema = z.object({
   id: z.string().uuid('Id must be a valid UUID'),
@@ -57,7 +62,7 @@ export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
 
 const ProjectCardSchema = z.object({
   name: nameSchema.optional(),
-  description: descriptionSchema.optional(),
+  description: projectCardDescriptionSchema.optional(),
   image: imageSchema.optional(),
   projectId: uuidSchema.optional(),
 });
