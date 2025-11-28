@@ -20,6 +20,8 @@ export const descriptionSchema = z
   .string()
   .max(2000, 'Description must be less than 1000 characters');
 
+export const projectCardDescriptionSchema = z.string().max(20000, 'Description too long');
+
 export const requiredDescriptionSchema = z
   .string()
   .min(1, 'Description is required')
