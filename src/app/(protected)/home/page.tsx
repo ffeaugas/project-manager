@@ -27,7 +27,7 @@ const HomePage = () => {
           </ResizablePanel>
           <ResizableHandle withHandle className="hidden md:flex" />
           <ResizablePanel minSize={15} className="hidden md:block">
-            <div className="w-full md:h-dvh border-l border-borderColor md:flex flex-col gap-2 p-2 bg-background2 hidden">
+            <div className="w-full md:h-dvh border-l border-border md:flex flex-col gap-2 p-2 bg-card hidden">
               <CalendarSection />
               <ActivitySection />
             </div>
@@ -36,7 +36,7 @@ const HomePage = () => {
       </div>
 
       <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-        <SheetContent className="bg-background2 w-full overflow-y-auto">
+        <SheetContent className="bg-card w-full overflow-y-auto">
           <SheetTitle />
           <div className="flex flex-col gap-4 mt-6">
             <CalendarSection />

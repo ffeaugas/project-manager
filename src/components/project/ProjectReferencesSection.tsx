@@ -87,7 +87,7 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
           {isLoading ? (
             <Spinner size="small" className="h-[100px]" />
           ) : references.length === 0 ? (
-            <div className="text-foreground3 text-sm">No references yet</div>
+            <div className="text-muted-foreground text-sm">No references yet</div>
           ) : (
             references.map((reference) => (
               <ReferenceCard
@@ -115,14 +115,14 @@ interface ReferenceCardProps {
 
 const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
   return (
-    <div className="bg-background2 rounded-lg p-3 border border-zinc-800 hover:border-borderColor transition-colors group">
+    <div className="bg-card rounded-lg p-3 border border-zinc-800 hover:border-border transition-colors group">
       <div className="flex items-start justify-between gap-2 mb-2">
         <h3 className="font-medium text-foreground truncate flex-1">{reference.name}</h3>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 text-foreground2 hover:text-foreground"
+            className="h-7 w-7 p-0 text-muted-foreground hover:text-foreground"
             onClick={onEdit}
           >
             <Edit size={14} />
@@ -147,7 +147,7 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
       </div>
       <div className="flex flex-row justify-between gap-2">
         {reference.description && (
-          <p className="text-sm text-foreground2 line-clamp-2 mb-2">
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
             {reference.description}
           </p>
         )}
@@ -155,7 +155,7 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
           href={reference.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-1 text-sm text-custom1 hover:text-custom1/40 transition-colors"
+          className="flex items-center gap-1 text-sm text-primary hover:text-primary/40 transition-colors"
         >
           <span className="truncate">Go to link</span>
           <ExternalLink size={14} className="shrink-0" />
@@ -223,7 +223,7 @@ const NewReferenceSheet = ({
       </SheetTrigger>
       <SheetContent
         side="right"
-        className="bg-background border text-foreground2 w-full md:w-[400px] sm:w-[540px] h-dvh overflow-y-auto"
+        className="bg-background border text-muted-foreground w-full md:w-[400px] sm:w-[540px] h-dvh overflow-y-auto"
       >
         <SheetHeader>
           <SheetTitle>{editingReference ? 'Edit' : 'Add'} Reference</SheetTitle>

@@ -64,13 +64,13 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
                       <p className="text-sm font-semibold text-foreground mb-1">
                         {formatTime(event.startTime)}
                         {event.duration && (
-                          <span className="text-xs font-normal text-foreground2 ml-2">
+                          <span className="text-xs font-normal text-muted-foreground ml-2">
                             ({event.duration} min)
                           </span>
                         )}
                       </p>
                     )}
-                    <p className="text-sm text-foreground2 wrap-break-words">
+                    <p className="text-sm text-muted-foreground wrap-break-words">
                       {event.description.length > 110
                         ? event.description.slice(0, 110) + '...'
                         : event.description}

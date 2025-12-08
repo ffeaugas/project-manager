@@ -268,7 +268,7 @@ const SidebarTrigger = React.forwardRef<
       data-sidebar="trigger"
       variant="ghost"
       size="icon"
-      className={cn('h-9 w-9 !bg-background3', className)}
+      className={cn('h-9 w-9', className)}
       onClick={(event) => {
         onClick?.(event);
         toggleSidebar();
@@ -395,7 +395,7 @@ const SidebarContent = React.forwardRef<HTMLDivElement, React.ComponentProps<'di
         ref={ref}
         data-sidebar="content"
         className={cn(
-          'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden bg-background3',
+          'flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden',
           className,
         )}
         {...props}
@@ -661,7 +661,7 @@ const SidebarMenuSub = React.forwardRef<HTMLUListElement, React.ComponentProps<'
       ref={ref}
       data-sidebar="menu-sub"
       className={cn(
-        'mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-borderColor px-2.5 py-0.5 list-none',
+        'mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5 list-none',
         'group-data-[collapsible=icon]:hidden list-none',
         className,
       )}

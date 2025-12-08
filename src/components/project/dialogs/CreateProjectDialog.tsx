@@ -65,7 +65,7 @@ const CreateProjectDialog = ({ onSubmit, children }: CreateProjectDialogProps) =
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-background2">
+      <DialogContent className="sm:max-w-[425px] bg-card">
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <DialogHeader>
             <DialogTitle>Add a new project</DialogTitle>

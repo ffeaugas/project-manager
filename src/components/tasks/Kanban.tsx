@@ -127,8 +127,8 @@ const EmptyColumn = ({
   return (
     <NewColumnDialog submitColumn={submitColumn}>
       <Button
-        variant="outline"
-        className="flex flex-col justify-center w-[150px] h-[200px] text-lg md:text-md my-px mt-[.6rem]"
+        variant="dashed"
+        className="flex flex-col justify-center w-[150px] h-[200px] text-lg md:text-md my-px mt-[.6rem] border-secondary font-semibold"
       >
         Add Column
       </Button>

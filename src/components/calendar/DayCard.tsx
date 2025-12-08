@@ -16,7 +16,7 @@ export const DayCard = ({ date, events, onClick, className }: IDayCardProps) => 
   return (
     <div
       className={cn(
-        'min-w-[100px] max-w-[300px] bg-background2 rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors border flex-1 shadow-xl',
+        'min-w-[100px] max-w-[300px] bg-card rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors border flex-1 shadow-xl',
         className,
       )}
       onClick={onClick}

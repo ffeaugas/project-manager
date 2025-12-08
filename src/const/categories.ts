@@ -26,7 +26,6 @@ const COLOR_MAP: Readonly<Record<string, string>> = {
   purple: 'oklch(55.8% 0.288 302.321)',
   pink: 'oklch(71.8% 0.202 349.761)',
   red: 'oklch(51.4% 0.222 16.935)',
-  gray: 'oklch(27.9% 0.041 260.031)',
 };
 
 export const PROJECT_CATEGORY_KEYS: ProjectCategoryKey[] = [
@@ -45,7 +44,7 @@ export const PROJECT_CATEGORIES = {
     key: 'other',
     name: 'Other',
     description: 'other',
-    color: COLOR_MAP.gray,
+    color: COLOR_MAP.blue,
     icon: LoaderPinwheel,
   },
   wood: {
@@ -73,7 +72,7 @@ export const PROJECT_CATEGORIES = {
     key: 'photography',
     name: 'Photography',
     description: 'Photography projects',
-    color: COLOR_MAP.blue,
+    color: COLOR_MAP.red,
     icon: Camera,
   },
   engineering: {

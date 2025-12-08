@@ -89,7 +89,7 @@ const CalendarPage = () => {
           onClick={handlePreviousMonth}
           variant="ghost"
           size="icon"
-          className="bg-background3 border-borderColor"
+          className="bg-muted border-border"
         >
           <ChevronLeft className="h-4 w-4" />
         </Button>
@@ -101,7 +101,7 @@ const CalendarPage = () => {
           onClick={handleNextMonth}
           variant="ghost"
           size="icon"
-          className="bg-background3 border-borderColor"
+          className="bg-muted border-border"
         >
           <ChevronRight className="h-4 w-4" />
         </Button>

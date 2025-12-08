@@ -20,7 +20,7 @@ export default async function ProtectedLayout({
       <div className="flex w-full">
         <AppSidebar userData={user} />
         <SidebarInset className="overflow-hidden flex-1">
-          <SidebarTrigger className="absolute top-2 left-2 md:hidden bg-background2 border border-borderColor rounded-sm p-2 z-50" />
+          <SidebarTrigger className="absolute top-2 left-2 md:hidden bg-card border border-border rounded-sm p-2 z-50" />
           {children}
           <Toaster />
         </SidebarInset>

@@ -67,7 +67,7 @@ const NewColumnDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-background2">
+      <DialogContent className="sm:max-w-[425px] bg-card">
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>{data ? 'Edit' : 'Add a new'} column</DialogTitle>

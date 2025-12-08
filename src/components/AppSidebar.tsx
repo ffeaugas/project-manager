@@ -52,7 +52,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
   return (
     <Sidebar
       collapsible={isMobile ? 'offcanvas' : 'none'}
-      className="bg-background3 border border-borderColor text-foreground2 w-[300px]"
+      className="border border-border w-[300px]"
     >
       <SidebarContent>
         <AuthButton userData={userData} />
@@ -92,8 +92,8 @@ const AppSidebar = ({ userData }: { userData: User }) => {
                     ))}
                     <CreateProjectDialog onSubmit={createProject}>
                       <Button
-                        variant="outline"
-                        className="flex flex-row items-center justify-center mt-2"
+                        variant="dashed"
+                        className="flex flex-row items-center justify-center mt-2 border-secondary font-semibold"
                       >
                         <Plus size={16} className="mr-2" />
                         New Project
@@ -106,7 +106,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="bg-background3">
+      <SidebarFooter>
         <Button
           variant="ghost"
           size="icon"

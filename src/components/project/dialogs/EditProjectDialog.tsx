@@ -68,7 +68,7 @@ const EditProjectDialog = ({ onSubmit, children, project }: EditProjectDialogPro
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-background2">
+      <DialogContent className="sm:max-w-[425px] bg-card">
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <DialogHeader>
             <DialogTitle>Edit project</DialogTitle>

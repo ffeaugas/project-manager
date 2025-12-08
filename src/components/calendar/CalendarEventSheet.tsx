@@ -85,7 +85,7 @@ const CalendarEventSheet = ({
     <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent
         side="right"
-        className="bg-background2 w-full sm:max-w-xl overflow-y-auto"
+        className="bg-card w-full sm:max-w-xl overflow-y-auto"
       >
         <SheetTitle className="sr-only">{getTitle()}</SheetTitle>
         <ExtendedDayCard

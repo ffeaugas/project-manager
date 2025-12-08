@@ -23,7 +23,7 @@ const AuthButton = ({ userData }: { userData: User }) => {
             <span className="text-foreground text-xs md:text-sm bg-blue-400 w-6 h-6 flex items-center justify-center rounded-sm">
               {userData.name.slice(0, 1)}
             </span>
-            <p className="text-foreground2 text-xs md:text-sm font-semibold">
+            <p className="text-muted-foreground text-xs md:text-sm font-semibold">
               {userData.name}
             </p>
           </div>

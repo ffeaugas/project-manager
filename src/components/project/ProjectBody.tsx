@@ -59,7 +59,7 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
       {referencesSlot && (
         <Sheet open={isReferencesOpen} onOpenChange={setIsReferencesOpen}>
           <SheetTitle />
-          <SheetContent className="bg-background2 w-full sm:w-[540px] overflow-y-auto p-0">
+          <SheetContent className="bg-card w-full sm:w-[540px] overflow-y-auto p-0">
             <div className="p-6">{referencesSlot}</div>
           </SheetContent>
         </Sheet>
@@ -117,7 +117,7 @@ interface IEmptyCardProps {
 const EmptyCard = ({ createProjectCard, projectId }: IEmptyCardProps) => {
   return (
     <CreateProjectCardDialog onSubmit={createProjectCard} projectId={projectId}>
-      <div className="rounded-lg w-full md:w-[280px] h-[280px] md:h-[320px] flex flex-col justify-center items-center overflow-hidden bg-transparent border-dashed border-2 border-borderColor hover:border-zinc-600 p-4 text-zinc-600 text-sm md:text-lg cursor-pointer transition-colors">
+      <div className="rounded-lg w-full md:w-[280px] h-[280px] md:h-[320px] flex flex-col justify-center items-center overflow-hidden bg-transparent border-dashed border-2 border-border hover:border-zinc-600 p-4 text-zinc-600 text-sm md:text-lg cursor-pointer transition-colors">
         <p className="text-zinc-400">ajouter une carte</p>
       </div>
     </CreateProjectCardDialog>

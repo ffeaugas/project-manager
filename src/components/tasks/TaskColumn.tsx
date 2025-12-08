@@ -87,7 +87,7 @@ const TaskColumn = ({
         ))}
       </SortableContext>
       <NewTaskDialog createTask={createTask} updateTask={updateTask} columnId={data.id}>
-        <Button variant="outline" className="h-[100px]">
+        <Button variant="dashed" className="h-[100px] border-secondary font-semibold">
           Click to add a new task
         </Button>
       </NewTaskDialog>
@@ -122,7 +122,7 @@ const ColumnHeader = ({
   dragListeners,
 }: IColumnHeaderProps) => {
   return (
-    <div className="flex flex-row items-center group h-8 bg-background rounded-md border hover:border-borderColor duration-200">
+    <div className="flex flex-row items-center group h-8 bg-background rounded-md border hover:border-border duration-200">
       <div
         className="px-2 flex flex-row gap-4 items-center flex-1"
         {...dragAttributes}
@@ -134,12 +134,12 @@ const ColumnHeader = ({
         ></div>
         <div className="flex items-center max-w-full">
           <span
-            className="text-sm md:text-md font-semibold text-foreground3 truncate max-w-[110px] md:max-w-[160px] overflow-hidden whitespace-nowrap"
+            className="text-sm md:text-md font-semibold text-muted-foreground truncate max-w-[110px] md:max-w-[160px] overflow-hidden whitespace-nowrap"
             title={data.name}
           >
             {data.name.length > 30 ? data.name.slice(0, 30) + '...' : data.name}
           </span>
-          <b className="font-normal text-foreground4 text-xs md:text-sm ml-1">
+          <b className="font-normal text-muted-foreground text-xs md:text-sm ml-1">
             ({nbTasks})
           </b>
         </div>

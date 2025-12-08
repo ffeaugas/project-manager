@@ -64,7 +64,7 @@ const ProjectCard = ({
       data={data}
     >
       <div
-        className="bg-gradient2 rounded-lg w-full md:min-w-[280px] h-[280px] max-w-[400px] md:h-[320px] flex flex-col overflow-hidden flex-1
+        className="bg-card rounded-lg w-full md:min-w-[280px] h-[280px] max-w-[400px] md:h-[320px] flex flex-col overflow-hidden flex-1
       justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border relative"
       >
         {displayAlternative}
@@ -92,7 +92,7 @@ const ImageDisplay = ({
         className="object-cover w-full h-full object-center"
       />
       {data.name && (
-        <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-background3/50 to-transparent backdrop-blur-xs p-2">
+        <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-muted/50 to-transparent backdrop-blur-xs p-2">
           <p className="text-foreground text-sm md:text-base font-bold line-clamp-2 wrap-wrap-break-words">
             {data.name}
           </p>
@@ -100,7 +100,7 @@ const ImageDisplay = ({
       )}
       {data.description && (
         <span className="absolute bottom-0 right-0 p-2">
-          <NotebookText className="size-10 bg-background3 p-3 rounded-md" />
+          <NotebookText className="size-10 bg-muted p-3 rounded-md" />
         </span>
       )}
     </div>
@@ -117,7 +117,7 @@ const NoteDisplay = ({
   return (
     <div className="flex flex-col">
       {data.name && (
-        <div className="border-b border-borderColor px-2 py-1">
+        <div className="border-b border-border px-2 py-1">
           <p className="text-foreground text-sm md:text-base font-bold line-clamp-2 wrap-wrap-break-words">
             {data.name}
           </p>

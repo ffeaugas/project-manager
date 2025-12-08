@@ -6,7 +6,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from '../ui/dropdown-menu';
-import { GripVertical, Trash, NotebookText, Pencil } from 'lucide-react';
+import { GripVertical, Trash, NotebookText, Pencil, Plus } from 'lucide-react';
 import ConfirmDialog from '../utils/ConfirmDialog';
 import { redirect } from 'next/navigation';
 import { toast } from 'sonner';
@@ -32,19 +32,23 @@ const ProjectHeader = ({
   onShowReferences,
 }: IProjectHeaderProps) => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-between w-full bg-background2 border-b border-borderColor shrink-0 gap-2 shadow-bot z-10">
+    <div className="flex flex-row p-2 md:p-4 justify-between w-full bg-card border-b border-border shrink-0 gap-2 shadow-bot z-10">
       <div className="flex flex-row gap-4 items-center">
         <LucidIcon
           icon={getProjectCategory(project.category).icon}
           size={40}
           color={getProjectCategory(project.category).color}
-          className="border border-borderColor rounded-sm p-2"
+          className="border border-border rounded-sm p-2"
         />
         <span className="text-md md:text-lg font-semibold">{project.name}</span>
       </div>
       <div className="flex flex-row gap-2">
         <CreateProjectCardDialog onSubmit={createProjectCard} projectId={project.id}>
-          <Button variant="outline" className="bg-background2 text-xs md:text-sm">
+          <Button
+            variant="dashed"
+            className="bg-card text-xs md:text-sm font-semibold flex flex-row items-center justify-center"
+          >
+            <Plus size={16} className="mr-2" />
             Add card
           </Button>
         </CreateProjectCardDialog>
@@ -77,14 +81,14 @@ const Menu = ({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border ">
+        <Button variant="outline" className="group p-2 border ">
           <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 bg-background">
         {onShowReferences && (
           <DropdownMenuItem
-            className="w-full flex justify-between text-foreground2 cursor-pointer md:hidden"
+            className="w-full flex justify-between text-muted-foreground cursor-pointer md:hidden"
             onSelect={onShowReferences}
           >
             References
@@ -93,7 +97,7 @@ const Menu = ({
         )}
         <EditProjectDialog onSubmit={updateProject} project={project}>
           <DropdownMenuItem
-            className="w-full flex justify-between text-foreground2 cursor-pointer"
+            className="w-full flex justify-between text-muted-foreground cursor-pointer"
             onSelect={(e) => {
               e.preventDefault();
             }}
@@ -115,7 +119,7 @@ const Menu = ({
           }}
         >
           <DropdownMenuItem
-            className="w-full flex justify-between text-foreground2 cursor-pointer"
+            className="w-full flex justify-between text-muted-foreground cursor-pointer"
             onSelect={(e) => {
               e.preventDefault();
             }}

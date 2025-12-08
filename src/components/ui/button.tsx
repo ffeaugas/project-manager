@@ -10,13 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90 text-sm',
-        auth: 'bg-background text-foreground2nd2 hover:bg-zinc-700 text-xs leading-none',
+        auth: 'bg-background text-muted-foreground hover:bg-zinc-700 text-xs leading-none',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
-          'flex flex-col items-center justify-center bg-transparent border-dashed border-2 border-borderColor/70 p-4 text-zinc-500 text-xs md:text-sm hover:bg-accent hover:text-accent-foreground',
+          'flex flex-col items-center justify-center bg-transparent border-2 border-border/70 p-4 text-muted-foreground text-xs md:text-sm hover:bg-accent hover:text-accent-foreground',
+        dashed:
+          'flex flex-col items-center justify-center bg-transparent border-dashed border-2 border-border/70 p-4 text-muted-foreground text-xs md:text-sm hover:bg-accent hover:text-accent-foreground',
         secondary: 'text-sm bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
-          'border-none bg-transparent hover:border-foreground4 hover:text-accent-foreground focus-visible:bg-accent focus-visible:ring-0 focus-visible:ring-offset-0',
+          'border-none bg-transparent hover:border-muted-foreground hover:text-accent-foreground focus-visible:bg-accent focus-visible:ring-0 focus-visible:ring-offset-0',
         link: 'text-foreground underline-offset-4 hover:underline',
       },
       size: {
@@ -35,7 +37,8 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isSubmitting?: boolean;

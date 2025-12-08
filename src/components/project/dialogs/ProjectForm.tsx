@@ -58,7 +58,7 @@ const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) =>
         Category
       </Label>
       <div className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-borderColor">
+        <div className="flex h-9 w-9 items-center justify-center rounded-md border border-border">
           <LucidIcon
             icon={selectedCategory.icon}
             size={16}
@@ -67,7 +67,7 @@ const CategorySelect = ({ selectedCategory, register }: ICategorySelectProps) =>
         </div>
         <select
           id="category"
-          className="flex h-9 w-full rounded-md border border-borderColor bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-600"
+          className="flex h-9 w-full rounded-md border border-border bg-transparent px-3 py-1 text-sm shadow-sm outline-none focus:ring-2 focus:ring-zinc-600"
           {...register('category')}
           defaultValue="other"
         >

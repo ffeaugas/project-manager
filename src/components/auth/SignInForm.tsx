@@ -127,7 +127,7 @@ const SignInForm = () => {
       </Form>
       <p>or</p>
       <Button
-        className="bg-background2 text-zinc-400 w-full"
+        className="bg-card text-zinc-400 w-full"
         onClick={() => socialSignIn('github')}
       >
         <GithubIcon className="w-4 h-4" />

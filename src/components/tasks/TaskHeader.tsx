@@ -15,7 +15,7 @@ interface TaskHeaderProps {
 
 const TaskHeader = ({ openSidebar }: TaskHeaderProps) => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-background2 border-b border-borderColor shrink-0 gap-2 shadow-bot">
+    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-card border-b border-border shrink-0 gap-2 shadow-bot">
       <Menu openSidebar={openSidebar} />
     </div>
   );

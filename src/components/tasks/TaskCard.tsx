@@ -3,6 +3,7 @@ import { TaskSelect, NewTaskType } from '../../app/api/columns/tasks/types';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface ITaskCardProps {
   data: TaskSelect;
@@ -51,31 +52,33 @@ const TaskCard = ({
       data={data}
       columnId={data.columnId ?? ''}
     >
-      <div
+      <Card
         ref={setNodeRef}
         style={style}
         {...listeners}
         {...attributes}
         data-task-card
         className={cn(
-          'flex flex-col rounded-md gap-2 px-2 py-2 bg-gradient3 min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-md hover:shadow-2xl cursor-pointer justify-between border hover:border-borderColor duration-400 select-none',
+          'min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-md hover:shadow-2xl cursor-pointer hover:border-border transition-all duration-400 select-none',
           isDragging && 'opacity-20',
         )}
       >
-        <div className="flex flex-col px-2 gap-1">
-          <p className="text-xs md:text-sm font-bold text-foreground wrap-break-words line-clamp-2">
-            {data.title}
-          </p>
-          {data.description && (
-            <p className="text-xs md:text-sm text-foreground2 wrap-break-words line-clamp-2 md:line-clamp-4">
-              {data.description}
+        <CardContent className="flex flex-col gap-2 p-3 justify-between h-full">
+          <div className="flex flex-col gap-1">
+            <p className="text-xs md:text-sm font-bold text-foreground wrap-break-words line-clamp-2">
+              {data.title}
             </p>
-          )}
-        </div>
-        <p className="text-[10px] md:text-xs text-foreground2 text-right">
-          {daysAgo} d ago
-        </p>
-      </div>
+            {data.description && (
+              <p className="text-xs md:text-sm text-muted-foreground wrap-break-words line-clamp-2 md:line-clamp-4">
+                {data.description}
+              </p>
+            )}
+          </div>
+          <p className="text-[10px] md:text-xs text-muted-foreground text-right mt-auto">
+            {daysAgo} d ago
+          </p>
+        </CardContent>
+      </Card>
     </NewTaskDialog>
   );
 };

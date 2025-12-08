@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Bar, BarChart, CartesianGrid, XAxis } from 'recharts';
+import { Area, AreaChart, CartesianGrid, XAxis } from 'recharts';
 import {
   ChartContainer,
   ChartTooltip,
@@ -22,11 +22,11 @@ interface StatisticsData {
 const chartConfig = {
   tasksArchived: {
     label: 'Task activity',
-    color: 'hsl(var(--color-custom1))',
+    color: 'hsl(var(--color-primary))',
   },
   projectCardsCreated: {
     label: 'Project activity',
-    color: 'hsl(var(--color-custom2))',
+    color: 'hsl(var(--color-secondary))',
   },
 } satisfies ChartConfig;
 
@@ -81,7 +81,7 @@ const ActivitySection = () => {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <BarChart accessibilityLayer data={data}>
+          <AreaChart accessibilityLayer data={data}>
             <CartesianGrid vertical={false} />
             <XAxis
               dataKey="date"
@@ -98,19 +98,21 @@ const ActivitySection = () => {
               content={<ChartTooltipContent indicator="dashed" />}
             />
             <ChartLegend content={<ChartLegendContent />} />
-            <Bar
+            <Area
+              type="monotone"
               dataKey="tasksArchived"
               stackId="a"
-              fill="var(--color-custom1)"
-              radius={[0, 0, 4, 4]}
+              fill="var(--color-primary)"
+              stroke="var(--color-primary)"
             />
-            <Bar
+            <Area
+              type="monotone"
               dataKey="projectCardsCreated"
               stackId="a"
-              fill="var(--color-custom2)"
-              radius={[4, 4, 0, 0]}
+              fill="var(--color-secondary)"
+              stroke="var(--color-secondary)"
             />
-          </BarChart>
+          </AreaChart>
         </ChartContainer>
       </CardContent>
     </Card>

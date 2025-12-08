@@ -77,7 +77,7 @@ const CreateProjectCardDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="h-dvh md:h-auto w-full md:w-[80%] bg-background2 overflow-y-auto">
+      <DialogContent className="h-dvh md:h-auto w-full md:w-[80%] bg-card overflow-y-auto">
         <form onSubmit={handleSubmit(handleFormSubmit)}>
           <DialogHeader>
             <DialogTitle>Add a new project card</DialogTitle>

@@ -52,7 +52,7 @@ const ConfirmDialog = ({
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] bg-background2 space-y-2">
+      <DialogContent className="sm:max-w-[425px] bg-card space-y-2">
         <DialogHeader className="space-y-4">
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{message}</DialogDescription>

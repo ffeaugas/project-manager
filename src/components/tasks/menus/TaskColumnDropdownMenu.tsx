@@ -36,7 +36,7 @@ const TaskColumnDropdownMenu = ({
       <DropdownMenuTrigger asChild>
         <Button className="group" variant="ghost" size="xs">
           <GripVertical
-            className="text-foreground4 group-hover:text-foreground3"
+            className="text-muted-foreground group-hover:text-muted-foreground"
             size={20}
           />
         </Button>
@@ -47,7 +47,7 @@ const TaskColumnDropdownMenu = ({
         <DropdownMenuGroup>
           <NewColumnDialog submitColumn={submitColumn} data={data}>
             <DropdownMenuItem
-              className="flex justify-between text-foreground2"
+              className="flex justify-between text-muted-foreground"
               onSelect={(event) => event.preventDefault()}
             >
               Edit
@@ -64,7 +64,7 @@ const TaskColumnDropdownMenu = ({
           >
             <DropdownMenuItem
               onSelect={(event) => event.preventDefault()}
-              className="flex justify-between text-foreground2"
+              className="flex justify-between text-muted-foreground"
             >
               Delete
               <Trash />
