@@ -43,6 +43,11 @@ const CalendarSection = () => {
           >
             <ChevronLeft size={20} />
             <CalendarDays size={20} className="cursor-pointer" />
+            <span className="text-md   font-semibold">
+              {today
+                .toLocaleDateString('en-UK', { month: 'long', year: 'numeric' })
+                .replace(/^\w/, (c) => c.toUpperCase())}
+            </span>
           </Link>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -50,11 +55,13 @@ const CalendarSection = () => {
             date={today}
             events={todayEvents}
             onClick={() => handleDayClick(today)}
+            variant="section"
           />
           <DayCard
             date={tomorrow}
             events={tomorrowEvents}
             onClick={() => handleDayClick(tomorrow)}
+            variant="section"
           />
         </div>
         <CalendarEventSheet

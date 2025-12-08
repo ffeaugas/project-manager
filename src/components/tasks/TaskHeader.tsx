@@ -27,8 +27,8 @@ const Menu = ({ openSidebar }: TaskHeaderProps) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="bg-transparent border-zinc-900 hover:bg-transparent group hover:border-zinc-500 p-2 border ">
-          <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
+        <Button variant="outline" className="p-2">
+          <GripVertical size={20} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 bg-background">

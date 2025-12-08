@@ -83,10 +83,7 @@ const CalendarEventSheet = ({
 
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent
-        side="right"
-        className="bg-card w-full sm:max-w-xl overflow-y-auto"
-      >
+      <SheetContent side="right" className="bg-card w-full sm:max-w-xl overflow-y-auto">
         <SheetTitle className="sr-only">{getTitle()}</SheetTitle>
         <ExtendedDayCard
           date={selectedDate}
@@ -98,8 +95,8 @@ const CalendarEventSheet = ({
           <div className="mt-4">
             <Button
               onClick={handleNewEventClick}
-              variant="outline"
-              className="h-[60px] md:h-[80px] text-lg w-full flex flex-row justify-center items-center"
+              variant="dashed"
+              className="h-[60px] md:h-[80px] text-lg w-full flex flex-row justify-center items-center font-semibold"
             >
               <Plus className="mr-2 h-4 w-4" />
               New Event

@@ -7,6 +7,7 @@ import { Color, TextStyle } from '@tiptap/extension-text-style';
 import { useEffect } from 'react';
 import { NotebookText } from 'lucide-react';
 import EditProjectCardDialog from './dialogs/EditProjectCardDialog';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 interface IProjectCardProps {
   data: ProjectWithUrls['projectCards'][0];
@@ -83,7 +84,7 @@ const ImageDisplay = ({
   firstImage: ProjectWithUrls['projectCards'][0]['images'][0];
 }) => {
   return (
-    <div className="w-full h-full relative">
+    <Card className="w-full h-full relative border-0 shadow-none rounded-none">
       <Image
         src={firstImage.url}
         alt={data.name || 'Project card image'}
@@ -103,7 +104,7 @@ const ImageDisplay = ({
           <NotebookText className="size-10 bg-muted p-3 rounded-md" />
         </span>
       )}
-    </div>
+    </Card>
   );
 };
 
@@ -115,19 +116,19 @@ const NoteDisplay = ({
   editor: Editor | null;
 }) => {
   return (
-    <div className="flex flex-col">
+    <Card className="flex flex-col h-full border-0 shadow-none rounded-none">
       {data.name && (
-        <div className="border-b border-border px-2 py-1">
+        <CardHeader className="border-b border-border px-2 py-1">
           <p className="text-foreground text-sm md:text-base font-bold line-clamp-2 wrap-wrap-break-words">
             {data.name}
           </p>
-        </div>
+        </CardHeader>
       )}
       {data.description && (
-        <div className="overflow-hidden line-clamp-11">
+        <CardContent className="overflow-hidden line-clamp-11 p-0">
           <EditorContent editor={editor} />
-        </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };

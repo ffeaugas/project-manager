@@ -82,7 +82,7 @@ const Menu = ({
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="group p-2 border ">
-          <GripVertical className="text-zinc-700 group-hover:text-zinc-500" size={20} />
+          <GripVertical size={20} />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 bg-background">

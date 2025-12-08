@@ -1,59 +1,87 @@
 import { CalendarEvent } from '@prisma/client';
 import { CALENDAR_EVENT_CATEGORIES } from '@/const/categories';
 import { cn } from '@/lib/utils';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { cva } from 'class-variance-authority';
 
 interface IDayCardProps {
   date: Date;
   events: CalendarEvent[];
   onClick?: () => void;
-  className?: string;
+  variant?: 'fullPage' | 'section';
 }
 
-export const DayCard = ({ date, events, onClick, className }: IDayCardProps) => {
+const cardVariants = cva(
+  'rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors shadow-xl',
+  {
+    variants: {
+      variant: {
+        fullPage:
+          'flex-1 text-xs xl:text-sm lg:min-h-[200px] lg:max-h-[200px] min-h-[100px] max-h-[100px]',
+        section: 'flex-1 min-w-[150px]',
+      },
+    },
+  },
+);
+
+export const DayCard = ({
+  date,
+  events,
+  onClick,
+  variant = 'fullPage',
+}: IDayCardProps) => {
   const filteredEvents = events.filter(
     (event) => new Date(event.date).toDateString() === date.toDateString(),
   );
   return (
-    <div
-      className={cn(
-        'min-w-[100px] max-w-[300px] bg-card rounded-sm h-[200px] cursor-pointer hover:bg-background transition-colors border flex-1 shadow-xl',
-        className,
-      )}
-      onClick={onClick}
-    >
-      <h1 className="text-foreground text-md font-bold p-1">{date.getDate()}</h1>
+    <Card className={cardVariants({ variant })} onClick={onClick}>
+      <CardHeader className="p-1">
+        <h1 className="text-foreground text-md font-bold">{date.getDate()}</h1>
+      </CardHeader>
       {filteredEvents.length > 0 && (
-        <div className="space-y-1 w-full flex flex-col justify-center">
+        <CardContent className="space-y-1 w-full flex flex-col justify-center p-2 pt-0">
           {filteredEvents.slice(0, 3).map((event) => {
-            return <EventCard event={event} key={event.id} />;
+            return <EventCard event={event} key={event.id} variant={variant} />;
           })}
           {filteredEvents.length > 3 && (
             <p className="text-xs text-zinc-400 text-center">
-              +{filteredEvents.length - 3} more
+              +{filteredEvents.length - 3}
             </p>
           )}
-        </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };
 
 export const NoDayCard = () => {
-  return <div className="w-full h-[200px]" />;
+  return <div className="w-full lg:h-[200px] h-[100px]" />;
 };
 
 interface IEventCardProps {
   event: CalendarEvent;
+  variant?: 'fullPage' | 'section';
 }
 
-const EventCard = ({ event }: IEventCardProps) => {
+const EventCard = ({ event, variant = 'fullPage' }: IEventCardProps) => {
   const category = CALENDAR_EVENT_CATEGORIES[event.category];
 
   const categoryColor = category?.color || CALENDAR_EVENT_CATEGORIES.default.color;
-  return (
-    <div
+
+  const minimalVersion = (
+    <span
+      className="w-4 h-4 rounded-full lg:hidden"
+      style={{ backgroundColor: categoryColor }}
+    />
+  );
+
+  const fullVersion = (
+    <Card
       key={event.id}
-      className="px-2 py-1"
+      className={cn(
+        'px-2 py-1 border-0 shadow-none rounded-none',
+        variant === 'fullPage' && 'hidden lg:block',
+      )}
       style={{
         background: `linear-gradient(125deg, transparent, ${categoryColor})`,
       }}
@@ -66,6 +94,17 @@ const EventCard = ({ event }: IEventCardProps) => {
           ? event.description.slice(0, 25) + '...'
           : event.description}
       </p>
-    </div>
+    </Card>
   );
+
+  if (variant === 'fullPage') {
+    return (
+      <>
+        {minimalVersion}
+        {fullVersion}
+      </>
+    );
+  }
+
+  return fullVersion;
 };

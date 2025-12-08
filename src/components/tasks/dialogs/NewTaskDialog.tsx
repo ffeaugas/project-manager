@@ -68,7 +68,6 @@ const NewTaskDialog = ({
   }, [isOpen, data, reset]);
 
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
-    // Convert empty description to undefined for optional field
     const submitData = {
       ...bodyData,
       description: bodyData.description?.trim() || undefined,
