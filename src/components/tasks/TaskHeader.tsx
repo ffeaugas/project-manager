@@ -8,16 +8,22 @@ import {
 } from '../ui/dropdown-menu';
 import { Archive, GripVertical, PanelsTopLeft } from 'lucide-react';
 import Link from 'next/link';
+import Header from '../common/Header';
+import { ReactNode } from 'react';
 
 interface TaskHeaderProps {
   openSidebar?: () => void;
+  breadcrumbs?: ReactNode;
 }
 
-const TaskHeader = ({ openSidebar }: TaskHeaderProps) => {
+const TaskHeader = ({ openSidebar, breadcrumbs }: TaskHeaderProps) => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-end w-full bg-card border-b border-border shrink-0 gap-2 shadow-bot">
-      <Menu openSidebar={openSidebar} />
-    </div>
+    <Header>
+      {breadcrumbs && <div className="flex items-center">{breadcrumbs}</div>}
+      <div className="flex items-center">
+        <Menu openSidebar={openSidebar} />
+      </div>
+    </Header>
   );
 };
 
@@ -34,7 +40,7 @@ const Menu = ({ openSidebar }: TaskHeaderProps) => {
       <DropdownMenuContent className="w-48 bg-background">
         <DropdownMenuItem>
           <Link
-            href="/archives"
+            href="/home/archives"
             className="flex flex-row justify-between w-full items-center"
           >
             <span>See archives</span>

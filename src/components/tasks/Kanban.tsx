@@ -19,13 +19,14 @@ import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
 import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
-import { useMemo } from 'react';
+import { useMemo, ReactNode } from 'react';
 
 interface KanbanProps {
   openSidebar?: () => void;
+  breadcrumbs?: ReactNode;
 }
 
-const Kanban = ({ openSidebar }: KanbanProps) => {
+const Kanban = ({ openSidebar, breadcrumbs }: KanbanProps) => {
   const {
     columns,
     tasks,
@@ -58,10 +59,9 @@ const Kanban = ({ openSidebar }: KanbanProps) => {
   );
 
   if (isLoading) return <Spinner size="large" />;
-  //test mainnnnnnn
   return (
     <div className="flex flex-col flex-1 w-full">
-      <TaskHeader openSidebar={openSidebar} />
+      <TaskHeader openSidebar={openSidebar} breadcrumbs={breadcrumbs} />
       <div className="overflow-y-scroll overflow-x-auto">
         <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
           <DndContext

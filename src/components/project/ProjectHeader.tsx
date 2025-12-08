@@ -15,6 +15,8 @@ import { getProjectCategory } from '@/app/api/projects/utils';
 import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 import EditProjectDialog from './dialogs/EditProjectDialog';
 import { ProjectType } from '@/app/api/projects/types';
+import Header from '../common/Header';
+import { ReactNode } from 'react';
 
 interface IProjectHeaderProps {
   createProjectCard: (bodyData: ProjectCardType) => Promise<boolean>;
@@ -22,6 +24,7 @@ interface IProjectHeaderProps {
   deleteProject: (id: string) => Promise<boolean>;
   updateProject: (bodyData: ProjectType, id: string) => Promise<boolean>;
   onShowReferences?: () => void;
+  breadcrumbs?: ReactNode;
 }
 
 const ProjectHeader = ({
@@ -30,10 +33,12 @@ const ProjectHeader = ({
   deleteProject,
   updateProject,
   onShowReferences,
+  breadcrumbs,
 }: IProjectHeaderProps) => {
   return (
-    <div className="flex flex-row p-2 md:p-4 justify-between w-full bg-card border-b border-border shrink-0 gap-2 shadow-bot z-10">
+    <Header className="z-10">
       <div className="flex flex-row gap-4 items-center">
+        {breadcrumbs && <div className="mr-4">{breadcrumbs}</div>}
         <LucidIcon
           icon={getProjectCategory(project.category).icon}
           size={40}
@@ -59,7 +64,7 @@ const ProjectHeader = ({
           onShowReferences={onShowReferences}
         />
       </div>
-    </div>
+    </Header>
   );
 };
 

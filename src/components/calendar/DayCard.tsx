@@ -70,7 +70,7 @@ const EventCard = ({ event, variant = 'fullPage' }: IEventCardProps) => {
 
   const minimalVersion = (
     <span
-      className="w-4 h-4 rounded-full lg:hidden"
+      className="w-3 h-3 rounded-full lg:hidden"
       style={{ backgroundColor: categoryColor }}
     />
   );
