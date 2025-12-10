@@ -1,11 +1,13 @@
 'use client';
 
-import { useProjects } from '@/hooks/use-projects';
+import { useProjectDetails } from '@/hooks/use-project-details';
+import { useProjectsList } from '@/hooks/use-projects-list';
 import ProjectHeader from './ProjectHeader';
 import { Spinner } from '../ui/spinner';
 import CreateProjectCardDialog from './dialogs/CreateProjectCardDialog';
 import ProjectCard from './ProjectCard';
 import { ProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
+import { ProjectType } from '@/app/api/projects/types';
 import { useState } from 'react';
 import { Sheet, SheetContent, SheetTitle } from '../ui/sheet';
 
@@ -20,11 +22,19 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
     isLoading,
     createProjectCard,
     updateProjectCard,
-    deleteProject,
     deleteProjectCard,
-    updateProject,
     error,
-  } = useProjects(projectId);
+    fetchProject,
+  } = useProjectDetails(projectId);
+  const { deleteProject, updateProject: updateProjectInList } = useProjectsList();
+
+  const updateProject = async (bodyData: ProjectType, id: string) => {
+    const result = await updateProjectInList(bodyData, id);
+    if (result) {
+      await fetchProject();
+    }
+    return result;
+  };
 
   const [isReferencesOpen, setIsReferencesOpen] = useState(false);
 

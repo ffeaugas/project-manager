@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, SubmitHandler } from 'react-hook-form';
+import { useForm, SubmitHandler, Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SheetHeader, SheetTitle, SheetDescription, SheetFooter } from '../ui/sheet';
 import { Button } from '../ui/button';
@@ -54,9 +54,9 @@ const CalendarEventForm = ({
         : '',
       startTime: event?.startTime || undefined,
       duration: event?.duration || undefined,
-      category: (event?.category as CalendarEventCategoryKey) || 'default',
+      category: event?.category || 'default',
     },
-    resolver: zodResolver(NewCalendarEventSchema),
+    resolver: zodResolver(NewCalendarEventSchema) as Resolver<NewCalendarEventType>,
   });
 
   const selectedCategory = watch('category') || 'default';

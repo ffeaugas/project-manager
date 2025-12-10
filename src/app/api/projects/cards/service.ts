@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { s3UploadFile, s3DeleteFolder } from '@/lib/s3';
 import { ProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
-import { ProjectCategoryKey } from '@prisma/client';
+import { Image, ProjectCard, ProjectCategoryKey } from '@prisma/client';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const USER_STORAGE_LIMIT = 100 * 1024 * 1024; // 100MB
 
@@ -17,9 +17,9 @@ export async function getProjectWithCards(projectId: string, userId: string) {
     ...project,
     // Type assertion: Prisma enum values match ProjectCategoryKey
     category: project.category as ProjectCategoryKey,
-    projectCards: project.projectCards.map((card) => ({
+    projectCards: project.projectCards.map((card: ProjectCard) => ({
       ...card,
-      images: card.images.map((image) => ({
+      images: card.images.map((image: Image) => ({
         ...image,
         url: `${process.env.R2_URL}/${image.storageKey}`,
       })),
@@ -184,7 +184,7 @@ export async function getUserTotalFileSize(userId: string) {
     },
   });
 
-  return images.reduce((acc, curr) => acc + curr.size, 0);
+  return images.reduce((acc: number, curr: Image) => acc + curr.size, 0);
 }
 
 async function getProjectCardWithUrls(id: string) {
@@ -197,7 +197,7 @@ async function getProjectCardWithUrls(id: string) {
 
   return {
     ...card,
-    images: card.images.map((image) => ({
+    images: card.images.map((image: Image) => ({
       ...image,
       url: `${process.env.R2_URL}/${image.storageKey}`,
     })),

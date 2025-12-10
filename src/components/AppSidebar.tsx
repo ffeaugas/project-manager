@@ -28,7 +28,7 @@ import { Button } from './ui/button';
 import { useState, useEffect } from 'react';
 import CreateProjectDialog from './project/dialogs/CreateProjectDialog';
 import Link from 'next/link';
-import { useProjects } from '@/hooks/use-projects';
+import { useProjectsList } from '@/hooks/use-projects-list';
 import { getProjectCategory } from '@/app/api/projects/utils';
 import LucidIcon from './utils/LucidIcon';
 import { User } from 'better-auth';
@@ -39,7 +39,7 @@ import { useTheme } from 'next-themes';
 
 const AppSidebar = ({ userData }: { userData: User }) => {
   const [projectsExpanded, setProjectsExpanded] = useState(true);
-  const { projects, createProject } = useProjects();
+  const { projects, createProject } = useProjectsList();
   const pathname = usePathname();
   const isMobile = useIsMobile();
   const { theme, setTheme, resolvedTheme } = useTheme();

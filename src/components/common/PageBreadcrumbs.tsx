@@ -7,7 +7,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { HomeIcon, Calendar, Archive } from 'lucide-react';
 import { LucideIcon } from 'lucide-react';
 
 interface BreadcrumbItem {

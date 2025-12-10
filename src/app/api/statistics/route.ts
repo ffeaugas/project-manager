@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getUser } from '@/lib/auth-server';
 import { handleApiError } from '@/lib/api-error-handler';
 import { prisma } from '@/lib/prisma';
+import { ProjectCard, Task } from '@prisma/client';
 
 export async function GET() {
   const user = await getUser();
@@ -55,7 +56,7 @@ export async function GET() {
       cardsByDate.set(dateKey, 0);
     }
 
-    archivedTasks.forEach((task) => {
+    archivedTasks.forEach((task: Task) => {
       if (task.archivedAt) {
         const dateKey = task.archivedAt.toISOString().split('T')[0];
         const current = tasksByDate.get(dateKey) || 0;
@@ -63,7 +64,7 @@ export async function GET() {
       }
     });
 
-    projectCards.forEach((card) => {
+    projectCards.forEach((card: ProjectCard) => {
       const dateKey = card.createdAt.toISOString().split('T')[0];
       const current = cardsByDate.get(dateKey) || 0;
       cardsByDate.set(dateKey, current + 1);

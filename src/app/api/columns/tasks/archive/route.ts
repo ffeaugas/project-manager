@@ -32,7 +32,7 @@ export async function PATCH(request: NextRequest) {
   } catch (e) {
     if (e instanceof ZodError) {
       return NextResponse.json(
-        { error: 'Invalid request data', details: e.errors },
+        { error: 'Invalid request data', details: e.issues },
         { status: 400 },
       );
     }

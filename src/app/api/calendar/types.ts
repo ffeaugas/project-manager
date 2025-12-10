@@ -1,21 +1,26 @@
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
 import {
   uuidSchema,
   requiredDescriptionSchema,
   dateSchema,
   startTimeSchema,
   durationSchema,
+  calendarEventCategorySchema,
 } from '@/lib/zodUtils';
-import { CalendarEventCategoryKey } from '@prisma/client';
+
+/**
+ * CalendarEvent type derived from Prisma schema.
+ * This will automatically update if the Prisma schema changes.
+ */
+export type CalendarEvent = Prisma.CalendarEventGetPayload<{}>;
 
 export const NewCalendarEventSchema = z.object({
   description: requiredDescriptionSchema,
   date: dateSchema,
   startTime: startTimeSchema,
   duration: durationSchema,
-  category: z
-    .nativeEnum(CalendarEventCategoryKey)
-    .default('default' satisfies CalendarEventCategoryKey),
+  category: calendarEventCategorySchema,
 });
 
 export const UpdateCalendarEventSchema = z.object({
@@ -24,7 +29,7 @@ export const UpdateCalendarEventSchema = z.object({
   date: dateSchema.optional(),
   startTime: startTimeSchema,
   duration: durationSchema,
-  category: z.nativeEnum(CalendarEventCategoryKey),
+  category: calendarEventCategorySchema,
 });
 
 export const DeleteCalendarEventSchema = z.object({

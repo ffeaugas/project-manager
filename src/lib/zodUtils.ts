@@ -1,4 +1,4 @@
-import { ProjectCategoryKey } from '@prisma/client';
+import { CalendarEventCategoryKey, ProjectCategoryKey } from '@prisma/client';
 import { z } from 'zod';
 
 export const imageSchema = z
@@ -82,3 +82,7 @@ export const passwordSchema = z
 export const requiredPasswordSchema = z.string().min(1, {
   message: 'Password is required.',
 });
+
+export const calendarEventCategorySchema = z.enum(
+  Object.values(CalendarEventCategoryKey),
+);

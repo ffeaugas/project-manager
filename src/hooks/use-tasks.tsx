@@ -88,7 +88,10 @@ export const useTasks = () => {
           setColumns((prev) =>
             prev.map((col) =>
               col.id === columnId
-                ? { ...col, tasks: col.tasks.filter((t) => t.id !== tempTask.id) }
+                ? {
+                    ...col,
+                    tasks: col.tasks.filter((t: TaskSelect) => t.id !== tempTask.id),
+                  }
                 : col,
             ),
           );

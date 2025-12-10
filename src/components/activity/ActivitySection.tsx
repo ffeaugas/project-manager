@@ -97,7 +97,9 @@ const ActivitySection = () => {
               cursor={false}
               content={<ChartTooltipContent indicator="dashed" />}
             />
-            <ChartLegend content={<ChartLegendContent />} />
+            <ChartLegend
+              content={<ChartLegendContent payload={undefined} verticalAlign="top" />}
+            />
             <Area
               type="monotone"
               dataKey="tasksArchived"
