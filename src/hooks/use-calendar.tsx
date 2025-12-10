@@ -1,114 +1,99 @@
 'use client';
 
-import { CalendarEvent } from '@prisma/client';
-import { useCallback, useEffect, useState } from 'react';
-import { NewCalendarEventType, UpdateCalendarEventType } from '@/app/api/calendar/types';
+import {
+  calendarApi,
+  type CreateCalendarEventData,
+  type UpdateCalendarEventData,
+} from '@/lib/api/calendar';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+const getCalendarKey = () => ['calendar'];
 
 export const useCalendar = () => {
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchEvents = useCallback(async () => {
-    setIsLoading(true);
+  const {
+    data: events = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: getCalendarKey(),
+    queryFn: () => calendarApi.fetch(),
+    staleTime: 60000,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: calendarApi.create,
+    onSuccess: () => {
+      toast.success('Calendar event created successfully');
+      queryClient.invalidateQueries({ queryKey: getCalendarKey() });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to create calendar event');
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: calendarApi.update,
+    onSuccess: () => {
+      toast.success('Calendar event updated successfully');
+      queryClient.invalidateQueries({ queryKey: getCalendarKey() });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update calendar event');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: calendarApi.delete,
+    onSuccess: () => {
+      toast.success('Calendar event deleted successfully');
+      queryClient.invalidateQueries({ queryKey: getCalendarKey() });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to delete calendar event');
+    },
+  });
+
+  const createEvent = async (data: CreateCalendarEventData) => {
     try {
-      const response = await fetch('/api/calendar');
-      if (!response.ok) {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to fetch events');
-        return;
-      }
-      const data = await response.json();
-      setEvents(data);
-      setError(null);
-    } catch (error) {
-      console.error('Error fetching events:', error);
-      setError('Failed to fetch events');
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const createEvent = async (bodyData: NewCalendarEventType): Promise<boolean> => {
-    try {
-      const response = await fetch('/api/calendar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        throw new Error(errorData.error || 'Failed to create event');
-      }
-
-      await fetchEvents();
+      await createMutation.mutateAsync(data);
       return true;
-    } catch (error) {
-      console.error('Error creating event:', error);
-      throw error;
+    } catch {
+      return false;
     }
   };
 
-  const updateEvent = async (
-    id: string,
-    bodyData: Omit<UpdateCalendarEventType, 'id'>,
-  ): Promise<boolean> => {
+  const updateEvent = async (id: string, data: Omit<UpdateCalendarEventData, 'id'>) => {
     try {
-      const response = await fetch('/api/calendar', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, ...bodyData }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        throw new Error(errorData.error || 'Failed to update event');
-      }
-
-      await fetchEvents();
+      await updateMutation.mutateAsync({ ...data, id });
       return true;
-    } catch (error) {
-      console.error('Error updating event:', error);
-      throw error;
+    } catch {
+      return false;
     }
   };
 
-  const deleteEvent = async (id: string): Promise<boolean> => {
+  const deleteEvent = async (id: string) => {
     try {
-      const response = await fetch('/api/calendar', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        throw new Error(errorData.error || 'Failed to delete event');
-      }
-
-      await fetchEvents();
+      await deleteMutation.mutateAsync(id);
       return true;
-    } catch (error) {
-      console.error('Error deleting event:', error);
-      throw error;
+    } catch {
+      return false;
     }
   };
-
-  useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
 
   return {
     events,
     isLoading,
-    error,
+    error: error?.message || null,
     createEvent,
     updateEvent,
     deleteEvent,
-    refetch: fetchEvents,
+    refetch,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
   };
 };

@@ -1,84 +1,100 @@
 'use client';
 
-import { ProjectType, ProjectSelectType } from '@/app/api/projects/types';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  projectsApi,
+  type CreateProjectData,
+  type UpdateProjectData,
+} from '@/lib/api/projects';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+const getProjectsKey = () => ['projects'];
 
 export const useProjectsList = () => {
-  const [projects, setProjects] = useState<ProjectSelectType[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchProjects = useCallback(async () => {
-    try {
-      const response = await fetch('/api/projects');
-      const data = await response.json();
-      setProjects(data);
-    } catch (error) {
-      console.error('Error fetching projects:', error);
-      setError(error as string);
-    }
-  }, []);
+  const {
+    data: projects = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: getProjectsKey(),
+    queryFn: () => projectsApi.fetch(),
+    staleTime: 60000,
+  });
 
-  const createProject = async (bodyData: ProjectType) => {
+  const createMutation = useMutation({
+    mutationFn: projectsApi.create,
+    onSuccess: () => {
+      toast.success('Project created successfully');
+      queryClient.invalidateQueries({ queryKey: getProjectsKey() });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to create project');
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: projectsApi.update,
+    onSuccess: () => {
+      toast.success('Project updated successfully');
+      queryClient.invalidateQueries({ queryKey: getProjectsKey() });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update project');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: projectsApi.delete,
+    onSuccess: () => {
+      toast.success('Project deleted successfully');
+      queryClient.invalidateQueries({ queryKey: getProjectsKey() });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to delete project');
+    },
+  });
+
+  const createProject = async (data: CreateProjectData) => {
     try {
-      const response = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to create project');
-      }
-      const data = await response.json();
-      await fetchProjects();
-      return data.id;
-    } catch (e) {
-      console.error('Error creating project:', e);
-      throw e;
+      const result = await createMutation.mutateAsync(data);
+      return result.id;
+    } catch {
+      throw new Error('Failed to create project');
     }
   };
 
-  const updateProject = async (bodyData: ProjectType, id: string) => {
+  const updateProject = async (id: string, data: Omit<UpdateProjectData, 'id'>) => {
     try {
-      const response = await fetch('/api/projects', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...bodyData, id }),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        return false;
-      }
-      await fetchProjects();
+      await updateMutation.mutateAsync({ ...data, id });
       return true;
-    } catch (error) {
-      console.error('Failed to update project:', error);
+    } catch {
       return false;
     }
   };
 
   const deleteProject = async (id: string) => {
-    const response = await fetch(`/api/projects`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-    if (!response.ok) throw new Error('Failed to delete project');
-    await fetchProjects();
-    return true;
+    try {
+      await deleteMutation.mutateAsync(id);
+      return true;
+    } catch {
+      return false;
+    }
   };
-
-  useEffect(() => {
-    fetchProjects();
-  }, [fetchProjects]);
 
   return {
     projects,
+    isLoading,
+    error: error?.message || null,
     createProject,
     updateProject,
     deleteProject,
-    fetchProjects,
-    error,
+    refetch,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
   };
 };
 

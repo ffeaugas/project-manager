@@ -55,7 +55,6 @@ export const durationSchema = z.preprocess(
   z.number().int().positive('Duration must be a positive number').optional(),
 );
 
-// String validation schemas
 export const emailSchema = z.string().email({
   message: 'Invalid email address.',
 });
@@ -70,12 +69,10 @@ export const hexColorSchema = z
   .string()
   .regex(/^#([0-9a-fA-F]{6})$/, 'Color must be a valid hex color');
 
-// ID schemas
 export const requiredIdSchema = z.string().min(1, 'ID is required');
 
 export const optionalIdSchema = z.string().optional();
 
-// Password schemas
 export const passwordSchema = z
   .string()
   .min(8, { message: 'Password must be at least 8 characters.' })

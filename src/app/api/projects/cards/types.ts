@@ -6,9 +6,10 @@ import {
   projectCardDescriptionSchema,
   uuidSchema,
 } from '@/lib/zodUtils';
+import { getProjectWithCards } from './service';
 
 export const DeleteProjectCardSchema = z.object({
-  id: z.string().uuid('Id must be a valid UUID'),
+  id: uuidSchema,
 });
 
 export const ProjectCardSelect = {
@@ -81,7 +82,7 @@ const isProjectCardEmpty = (
   const hasImage = data.image !== undefined && data.image !== null;
   if (!hasName && !hasDescription && !hasImage) {
     ctx.addIssue({
-      code: z.ZodIssueCode.custom,
+      code: 'custom',
       message: 'At least one field must be provided',
       path: ['image'],
     });
@@ -100,3 +101,4 @@ export const UpdateProjectCardSchema = ProjectCardSchema.extend({
 
 export type ProjectCardType = z.infer<typeof CreateProjectCardSchema>;
 export type UpdateProjectCardType = z.infer<typeof UpdateProjectCardSchema>;
+export type ProjectWithCardsType = Awaited<ReturnType<typeof getProjectWithCards>>;

@@ -1,117 +1,108 @@
 'use client';
 
-import { ProjectCardType, ProjectWithUrls } from '@/app/api/projects/cards/types';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  projectCardsApi,
+  type CreateProjectCardData,
+  type UpdateProjectCardData,
+} from '@/lib/api/projectCards';
+import { ProjectCardType } from '@/app/api/projects/cards/types';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+
+const getProjectDetailsKey = (projectId: string) => ['project-details', projectId];
 
 export const useProjectDetails = (id: string) => {
-  const [project, setProject] = useState<ProjectWithUrls | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchProject = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/projects/cards?projectId=${id}`);
-      const data = await response.json();
-      if (!response.ok) {
-        setError(data.error);
-        return;
-      }
-      setProject(data);
-    } catch (error) {
-      console.error('Error fetching project:', error);
-      setError(error as string);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [id]);
+  const {
+    data: project = null,
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: getProjectDetailsKey(id),
+    queryFn: () => projectCardsApi.fetch(id),
+    enabled: !!id,
+    staleTime: 60000,
+  });
+
+  const createMutation = useMutation({
+    mutationFn: projectCardsApi.create,
+    onSuccess: () => {
+      toast.success('Project card created successfully');
+      queryClient.invalidateQueries({ queryKey: getProjectDetailsKey(id) });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to create project card');
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: projectCardsApi.update,
+    onSuccess: () => {
+      toast.success('Project card updated successfully');
+      queryClient.invalidateQueries({ queryKey: getProjectDetailsKey(id) });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update project card');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: projectCardsApi.delete,
+    onSuccess: () => {
+      toast.success('Project card deleted successfully');
+      queryClient.invalidateQueries({ queryKey: getProjectDetailsKey(id) });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to delete project card');
+    },
+  });
 
   const createProjectCard = async (bodyData: ProjectCardType) => {
-    const formData = new FormData();
-
-    formData.append('name', bodyData.name?.trim() || '');
-    formData.append('description', bodyData.description?.trim() || '');
-    formData.append('projectId', id || '');
-    if (bodyData.image) {
-      formData.append('image', bodyData.image);
-    }
-
     try {
-      const response = await fetch('/api/projects/cards', {
-        method: 'POST',
-        body: formData,
+      await createMutation.mutateAsync({
+        ...bodyData,
+        projectId: id,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        return false;
-      }
-
-      await fetchProject();
       return true;
-    } catch (error) {
-      console.error('Failed to create project card:', error);
+    } catch {
       return false;
     }
   };
 
-  const updateProjectCard = async (bodyData: ProjectCardType, id: string) => {
-    const formData = new FormData();
-
-    formData.append('id', id);
-    formData.append('name', bodyData.name?.trim() || '');
-    formData.append('description', bodyData.description?.trim() || '');
-    if (bodyData.image) {
-      formData.append('image', bodyData.image);
-    }
-
+  const updateProjectCard = async (bodyData: ProjectCardType, cardId: string) => {
     try {
-      const response = await fetch('/api/projects/cards', {
-        method: 'PATCH',
-        body: formData,
+      await updateMutation.mutateAsync({
+        id: cardId,
+        ...bodyData,
       });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        return false;
-      }
-
-      await fetchProject();
       return true;
-    } catch (error) {
-      console.error('Failed to update project card:', error);
+    } catch {
       return false;
     }
   };
 
-  const deleteProjectCard = async (id: string) => {
-    const response = await fetch(`/api/projects/cards`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
-    });
-
-    if (!response.ok) throw new Error('Failed to delete project card');
-    await fetchProject();
-    return true;
-  };
-
-  useEffect(() => {
-    if (id) {
-      fetchProject();
+  const deleteProjectCard = async (cardId: string) => {
+    try {
+      await deleteMutation.mutateAsync(cardId);
+      return true;
+    } catch {
+      return false;
     }
-  }, [id, fetchProject]);
+  };
 
   return {
     project,
     isLoading,
-    error,
+    error: error?.message || null,
     createProjectCard,
     updateProjectCard,
     deleteProjectCard,
-    fetchProject,
+    refetch,
+    fetchProject: refetch,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
   };
 };
-
