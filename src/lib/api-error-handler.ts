@@ -17,9 +17,9 @@ export function handleApiError(
   const { defaultStatus = 500, statusMap = {} } = options;
 
   if (error instanceof ZodError) {
-    console.error('Zod error:', error.errors);
+    console.error('Zod error:', error.issues);
     return NextResponse.json(
-      { error: 'Invalid request data', details: error.errors },
+      { error: 'Invalid request data', details: error.issues },
       { status: 400 },
     );
   }

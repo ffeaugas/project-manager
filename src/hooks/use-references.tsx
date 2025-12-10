@@ -1,130 +1,100 @@
 'use client';
 
-import { ProjectReferencesType } from '@/app/api/projects/references/types';
-import { useCallback, useEffect, useState } from 'react';
+import {
+  referencesApi,
+  type CreateReferenceData,
+  type UpdateReferenceData,
+} from '@/lib/api/references';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 
+const getReferencesKey = (projectId: string) => ['references', projectId];
+
 export const useReferences = (projectId: string) => {
-  const [references, setReferences] = useState<ProjectReferencesType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const fetchReferences = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(`/api/projects/references?projectId=${projectId}`);
-      if (response.ok) {
-        const data = await response.json();
-        setReferences(data || []);
-        setError(null);
-      } else {
-        const errorData = await response.json();
-        setError(errorData.error || 'Failed to fetch references');
-        toast.error('Failed to fetch references');
-      }
-    } catch {
-      setError('Failed to fetch references');
-      toast.error('Failed to fetch references');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [projectId]);
+  const {
+    data: references = [],
+    isLoading,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: getReferencesKey(projectId),
+    queryFn: () => referencesApi.fetch(projectId),
+    enabled: !!projectId,
+    staleTime: 60000,
+  });
 
-  const createReference = async (data: {
-    name: string;
-    description?: string;
-    url?: string;
-  }) => {
-    try {
-      const response = await fetch('/api/projects/references', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, projectId }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        toast.error('Failed to create reference');
-        return false;
-      }
-
+  const createMutation = useMutation({
+    mutationFn: referencesApi.create,
+    onSuccess: () => {
       toast.success('Reference created successfully');
-      await fetchReferences();
+      queryClient.invalidateQueries({ queryKey: getReferencesKey(projectId) });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to create reference');
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: referencesApi.update,
+    onSuccess: () => {
+      toast.success('Reference updated successfully');
+      queryClient.invalidateQueries({ queryKey: getReferencesKey(projectId) });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to update reference');
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: referencesApi.delete,
+    onSuccess: () => {
+      toast.success('Reference deleted successfully');
+      queryClient.invalidateQueries({ queryKey: getReferencesKey(projectId) });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message || 'Failed to delete reference');
+    },
+  });
+
+  const createReference = async (data: Omit<CreateReferenceData, 'projectId'>) => {
+    try {
+      await createMutation.mutateAsync({ ...data, projectId });
       return true;
-    } catch (error) {
-      console.error('Error creating reference:', error);
-      toast.error('Failed to create reference');
+    } catch {
       return false;
     }
   };
 
-  const updateReference = async (
-    id: string,
-    data: { name: string; description?: string; url?: string },
-  ) => {
+  const updateReference = async (id: string, data: Omit<UpdateReferenceData, 'id'>) => {
     try {
-      const response = await fetch('/api/projects/references', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...data, id }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        toast.error('Failed to update reference');
-        return false;
-      }
-
-      toast.success('Reference updated successfully');
-      await fetchReferences();
+      await updateMutation.mutateAsync({ ...data, id });
       return true;
-    } catch (error) {
-      console.error('Error updating reference:', error);
-      toast.error('Failed to update reference');
+    } catch {
       return false;
     }
   };
 
   const deleteReference = async (id: string) => {
     try {
-      const response = await fetch('/api/projects/references', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error('API Error:', errorData);
-        toast.error('Failed to delete reference');
-        return false;
-      }
-
-      toast.success('Reference deleted successfully');
-      await fetchReferences();
+      await deleteMutation.mutateAsync(id);
       return true;
-    } catch (error) {
-      console.error('Error deleting reference:', error);
-      toast.error('Failed to delete reference');
+    } catch {
       return false;
     }
   };
 
-  useEffect(() => {
-    if (projectId) {
-      fetchReferences();
-    }
-  }, [projectId, fetchReferences]);
-
   return {
     references,
     isLoading,
-    error,
+    error: error?.message || null,
     createReference,
     updateReference,
     deleteReference,
-    refetch: fetchReferences,
+    refetch,
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
   };
 };
