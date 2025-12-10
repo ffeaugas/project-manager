@@ -1,11 +1,11 @@
 'use client';
 
-import { ProjectReferenceSelectType } from '@/app/api/projects/references/types';
+import { ProjectReferencesType } from '@/app/api/projects/references/types';
 import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export const useReferences = (projectId: string) => {
-  const [references, setReferences] = useState<ProjectReferenceSelectType[]>([]);
+  const [references, setReferences] = useState<ProjectReferencesType[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

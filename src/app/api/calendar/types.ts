@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
 import {
   uuidSchema,
   requiredDescriptionSchema,
@@ -8,12 +7,6 @@ import {
   durationSchema,
   calendarEventCategorySchema,
 } from '@/lib/zodUtils';
-
-/**
- * CalendarEvent type derived from Prisma schema.
- * This will automatically update if the Prisma schema changes.
- */
-export type CalendarEvent = Prisma.CalendarEventGetPayload<{}>;
 
 export const NewCalendarEventSchema = z.object({
   description: requiredDescriptionSchema,

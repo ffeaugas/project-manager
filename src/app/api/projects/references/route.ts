@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { handleApiError } from '@/lib/api-error-handler';
 import { getUser } from '@/lib/auth-server';
 import {
-  getProjectWithReferences,
+  getProjectReferences,
   createProjectReference,
   updateProjectReference,
   deleteProjectReference,
@@ -26,13 +26,13 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Project ID is required' }, { status: 400 });
     }
 
-    const project = await getProjectWithReferences(projectId, user.id);
+    const references = await getProjectReferences(projectId, user.id);
 
-    if (!project) {
+    if (!references) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 });
     }
 
-    return NextResponse.json(project, { status: 200 });
+    return NextResponse.json(references, { status: 200 });
   } catch (error) {
     return handleApiError(error);
   }

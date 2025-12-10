@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
+
 import {
   descriptionSchema,
   requiredDescriptionSchema,
@@ -7,6 +7,7 @@ import {
   urlSchema,
   uuidSchema,
 } from '@/lib/zodUtils';
+import { getProjectReferences } from './service';
 
 export const NewProjectReferenceSchema = z.object({
   name: requiredNameSchema,
@@ -36,10 +37,8 @@ export const ProjectReferenceSelect = {
   updatedAt: true,
 } as const;
 
-export type ProjectReferenceSelectType = Prisma.ProjectReferenceGetPayload<{
-  select: typeof ProjectReferenceSelect;
-}>;
-
 export type NewProjectReferenceType = z.infer<typeof NewProjectReferenceSchema>;
 export type UpdateProjectReferenceType = z.infer<typeof UpdateProjectReferenceSchema>;
 export type DeleteProjectReferenceType = z.infer<typeof DeleteProjectReferenceSchema>;
+
+export type ProjectReferencesType = Awaited<ReturnType<typeof getProjectReferences>>;

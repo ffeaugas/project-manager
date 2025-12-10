@@ -1,4 +1,7 @@
-import { CalendarEventCategoryKey, ProjectCategoryKey } from '@prisma/client';
+import {
+  CalendarEventCategoryKey,
+  ProjectCategoryKey,
+} from '../../generated/prisma/enums';
 import { z } from 'zod';
 
 export const imageSchema = z

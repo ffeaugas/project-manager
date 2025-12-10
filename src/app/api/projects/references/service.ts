@@ -1,11 +1,12 @@
 import { prisma } from '@/lib/prisma';
+
 import {
   NewProjectReferenceType,
   ProjectReferenceSelect,
   UpdateProjectReferenceType,
 } from './types';
 
-export async function getProjectWithReferences(projectId: string, userId: string) {
+export async function getProjectReferences(projectId: string, userId: string) {
   const project = await prisma.project.findUnique({
     where: { id: projectId, userId },
     select: {
