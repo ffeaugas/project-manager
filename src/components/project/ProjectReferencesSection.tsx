@@ -64,8 +64,8 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
   };
 
   return (
-    <Card>
-      <CardContent className="p-2 flex flex-col gap-4">
+    <Card className="bg-gradient rounded-lg">
+      <CardContent className="p-2 flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <NotebookText size={16} />
           <h2 className="text-md font-semibold text-foreground">References</h2>
@@ -87,8 +87,6 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
         <div className="flex-1 overflow-auto space-y-2">
           {isLoading ? (
             <Spinner size="small" className="h-[100px]" />
-          ) : references.length === 0 ? (
-            <div className="text-muted-foreground text-sm">No references yet</div>
           ) : (
             references.map((reference) => (
               <ReferenceCard

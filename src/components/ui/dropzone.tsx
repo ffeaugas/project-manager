@@ -11,10 +11,23 @@ export interface DropzoneProps {
   maxSize?: number; // in MB
   className?: string;
   value?: File | string | null;
+  mediumUrl?: string | null;
+  fullUrl?: string | null;
 }
 
 const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
-  ({ onFileSelect, accept = 'image/*', maxSize = 5, className, value }, ref) => {
+  (
+    {
+      onFileSelect,
+      accept = 'image/*',
+      maxSize = 5,
+      className,
+      value,
+      mediumUrl,
+      fullUrl,
+    },
+    ref,
+  ) => {
     const [isDragging, setIsDragging] = React.useState(false);
     const [preview, setPreview] = React.useState<string | null>(null);
     const [error, setError] = React.useState<string | null>(null);
@@ -31,10 +44,12 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
           };
           reader.readAsDataURL(value);
         }
+      } else if (mediumUrl) {
+        setPreview(mediumUrl);
       } else {
         setPreview(null);
       }
-    }, [value]);
+    }, [value, mediumUrl]);
 
     const validateFile = (file: File): boolean => {
       setError(null);
@@ -122,14 +137,35 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
         >
           {preview ? (
             <div className="relative group">
-              <Image
-                width={100}
-                height={100}
-                src={preview}
-                alt="Preview"
-                className="w-full h-48 object-cover rounded-md"
-                unoptimized
-              />
+              {mediumUrl && fullUrl && !value ? (
+                <>
+                  <Image
+                    width={100}
+                    height={100}
+                    src={mediumUrl}
+                    alt="Preview"
+                    className="w-full h-48 object-cover rounded-md transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+                    unoptimized
+                  />
+                  <Image
+                    width={100}
+                    height={100}
+                    src={fullUrl}
+                    alt="Preview"
+                    className="w-full h-48 object-cover rounded-md absolute inset-0 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
+                    unoptimized
+                  />
+                </>
+              ) : (
+                <Image
+                  width={100}
+                  height={100}
+                  src={preview}
+                  alt="Preview"
+                  className="w-full h-48 object-cover rounded-md"
+                  unoptimized
+                />
+              )}
               <button
                 type="button"
                 onClick={handleRemove}

@@ -53,6 +53,8 @@ export type ProjectWithUrls = Omit<ProjectWithProjectCards, 'projectCards'> & {
       images: Array<
         Omit<ProjectCardSelectType['images'][number], 'url'> & {
           url: string;
+          lightUrl: string;
+          mediumUrl: string;
         }
       >;
     }

@@ -4,7 +4,7 @@ import { useEditor, EditorContent, Editor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TextAlign from '@tiptap/extension-text-align';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { NotebookText } from 'lucide-react';
 import EditProjectCardDialog from './dialogs/EditProjectCardDialog';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -83,27 +83,41 @@ const ImageDisplay = ({
   data: ProjectWithUrls['projectCards'][0];
   firstImage: ProjectWithUrls['projectCards'][0]['images'][0];
 }) => {
+  const [mediumImageLoaded, setMediumImageLoaded] = useState(false);
+
+  useEffect(() => {
+    const img = new window.Image();
+    img.onload = () => {
+      setMediumImageLoaded(true);
+    };
+    img.src = firstImage.mediumUrl;
+  }, [firstImage.mediumUrl]);
+
   return (
-    <Card className="w-full h-full relative border-0 shadow-none rounded-none">
-      <Image
-        src={firstImage.url}
-        alt={data.name || 'Project card image'}
-        width={400}
-        height={400}
-        className="object-cover w-full h-full object-center"
-        unoptimized
-      />
-      {data.name && (
-        <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-muted/50 to-transparent backdrop-blur-xs p-2">
-          <p className="text-foreground text-sm md:text-base font-bold line-clamp-2 wrap-wrap-break-words">
-            {data.name}
-          </p>
-        </div>
+    <Card className="w-full h-full relative border-0 shadow-none rounded-none group">
+      {!mediumImageLoaded && (
+        <Image
+          src={firstImage.lightUrl}
+          alt={data.name || 'Project card image'}
+          width={400}
+          height={400}
+          className={`object-cover w-full h-full object-center transition-opacity duration-300 ${
+            mediumImageLoaded ? 'opacity-0' : 'opacity-100 blur-sm'
+          }`}
+          unoptimized
+          priority={true}
+        />
       )}
-      {data.description && (
-        <span className="absolute bottom-0 right-0 p-2">
-          <NotebookText className="size-10 bg-muted p-3 rounded-md" />
-        </span>
+      {mediumImageLoaded && (
+        <Image
+          src={firstImage.mediumUrl}
+          alt={data.name || 'Project card image'}
+          width={400}
+          height={400}
+          className="object-cover w-full h-full object-center absolute inset-0 transition-opacity duration-300 opacity-100 group-hover:opacity-0"
+          unoptimized
+          loading="eager"
+        />
       )}
     </Card>
   );

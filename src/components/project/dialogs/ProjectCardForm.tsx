@@ -20,6 +20,8 @@ interface ProjectCardFormProps {
   imageFile: File | null;
   onFileSelect: (file: File | null) => void;
   existingImageUrl?: string;
+  existingMediumUrl?: string;
+  existingFullUrl?: string;
 }
 
 const ProjectCardForm = ({
@@ -30,6 +32,8 @@ const ProjectCardForm = ({
   imageFile,
   onFileSelect,
   existingImageUrl,
+  existingMediumUrl,
+  existingFullUrl,
 }: ProjectCardFormProps) => {
   const descriptionValue = watch('description');
 
@@ -65,6 +69,8 @@ const ProjectCardForm = ({
           accept="image/*"
           maxSize={5}
           value={existingImageUrl || imageFile}
+          mediumUrl={existingMediumUrl}
+          fullUrl={existingFullUrl}
         />
         {errors.image && (
           <span className="text-red-500 text-sm">{errors.image.message}</span>
