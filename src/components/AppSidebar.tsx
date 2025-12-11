@@ -33,7 +33,7 @@ import { getProjectCategory } from '@/app/api/projects/utils';
 import LucidIcon from './utils/LucidIcon';
 import { User } from 'better-auth';
 import AuthButton from './auth/AuthButton';
-import { ProjectSelectType } from '@/app/api/projects/types';
+import { Project } from '@/app/api/projects/types';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useTheme } from 'next-themes';
 
@@ -123,7 +123,7 @@ const AppSidebar = ({ userData }: { userData: User }) => {
 export default AppSidebar;
 
 interface IProjectItemProps {
-  project: ProjectSelectType;
+  project: Project;
   pathname: string;
 }
 

@@ -1,12 +1,12 @@
 import NewTaskDialog from './dialogs/NewTaskDialog';
-import { TaskSelect, NewTaskType } from '../../app/api/columns/tasks/types';
+import { Task, NewTaskType } from '../../app/api/columns/tasks/types';
 import { cn } from '@/lib/utils';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { Card, CardContent } from '@/components/ui/card';
 
 interface ITaskCardProps {
-  data: TaskSelect;
+  data: Task;
   createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
   updateTask: (
     taskId: string,

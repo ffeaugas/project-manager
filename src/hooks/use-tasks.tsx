@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  TaskColumnWithTasks,
-  NewTaskType,
-  TaskSelect,
-} from '@/app/api/columns/tasks/types';
+import { ColumnWithTasks, NewTaskType, Task } from '@/app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
 import {
   DragEndEvent,
@@ -21,10 +17,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 export const useTasks = () => {
-  const [columns, setColumns] = useState<TaskColumnWithTasks[]>([]);
-  const [tasks, setTasks] = useState<TaskSelect[]>([]);
-  const [activeTask, setActiveTask] = useState<TaskSelect | null>(null);
-  const [activeColumn, setActiveColumn] = useState<TaskColumnWithTasks | null>(null);
+  const [columns, setColumns] = useState<ColumnWithTasks[]>([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [activeColumn, setActiveColumn] = useState<ColumnWithTasks | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error] = useState<string | null>(null);
   const router = useRouter();
@@ -38,7 +34,7 @@ export const useTasks = () => {
       }
       const data = await response.json();
       setColumns(data);
-      setTasks(data.flatMap((column: TaskColumnWithTasks) => column.tasks));
+      setTasks(data.flatMap((column: ColumnWithTasks) => column.tasks));
     } catch {
       router.push('/error');
       return;
@@ -90,7 +86,7 @@ export const useTasks = () => {
               col.id === columnId
                 ? {
                     ...col,
-                    tasks: col.tasks.filter((t: TaskSelect) => t.id !== tempTask.id),
+                    tasks: col.tasks.filter((t: Task) => t.id !== tempTask.id),
                   }
                 : col,
             ),
@@ -143,7 +139,7 @@ export const useTasks = () => {
       try {
         const url = `/api/columns`;
 
-        let tempColumn: TaskColumnWithTasks | null = null;
+        let tempColumn: ColumnWithTasks | null = null;
         let requestBody: NewColumnType | (NewColumnType & { id: string });
 
         if (!options?.columnId) {
@@ -398,8 +394,8 @@ function hasDraggableData<T extends Active | Over>(
 ): entry is T & {
   data: DataRef<{
     type: 'column' | 'task';
-    column?: TaskColumnWithTasks;
-    task?: TaskSelect;
+    column?: ColumnWithTasks;
+    task?: Task;
   }>;
 } {
   if (!entry) {

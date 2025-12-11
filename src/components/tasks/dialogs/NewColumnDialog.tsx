@@ -14,7 +14,7 @@ import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TaskColumnWithTasks } from '@/app/api/columns/tasks/types';
+import { ColumnWithTasks } from '@/app/api/columns/tasks/types';
 import { newColumnSchema, NewColumnType } from '@/app/api/columns/types';
 import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
@@ -26,7 +26,7 @@ interface INewColumnDialogProps {
       columnId?: string;
     },
   ) => Promise<boolean>;
-  data?: TaskColumnWithTasks | null;
+  data?: ColumnWithTasks | null;
   children: React.ReactNode;
 }
 
@@ -108,7 +108,9 @@ const NewColumnDialog = ({
             {errors.color && <span className="text-red-500">{errors.color.message}</span>}
           </div>
           <DialogFooter>
-            <Button type="submit" isSubmitting={isSubmitting}>Save {!data && 'column'}</Button>
+            <Button type="submit" isSubmitting={isSubmitting}>
+              Save {!data && 'column'}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

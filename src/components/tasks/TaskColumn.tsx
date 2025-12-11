@@ -1,9 +1,5 @@
 import TaskCard from './TaskCard';
-import {
-  TaskColumnWithTasks,
-  NewTaskType,
-  TaskSelect,
-} from '../../app/api/columns/tasks/types';
+import { ColumnWithTasks, NewTaskType, Task } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '../../app/api/columns/types';
 import { Button } from '@/components/ui/button';
 import NewTaskDialog from './dialogs/NewTaskDialog';
@@ -14,8 +10,8 @@ import TaskColumnDropdownMenu from './menus/TaskColumnDropdownMenu';
 import { useMemo } from 'react';
 
 interface ITaskColumnProps {
-  data: TaskColumnWithTasks;
-  tasks: TaskSelect[];
+  data: ColumnWithTasks;
+  tasks: Task[];
   createTask: (bodyData: Omit<NewTaskType, 'id'>, columnId: string) => Promise<boolean>;
   updateTask: (
     taskId: string,
@@ -98,7 +94,7 @@ const TaskColumn = ({
 export default TaskColumn;
 
 interface IColumnHeaderProps {
-  data: TaskColumnWithTasks;
+  data: ColumnWithTasks;
   nbTasks: number;
   submitColumn: (
     bodyData: NewColumnType,
@@ -124,7 +120,7 @@ const ColumnHeader = ({
   return (
     <div className="flex flex-row items-center group h-8 bg-background rounded-md border hover:border-border duration-200">
       <div
-        className="px-2 flex flex-row gap-4 items-center flex-1"
+        className="px-2 flex flex-row gap-4 items-center flex-1 cursor-grabbing"
         {...dragAttributes}
         {...dragListeners}
       >

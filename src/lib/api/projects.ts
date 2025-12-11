@@ -1,11 +1,11 @@
-import { ProjectSelectType, ProjectType, UpdateProjectType } from '@/app/api/projects/types';
+import { Project, ProjectType, UpdateProjectType } from '@/app/api/projects/types';
 
 export type CreateProjectData = ProjectType;
 
 export type UpdateProjectData = UpdateProjectType;
 
 export const projectsApi = {
-  async fetch(): Promise<ProjectSelectType[]> {
+  async fetch(): Promise<Project[]> {
     const response = await fetch('/api/projects');
 
     if (!response.ok) {
@@ -61,4 +61,3 @@ export const projectsApi = {
     return response.json();
   },
 };
-

@@ -17,7 +17,7 @@ import {
 } from '@dnd-kit/core';
 import TaskCard from './TaskCard';
 import { SortableContext } from '@dnd-kit/sortable';
-import { TaskColumnWithTasks } from '../../app/api/columns/tasks/types';
+import { ColumnWithTasks } from '../../app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
 import { useMemo, ReactNode } from 'react';
 
@@ -44,7 +44,7 @@ const Kanban = ({ openSidebar, breadcrumbs }: KanbanProps) => {
   } = useTasks();
 
   const columnIds = useMemo(
-    () => columns.map((col: TaskColumnWithTasks) => col.id),
+    () => columns.map((col: ColumnWithTasks) => col.id),
     [columns],
   );
 

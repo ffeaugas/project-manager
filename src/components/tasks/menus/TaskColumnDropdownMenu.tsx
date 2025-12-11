@@ -1,4 +1,4 @@
-import { TaskColumnWithTasks } from '@/app/api/columns/tasks/types';
+import { ColumnWithTasks } from '@/app/api/columns/tasks/types';
 import { NewColumnType } from '@/app/api/columns/types';
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import ConfirmDialog from '@/components/utils/ConfirmDialog';
 import { Pencil, Trash } from 'lucide-react';
 
 interface ITaskColumnDropdownMenuProps {
-  data: TaskColumnWithTasks;
+  data: ColumnWithTasks;
   submitColumn: (
     bodyData: NewColumnType,
     options?: {

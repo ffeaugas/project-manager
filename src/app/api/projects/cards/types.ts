@@ -46,7 +46,10 @@ export const ProjectSelect = {
 
 export type ProjectWithProjectCards = Awaited<ReturnType<typeof getProjectWithCards>>;
 
-export type ProjectWithUrls = Omit<ProjectWithProjectCards, 'projectCards'> & {
+export type ProjectWithUrls = Omit<
+  NonNullable<ProjectWithProjectCards>,
+  'projectCards'
+> & {
   category: ProjectCategoryKey;
   projectCards: Array<
     Omit<ProjectCardSelectType, 'images'> & {
