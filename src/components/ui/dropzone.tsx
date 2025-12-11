@@ -128,6 +128,7 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
                 src={preview}
                 alt="Preview"
                 className="w-full h-48 object-cover rounded-md"
+                unoptimized
               />
               <button
                 type="button"
@@ -145,7 +146,9 @@ const Dropzone = React.forwardRef<HTMLDivElement, DropzoneProps>(
               <Upload className="h-10 w-10 text-zinc-500" />
               <div className="flex flex-col gap-1">
                 <p className="text-sm text-zinc-400">
-                  <span className="font-semibold text-muted-foreground">Click to upload</span>{' '}
+                  <span className="font-semibold text-muted-foreground">
+                    Click to upload
+                  </span>{' '}
                   or drag and drop
                 </p>
                 <p className="text-xs text-zinc-500">

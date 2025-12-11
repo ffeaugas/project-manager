@@ -4,8 +4,10 @@ import {
   ListObjectsV2Command,
   ListObjectsV2CommandOutput,
   DeleteObjectsCommand,
+  GetObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 export const s3 = new S3Client({
   region: 'auto',
@@ -78,4 +80,17 @@ export async function s3DeleteFolder(folder: string) {
 
     continuationToken = listResponse.NextContinuationToken;
   } while (continuationToken);
+}
+
+export async function s3GetPresignedUrl(
+  storageKey: string,
+  expiresIn: number = 3600,
+): Promise<string> {
+  const command = new GetObjectCommand({
+    Bucket: process.env.AWS_S3_BUCKET_NAME || '',
+    Key: storageKey,
+  });
+
+  const url = await getSignedUrl(s3, command, { expiresIn });
+  return url;
 }

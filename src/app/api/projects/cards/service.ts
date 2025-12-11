@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import { s3UploadFile, s3DeleteFolder } from '@/lib/s3';
+import { s3UploadFile, s3DeleteFolder, s3GetPresignedUrl } from '@/lib/s3';
 import { ProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
 import { Image, ProjectCard, ProjectCategoryKey } from '@prisma/client';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -13,17 +13,29 @@ export async function getProjectWithCards(projectId: string, userId: string) {
 
   if (!project) return null;
 
+  const projectCardsWithUrls = await Promise.all(
+    project.projectCards.map(async (card: ProjectCard) => {
+      const imagesWithUrls = await Promise.all(
+        card.images.map(async (image: Image) => {
+          const url = await s3GetPresignedUrl(image.storageKey);
+          return {
+            ...image,
+            url,
+          };
+        }),
+      );
+
+      return {
+        ...card,
+        images: imagesWithUrls,
+      };
+    }),
+  );
+
   return {
     ...project,
-    // Type assertion: Prisma enum values match ProjectCategoryKey
     category: project.category as ProjectCategoryKey,
-    projectCards: project.projectCards.map((card: ProjectCard) => ({
-      ...card,
-      images: card.images.map((image: Image) => ({
-        ...image,
-        url: `${process.env.R2_URL}/${image.storageKey}`,
-      })),
-    })),
+    projectCards: projectCardsWithUrls,
   };
 }
 
@@ -197,11 +209,19 @@ async function getProjectCardWithUrls(id: string) {
 
   if (!card) return null;
 
+  // Generate presigned URLs for all images
+  const imagesWithUrls = await Promise.all(
+    card.images.map(async (image: Image) => {
+      const url = await s3GetPresignedUrl(image.storageKey);
+      return {
+        ...image,
+        url,
+      };
+    }),
+  );
+
   return {
     ...card,
-    images: card.images.map((image: Image) => ({
-      ...image,
-      url: `${process.env.R2_URL}/${image.storageKey}`,
-    })),
+    images: imagesWithUrls,
   };
 }

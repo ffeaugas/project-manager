@@ -91,6 +91,7 @@ const ImageDisplay = ({
         width={400}
         height={400}
         className="object-cover w-full h-full object-center"
+        unoptimized
       />
       {data.name && (
         <div className="absolute bottom-0 left-0 w-full bg-linear-to-t from-muted/50 to-transparent backdrop-blur-xs p-2">
