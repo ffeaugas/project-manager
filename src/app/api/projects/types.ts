@@ -12,10 +12,6 @@ export const ProjectSelect = {
   _count: { select: { projectCards: true } },
 } as const;
 
-export type ProjectSelectType = Prisma.ProjectGetPayload<{
-  select: typeof ProjectSelect;
-}>;
-
 export const ProjectSchema = z.object({
   name: nameSchema,
   description: z.string().max(2000, 'Description must be less than 2000 characters'),

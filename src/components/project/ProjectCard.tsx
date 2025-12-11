@@ -6,7 +6,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import { Color, TextStyle } from '@tiptap/extension-text-style';
 import { useEffect, useState } from 'react';
 import { NotebookText } from 'lucide-react';
-import EditProjectCardDialog from './dialogs/EditProjectCardDialog';
+import ProjectCardDialog from './dialogs/ProjectCardDialog';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 interface IProjectCardProps {
@@ -59,7 +59,7 @@ const ProjectCard = ({
   );
 
   return (
-    <EditProjectCardDialog
+    <ProjectCardDialog
       onSubmit={updateProjectCard}
       onDelete={deleteProjectCard}
       data={data}
@@ -70,7 +70,7 @@ const ProjectCard = ({
       >
         {displayAlternative}
       </div>
-    </EditProjectCardDialog>
+    </ProjectCardDialog>
   );
 };
 
