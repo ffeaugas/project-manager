@@ -43,9 +43,9 @@ const ProjectHeader = ({
           icon={getProjectCategory(project.category).icon}
           size={40}
           color={getProjectCategory(project.category).color}
-          className="border border-border rounded-sm p-2"
+          className="border border-border rounded-sm p-2 lg:block hidden"
         />
-        <span className="text-md md:text-lg font-semibold">{project.name}</span>
+        <span className="text-xs md:text-lg font-semibold">{project.name}</span>
       </div>
       <div className="flex flex-row gap-2">
         <CreateProjectCardDialog onSubmit={createProjectCard} projectId={project.id}>

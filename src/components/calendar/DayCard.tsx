@@ -1,4 +1,4 @@
-import { CalendarEvent } from '@prisma/client';
+import { CalendarEvent } from '@/app/api/calendar/service';
 import { CALENDAR_EVENT_CATEGORIES } from '@/const/categories';
 import { cn } from '@/lib/utils';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
@@ -9,6 +9,7 @@ interface IDayCardProps {
   events: CalendarEvent[];
   onClick?: () => void;
   variant?: 'fullPage' | 'section';
+  isToday?: boolean;
 }
 
 const cardVariants = cva(
@@ -29,17 +30,31 @@ export const DayCard = ({
   events,
   onClick,
   variant = 'fullPage',
+  isToday = false,
 }: IDayCardProps) => {
   const filteredEvents = events.filter(
     (event) => new Date(event.date).toDateString() === date.toDateString(),
   );
   return (
-    <Card className={cardVariants({ variant })} onClick={onClick}>
+    <Card
+      className={cn(
+        cardVariants({ variant }),
+        isToday && 'border-2 border-primary bg-primary/5',
+      )}
+      onClick={onClick}
+    >
       <CardHeader className="p-1">
-        <h1 className="text-foreground text-md font-bold">{date.getDate()}</h1>
+        <h1
+          className={cn(
+            'text-md font-bold',
+            isToday ? 'text-primary' : 'text-foreground',
+          )}
+        >
+          {date.getDate()}
+        </h1>
       </CardHeader>
       {filteredEvents.length > 0 && (
-        <CardContent className="space-y-1 w-full flex flex-col justify-center p-2 pt-0">
+        <CardContent className="space-y-1 w-full flex flex-col justify-center py-2 lg:px-0 px-2 pt-0">
           {filteredEvents.slice(0, 3).map((event) => {
             return <EventCard event={event} key={event.id} variant={variant} />;
           })}

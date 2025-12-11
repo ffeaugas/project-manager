@@ -65,7 +65,7 @@ const ProjectCard = ({
       data={data}
     >
       <div
-        className="bg-card rounded-lg w-full md:min-w-[280px] h-[280px] max-w-[400px] md:h-[320px] flex flex-col overflow-hidden flex-1
+        className="bg-card rounded-lg w-full md:min-w-[280px] h-[280px] md:max-w-[400px] md:h-[320px] flex flex-col overflow-hidden flex-1
       justify-start cursor-pointer hover:bg-zinc-750 transition-colors shadow-md hover:shadow-lg border relative"
       >
         {displayAlternative}

@@ -14,8 +14,14 @@ import PageBreadcrumbs from '@/components/common/PageBreadcrumbs';
 const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const CalendarPage = () => {
-  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
-  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const [dateState, setDateState] = useState({
+    month: now.getMonth(),
+    year: now.getFullYear(),
+  });
+  const currentMonth = dateState.month;
+  const currentYear = dateState.year;
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
@@ -66,22 +72,20 @@ const CalendarPage = () => {
   };
 
   const handlePreviousMonth = () => {
-    setCurrentMonth((prev) => {
-      if (prev === 0) {
-        setCurrentYear((y) => y - 1);
-        return 11;
+    setDateState((prev) => {
+      if (prev.month === 0) {
+        return { month: 11, year: prev.year - 1 };
       }
-      return prev - 1;
+      return { ...prev, month: prev.month - 1 };
     });
   };
 
   const handleNextMonth = () => {
-    setCurrentMonth((prev) => {
-      if (prev === 11) {
-        setCurrentYear((y) => y + 1);
-        return 0;
+    setDateState((prev) => {
+      if (prev.month === 11) {
+        return { month: 0, year: prev.year + 1 };
       }
-      return prev + 1;
+      return { ...prev, month: prev.month + 1 };
     });
   };
 
@@ -111,13 +115,14 @@ const CalendarPage = () => {
         handleNextMonth={handleNextMonth}
         breadcrumbs={breadcrumbs}
       />
-      <div className="flex flex-row lg:gap-2 gap-1 w-full">
+      <div className="flex flex-row lg:gap-2 gap-1 w-full p-2">
         {weekDays.map((weekDay, index) => (
           <WeekDayColumn
             key={weekDay}
             weekDayIndex={index}
             days={daysArray.filter((day) => day.weekDayIndex === index)}
             onDayClick={handleDayClick}
+            today={today}
           />
         ))}
       </div>
@@ -147,9 +152,15 @@ interface IWeekDayColumnProps {
     isEmpty?: boolean;
   }>;
   onDayClick: (date: Date) => void;
+  today: Date;
 }
 
-const WeekDayColumn = ({ weekDayIndex, days, onDayClick }: IWeekDayColumnProps) => {
+const WeekDayColumn = ({
+  weekDayIndex,
+  days,
+  onDayClick,
+  today,
+}: IWeekDayColumnProps) => {
   return (
     <div className="flex flex-col lg:gap-2 gap-1 flex-1">
       <h1 className="text-sm font-semibold text-zinc-400">{weekDays[weekDayIndex]}</h1>
@@ -160,12 +171,24 @@ const WeekDayColumn = ({ weekDayIndex, days, onDayClick }: IWeekDayColumnProps) 
           if (day.isEmpty) {
             return <NoDayCard key={`empty-${day.weekDayIndex}`} />;
           }
+          const dayDate = new Date(
+            day.date!.getFullYear(),
+            day.date!.getMonth(),
+            day.date!.getDate(),
+          );
+          const todayNormalized = new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate(),
+          );
+          const isToday = dayDate.getTime() === todayNormalized.getTime();
           return (
             <DayCard
               key={day.date!.toISOString()}
               date={day.date!}
               events={day.events || []}
               onClick={() => onDayClick(day.date!)}
+              isToday={isToday}
             />
           );
         })
@@ -196,6 +219,10 @@ const CalendarHeader = ({
       <div className="flex items-center justify-between w-full">
         {breadcrumbs && <div>{breadcrumbs}</div>}
         <div className="flex items-center gap-2">
+          <h1 className="lg:text-xl text-sm font-semibold text-foreground">
+            {monthYearLabel.replace(/^\w/, (c) => c.toUpperCase()) ||
+              `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`}
+          </h1>
           <Button
             onClick={handlePreviousMonth}
             variant="ghost"
@@ -204,10 +231,6 @@ const CalendarHeader = ({
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
-          <h1 className="text-2xl font-bold text-foreground">
-            {monthYearLabel ||
-              `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}`}
-          </h1>
           <Button
             onClick={handleNextMonth}
             variant="ghost"

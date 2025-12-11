@@ -1,8 +1,9 @@
 import { prisma } from '@/lib/prisma';
 import { NewCalendarEventType, UpdateCalendarEventType } from './types';
-import { CalendarEvent } from '@prisma/client';
 
-export async function getCalendarEvents(userId: string): Promise<CalendarEvent[]> {
+export type CalendarEvent = Awaited<ReturnType<typeof getCalendarEvents>>[number];
+
+export async function getCalendarEvents(userId: string) {
   const events = await prisma.calendarEvent.findMany({
     where: { userId },
     orderBy: { date: 'asc' },
@@ -11,10 +12,7 @@ export async function getCalendarEvents(userId: string): Promise<CalendarEvent[]
   return events;
 }
 
-export async function getCalendarEventsByDate(
-  userId: string,
-  date: string,
-): Promise<CalendarEvent[]> {
+export async function getCalendarEventsByDate(userId: string, date: string) {
   const events = await prisma.calendarEvent.findMany({
     where: {
       userId,
@@ -29,10 +27,7 @@ export async function getCalendarEventsByDate(
   return events;
 }
 
-export async function createCalendarEvent(
-  data: NewCalendarEventType,
-  userId: string,
-): Promise<CalendarEvent> {
+export async function createCalendarEvent(data: NewCalendarEventType, userId: string) {
   const event = await prisma.calendarEvent.create({
     data: {
       userId,
@@ -51,7 +46,7 @@ export async function updateCalendarEvent(
   id: string,
   data: UpdateCalendarEventType,
   userId: string,
-): Promise<CalendarEvent> {
+) {
   const existingEvent = await prisma.calendarEvent.findUnique({
     where: { id },
   });
@@ -78,7 +73,7 @@ export async function updateCalendarEvent(
   return updated;
 }
 
-export async function deleteCalendarEvent(id: string, userId: string): Promise<void> {
+export async function deleteCalendarEvent(id: string, userId: string) {
   const existingEvent = await prisma.calendarEvent.findUnique({
     where: { id },
   });

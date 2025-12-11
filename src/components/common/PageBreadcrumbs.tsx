@@ -8,6 +8,7 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { LucideIcon } from 'lucide-react';
+import LucidIcon from '../utils/LucidIcon';
 
 interface BreadcrumbItem {
   label: string;
@@ -29,15 +30,23 @@ const PageBreadcrumbs = ({ items }: PageBreadcrumbsProps) => {
           const elements = [
             <BreadcrumbItem key={index}>
               {isLast ? (
-                <BreadcrumbPage className="flex items-center gap-2">
-                  {Icon && <Icon size={16} />}
-                  <span>{item.label}</span>
+                <BreadcrumbPage className="flex items-center gap-4">
+                  {Icon && (
+                    <LucidIcon
+                      icon={Icon}
+                      size={40}
+                      className="border border-border rounded-sm p-2 lg:block hidden"
+                    />
+                  )}
+                  <span className="text-xs md:text-lg font-semibold">{item.label}</span>
                 </BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>
-                  <Link href={item.href || '#'} className="flex items-center gap-2">
-                    {Icon && <Icon size={16} />}
-                    <span>{item.label}</span>
+                  <Link href={item.href || '#'} className="flex items-center gap-4">
+                    {Icon && (
+                      <LucidIcon icon={Icon} size={16} className="lg:block hidden" />
+                    )}
+                    <span className="text-xs md:text-lg font-semibold">{item.label}</span>
                   </Link>
                 </BreadcrumbLink>
               )}
