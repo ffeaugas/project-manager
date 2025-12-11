@@ -10,7 +10,7 @@ import ProjectCardDialog from './dialogs/ProjectCardDialog';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 
 interface IProjectCardProps {
-  data: ProjectWithUrls['projectCards'][0];
+  data: ProjectWithUrls['projectCards'][number];
   updateProjectCard: (bodyData: ProjectCardType, id: string) => Promise<boolean>;
   deleteProjectCard: (id: string) => Promise<boolean>;
 }

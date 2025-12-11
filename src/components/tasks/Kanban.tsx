@@ -63,7 +63,7 @@ const Kanban = ({ openSidebar, breadcrumbs }: KanbanProps) => {
     <div className="flex flex-col flex-1 w-full">
       <TaskHeader openSidebar={openSidebar} breadcrumbs={breadcrumbs} />
       <div className="overflow-y-scroll overflow-x-auto">
-        <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit md:h-auto h-dvh">
+        <div className="flex flex-row md:flex-row gap-3 p-2 md:p-4 min-w-fit">
           <DndContext
             sensors={sensors}
             onDragStart={handleDragStart}

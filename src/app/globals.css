@@ -298,7 +298,7 @@ ol {
 }
 
 .shadow-bot {
-  box-shadow: 1px 13px 12px -1px color-mix(in srgb, var(--muted) 40%, transparent);
+  box-shadow: 1px 13px 12px -1px color-mix(in srgb, var(--shadow-color) 40%, transparent);
 }
 
 .bg-gradient {

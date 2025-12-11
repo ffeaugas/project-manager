@@ -28,8 +28,9 @@ export async function getProjectWithCards(projectId: string, userId: string) {
           const lightUrl = await s3GetPresignedUrl(lightStorageKey);
           const mediumStorageKey = getMediumStorageKey(image.storageKey);
           const mediumUrl = await s3GetPresignedUrl(mediumStorageKey);
+          const { storageKey, ...imageWithoutStorageKey } = image;
           return {
-            ...image,
+            ...imageWithoutStorageKey,
             url,
             lightUrl,
             mediumUrl,

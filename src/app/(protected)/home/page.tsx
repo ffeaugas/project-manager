@@ -29,7 +29,7 @@ const HomePage = () => {
   );
 
   return (
-    <div className="flex flex-col w-full h-dvh overflow-y-auto">
+    <div className="flex flex-col w-full h-dvh overflow-y-auto bg-dotted">
       <div className="flex flex-col-reverse md:flex-row">
         <ResizablePanelGroup direction="horizontal" className="w-full flex bg-dotted">
           <ResizablePanel minSize={60} defaultSize={80}>
@@ -39,7 +39,11 @@ const HomePage = () => {
             />
           </ResizablePanel>
           <ResizableHandle withHandle className="hidden md:flex" />
-          <ResizablePanel minSize={15} defaultSize={20} className="hidden md:block min-w-[200px]">
+          <ResizablePanel
+            minSize={15}
+            defaultSize={20}
+            className="hidden md:block min-w-[200px]"
+          >
             <div className="w-full md:h-dvh border-l border-border md:flex flex-col gap-2 p-2 bg-card hidden">
               <CalendarSection />
               <ActivitySection />
