@@ -17,6 +17,7 @@ import {
   UpdateProjectCardSchema,
   ProjectWithUrls,
   ProjectCardType,
+  ProjectWithProjectCards,
 } from '@/app/api/projects/cards/types';
 import { Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
@@ -26,7 +27,7 @@ interface EditProjectCardDialogProps {
   onSubmit: (bodyData: ProjectCardType, id: string) => Promise<boolean>;
   onDelete: (id: string) => Promise<boolean>;
   children: React.ReactNode;
-  data: ProjectWithUrls['projectCards'][0];
+  data: ProjectWithProjectCards['projectCards'][number];
 }
 
 const EditProjectCardDialog = ({

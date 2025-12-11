@@ -41,4 +41,6 @@ export type NewProjectReferenceType = z.infer<typeof NewProjectReferenceSchema>;
 export type UpdateProjectReferenceType = z.infer<typeof UpdateProjectReferenceSchema>;
 export type DeleteProjectReferenceType = z.infer<typeof DeleteProjectReferenceSchema>;
 
-export type ProjectReferencesType = Awaited<ReturnType<typeof getProjectReferences>>;
+export type ProjectReferencesType = Awaited<
+  ReturnType<typeof getProjectReferences>
+>[number];

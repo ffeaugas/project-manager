@@ -29,7 +29,7 @@ const ProjectBody = ({ projectId, referencesSlot }: IProjectBodyProps) => {
   const { deleteProject, updateProject: updateProjectInList } = useProjectsList();
 
   const updateProject = async (bodyData: ProjectType, id: string) => {
-    const result = await updateProjectInList(bodyData, id);
+    const result = await updateProjectInList(id, bodyData);
     if (result) {
       await fetchProject();
     }

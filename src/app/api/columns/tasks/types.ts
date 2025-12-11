@@ -1,24 +1,14 @@
 import { Prisma } from '@prisma/client';
-import { z, ZodType } from 'zod';
-import {
-  descriptionSchema,
-  optionalIdSchema,
-  requiredIdSchema,
-  requiredTitleSchema,
-} from '@/lib/zodUtils';
-
-interface NewTaskForm {
-  id?: string;
-  title: string;
-  description?: string;
-}
+import { z } from 'zod';
+import { optionalIdSchema, requiredIdSchema, requiredTitleSchema } from '@/lib/zodUtils';
+import { getColumns } from '../service';
 
 export type EntityType = 'task-columns' | 'tasks' | 'projects' | 'project-cards';
 
-export const newTaskSchema: ZodType<NewTaskForm & { columnId?: string }> = z.object({
+export const newTaskSchema = z.object({
   id: optionalIdSchema,
   title: requiredTitleSchema,
-  description: descriptionSchema.optional(),
+  description: z.string().max(2000, 'Description must be less than 2000 characters'),
   columnId: optionalIdSchema,
 });
 
@@ -49,8 +39,6 @@ export const TaskColumnSelect = {
   },
 } as const;
 
-export type TaskColumnWithTasks = Prisma.TaskColumnGetPayload<{
-  select: typeof TaskColumnSelect;
-}>;
+export type ColumnWithTasks = Awaited<ReturnType<typeof getColumns>>[number];
 
-export type TaskSelect = TaskColumnWithTasks['tasks'][number];
+export type Task = ColumnWithTasks['tasks'][number];

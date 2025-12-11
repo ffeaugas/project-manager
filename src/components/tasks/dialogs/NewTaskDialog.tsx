@@ -13,11 +13,7 @@ import { DialogFooter, DialogHeader } from '../../ui/dialog';
 import { Label } from '../../ui/label';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import {
-  newTaskSchema,
-  NewTaskType,
-  TaskSelect,
-} from '../../../app/api/columns/tasks/types';
+import { newTaskSchema, NewTaskType, Task } from '../../../app/api/columns/tasks/types';
 import { useEffect, useState } from 'react';
 import { Archive, Trash } from 'lucide-react';
 import ConfirmDialog from '../../utils/ConfirmDialog';
@@ -34,7 +30,7 @@ interface INewTaskDialogProps {
   deleteItem?: (id: string, route: string) => Promise<boolean>;
   archiveItem?: (id: string) => Promise<boolean>;
   children: React.ReactNode;
-  data?: TaskSelect | null;
+  data?: Task | null;
   columnId: string;
 }
 
@@ -70,7 +66,7 @@ const NewTaskDialog = ({
   const onSubmit: SubmitHandler<NewTaskType> = async (bodyData) => {
     const submitData = {
       ...bodyData,
-      description: bodyData.description?.trim() || undefined,
+      description: bodyData.description.trim() || '',
     };
 
     const success = data

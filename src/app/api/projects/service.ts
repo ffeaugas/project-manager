@@ -16,13 +16,13 @@ export async function listProjects(userId: string | number) {
 
 export async function createProject(
   userId: string | number,
-  data: { name: string; description?: string; category?: ProjectCategoryKey },
+  data: { name: string; description: string; category?: ProjectCategoryKey },
 ) {
   const uid = String(userId);
   const created = await prisma.project.create({
     data: {
       name: data.name,
-      description: data.description,
+      description: data.description || '',
       category: (data.category ?? 'other') satisfies ProjectCategoryKey,
       userId: uid,
     },
@@ -34,7 +34,7 @@ export async function createProject(
 export async function updateProject(
   userId: string | number,
   id: string,
-  data: { name?: string; description?: string; category?: ProjectCategoryKey },
+  data: { name?: string; description: string; category?: ProjectCategoryKey },
 ) {
   const uid = String(userId);
   const existing = await prisma.project.findUnique({
@@ -50,7 +50,7 @@ export async function updateProject(
     where: { id },
     data: {
       name: data.name,
-      description: data.description,
+      description: data.description || '',
       ...(data.category && { category: data.category satisfies ProjectCategoryKey }),
     },
     select: { id: true },

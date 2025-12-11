@@ -2,12 +2,8 @@ import { Prisma } from '@prisma/client';
 import { LucideIcon } from 'lucide-react';
 import { z } from 'zod';
 import { ProjectCategoryKey } from '@prisma/client';
-import {
-  descriptionSchema,
-  nameSchema,
-  projectCategorySchema,
-  uuidSchema,
-} from '@/lib/zodUtils';
+import { nameSchema, projectCategorySchema, uuidSchema } from '@/lib/zodUtils';
+import { listProjects } from './service';
 
 export const ProjectSelect = {
   id: true,
@@ -22,7 +18,7 @@ export type ProjectSelectType = Prisma.ProjectGetPayload<{
 
 export const ProjectSchema = z.object({
   name: nameSchema,
-  description: descriptionSchema.optional(),
+  description: z.string().max(2000, 'Description must be less than 2000 characters'),
   category: projectCategorySchema,
 });
 
@@ -46,6 +42,4 @@ export type ProjectCategory = {
   icon: LucideIcon;
 };
 
-export type ProjectSelect = Prisma.ProjectGetPayload<{
-  select: typeof ProjectSelect;
-}>;
+export type Project = Awaited<ReturnType<typeof listProjects>>[number];

@@ -16,7 +16,7 @@ export async function getProjectReferences(projectId: string, userId: string) {
     },
   });
 
-  if (!project) return null;
+  if (!project) return [];
 
   return project.projectReferences;
 }

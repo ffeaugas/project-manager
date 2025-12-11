@@ -44,11 +44,9 @@ export const ProjectSelect = {
   },
 } as const;
 
-export type ProjectSelectType = Prisma.ProjectGetPayload<{
-  select: typeof ProjectSelect;
-}>;
+export type ProjectWithProjectCards = Awaited<ReturnType<typeof getProjectWithCards>>;
 
-export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
+export type ProjectWithUrls = Omit<ProjectWithProjectCards, 'projectCards'> & {
   category: ProjectCategoryKey;
   projectCards: Array<
     Omit<ProjectCardSelectType, 'images'> & {
@@ -63,7 +61,7 @@ export type ProjectWithUrls = Omit<ProjectSelectType, 'projectCards'> & {
 
 const ProjectCardSchema = z.object({
   name: nameSchema.optional(),
-  description: projectCardDescriptionSchema.optional(),
+  description: z.string().max(20000, 'Description too long'),
   image: imageSchema.optional(),
   projectId: uuidSchema.optional(),
 });
@@ -76,9 +74,7 @@ const isProjectCardEmpty = (
 ) => {
   const hasName = data.name && data.name.trim().length > 0;
   const hasDescription =
-    data.description &&
-    data.description !== '<p></p>' &&
-    data.description.trim().length > 0;
+    data.description !== '<p></p>' && data.description.trim().length > 0;
   const hasImage = data.image !== undefined && data.image !== null;
   if (!hasName && !hasDescription && !hasImage) {
     ctx.addIssue({

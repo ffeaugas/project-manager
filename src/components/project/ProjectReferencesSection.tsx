@@ -18,7 +18,7 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   NewProjectReferenceSchema,
-  ProjectReferenceSelectType,
+  ProjectReferencesType,
 } from '@/app/api/projects/references/types';
 import ConfirmDialog from '@/components/utils/ConfirmDialog';
 import { useReferences } from '@/hooks/use-references';
@@ -33,8 +33,9 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
   const { references, isLoading, createReference, updateReference, deleteReference } =
     useReferences(projectId);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
-  const [editingReference, setEditingReference] =
-    useState<ProjectReferenceSelectType | null>(null);
+  const [editingReference, setEditingReference] = useState<ProjectReferencesType | null>(
+    null,
+  );
 
   const handleCreate = async (data: {
     name: string;
@@ -108,7 +109,7 @@ const ProjectReferencesSection = ({ projectId }: ProjectReferencesSectionProps) 
 };
 
 interface ReferenceCardProps {
-  reference: ProjectReferenceSelectType;
+  reference: ProjectReferencesType;
   onEdit: () => void;
   onDelete: (id: string) => Promise<boolean>;
 }
@@ -167,7 +168,7 @@ const ReferenceCard = ({ reference, onEdit, onDelete }: ReferenceCardProps) => {
 
 interface NewReferenceSheetProps {
   onSave: (data: { name: string; description?: string; url?: string }) => void;
-  editingReference: ProjectReferenceSelectType | null;
+  editingReference: ProjectReferencesType | null;
   onOpenChange: (open: boolean) => void;
   isOpen: boolean;
 }

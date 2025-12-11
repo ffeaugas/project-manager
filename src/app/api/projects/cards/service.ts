@@ -54,7 +54,9 @@ export async function createProjectCard(
 
   const name = data.name?.trim() === '' ? null : data.name?.trim();
   const description =
-    data.description?.trim() === '<p></p>' ? null : data.description?.trim();
+    data.description.trim() === '<p></p>' || data.description.trim() === ''
+      ? null
+      : data.description.trim();
 
   const projectCard = await prisma.projectCard.create({
     data: {
@@ -86,7 +88,7 @@ export async function createProjectCard(
 
 export async function updateProjectCard(
   id: string,
-  data: { name?: string; description?: string },
+  data: { name?: string; description: string },
   userId: string,
   imageFile?: File | null,
 ) {
@@ -111,9 +113,9 @@ export async function updateProjectCard(
   }
 
   const description =
-    data.description?.trim() === '' || data.description === '<p></p>'
+    data.description.trim() === '' || data.description === '<p></p>'
       ? null
-      : data.description?.trim();
+      : data.description.trim();
 
   await prisma.projectCard.update({
     where: { id },

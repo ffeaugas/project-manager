@@ -23,7 +23,7 @@ export const projectCardsApi = {
     const formData = new FormData();
 
     formData.append('name', data.name?.trim() || '');
-    formData.append('description', data.description?.trim() || '');
+    formData.append('description', data.description.trim() || '');
     formData.append('projectId', data.projectId);
     if (data.image) {
       formData.append('image', data.image);
@@ -47,7 +47,7 @@ export const projectCardsApi = {
 
     formData.append('id', data.id);
     formData.append('name', data.name?.trim() || '');
-    formData.append('description', data.description?.trim() || '');
+    formData.append('description', data.description.trim() || '');
     if (data.image) {
       formData.append('image', data.image);
     }

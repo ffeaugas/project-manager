@@ -8,7 +8,6 @@ export async function createTask(data: NewTaskType, userId: string, columnId: st
     throw new Error('ID is required');
   }
 
-  // Get the last task in the column to calculate order
   const lastTask = await prisma.task.findFirst({
     where: {
       columnId,
@@ -24,7 +23,7 @@ export async function createTask(data: NewTaskType, userId: string, columnId: st
     data: {
       id: data.id,
       title: data.title,
-      description: data.description,
+      description: data.description || '',
       columnId,
       order,
       userId,
@@ -41,11 +40,11 @@ export async function updateTask(data: NewTaskType, userId: string) {
 
   const updateData: {
     title: string;
-    description?: string;
+    description: string;
     columnId?: string;
   } = {
     title: data.title,
-    description: data.description,
+    description: data.description || '',
   };
 
   if (data.columnId !== undefined) {
