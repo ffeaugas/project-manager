@@ -15,6 +15,7 @@ interface ITaskCardProps {
   ) => Promise<boolean>;
   deleteItem: (id: string, route: string) => Promise<boolean>;
   archiveItem: (id: string) => Promise<boolean>;
+  isArchived?: boolean;
 }
 
 const TaskCard = ({
@@ -23,6 +24,7 @@ const TaskCard = ({
   updateTask,
   deleteItem,
   archiveItem,
+  isArchived = false,
 }: ITaskCardProps) => {
   const { setNodeRef, attributes, listeners, transform, transition, isDragging } =
     useSortable({
@@ -31,6 +33,7 @@ const TaskCard = ({
         type: 'task',
         task: data,
       },
+      disabled: isArchived,
     });
 
   const style = {
@@ -38,7 +41,8 @@ const TaskCard = ({
     transform: CSS.Transform.toString(transform),
   };
 
-  const date = new Date(data.createdAt);
+  const date =
+    isArchived && data.archivedAt ? new Date(data.archivedAt) : new Date(data.createdAt);
   const daysAgo = Math.floor(
     (new Date().getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
   );
@@ -61,6 +65,7 @@ const TaskCard = ({
         className={cn(
           'min-h-[80px] md:min-h-[100px] max-h-[200px] shadow-md hover:shadow-2xl cursor-pointer hover:border-border transition-all duration-400 select-none',
           isDragging && 'opacity-20',
+          isArchived && 'h-[150px]',
         )}
       >
         <CardContent className="flex flex-col gap-2 p-3 justify-between h-full">
@@ -75,7 +80,7 @@ const TaskCard = ({
             )}
           </div>
           <p className="text-[10px] md:text-xs text-muted-foreground text-right mt-auto">
-            {daysAgo} d ago
+            {isArchived ? `Archived ${daysAgo} d ago` : `${daysAgo} d ago`}
           </p>
         </CardContent>
       </Card>

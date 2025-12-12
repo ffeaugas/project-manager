@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import z, { ZodError } from 'zod';
 import { getUser } from '@/lib/auth-server';
 import { prisma } from '@/lib/prisma';
+import { getArchivedTasks } from '../service';
+import { handleApiError } from '@/lib/api-error-handler';
 
 export async function PATCH(request: NextRequest) {
   try {
@@ -38,5 +40,20 @@ export async function PATCH(request: NextRequest) {
     }
     console.error(e);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const user = await getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const tasks = await getArchivedTasks(user.id);
+    return NextResponse.json(tasks);
+  } catch (e) {
+    return handleApiError(e);
   }
 }

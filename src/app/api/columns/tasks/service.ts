@@ -55,6 +55,7 @@ export async function updateTask(data: NewTaskType, userId: string) {
     where: {
       id: data.id,
       userId,
+      archivedAt: null,
     },
     data: updateData,
   });
@@ -103,4 +104,25 @@ export async function reorderTasks(
   });
 
   return true;
+}
+
+export async function getArchivedTasks(userId: string) {
+  const tasks = await prisma.task.findMany({
+    where: {
+      userId,
+      archivedAt: { not: null },
+    },
+    select: {
+      id: true,
+      title: true,
+      description: true,
+      columnId: true,
+      order: true,
+      createdAt: true,
+      archivedAt: true,
+    },
+    orderBy: { archivedAt: 'desc' },
+  });
+
+  return tasks;
 }

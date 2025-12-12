@@ -34,6 +34,7 @@ export const TaskColumnSelect = {
       columnId: true,
       order: true,
       createdAt: true,
+      archivedAt: true,
     },
     orderBy: { order: 'asc' as const },
   },

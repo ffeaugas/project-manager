@@ -63,6 +63,7 @@ export const useTasks = () => {
           columnId,
           order: newOrder,
           createdAt: new Date(),
+          archivedAt: null,
         };
 
         setTasks((prev) => [...prev, tempTask]);
@@ -366,6 +367,21 @@ export const useTasks = () => {
     }
   };
 
+  const fetchArchivedTasks = useCallback(async () => {
+    try {
+      const response = await fetch(`/api/columns/tasks/archive`);
+      if (!response.ok) {
+        router.push('/error');
+        return;
+      }
+      const data = await response.json();
+      return data;
+    } catch {
+      router.push('/error');
+      return [];
+    }
+  }, [router]);
+
   useEffect(() => {
     fetchTaskColumns();
   }, [fetchTaskColumns]);
@@ -376,6 +392,7 @@ export const useTasks = () => {
     isLoading,
     error,
     fetchTaskColumns,
+    fetchArchivedTasks,
     createTask,
     updateTask,
     submitColumn,
