@@ -59,8 +59,14 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={props.disabled || isSubmitting}
         {...props}
       >
-        {isSubmitting && <Spinner size="small" className="text-secondary-foreground" />}
-        {props.children}
+        {asChild ? (
+          props.children
+        ) : (
+          <>
+            {isSubmitting && <Spinner size="small" className="text-secondary-foreground" />}
+            {props.children}
+          </>
+        )}
       </Comp>
     );
   },
