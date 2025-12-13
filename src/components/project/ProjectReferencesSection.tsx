@@ -212,7 +212,7 @@ const NewReferenceSheet = ({
     <Sheet open={isOpen} onOpenChange={onOpenChange}>
       <SheetTrigger asChild>
         <Button
-          variant="outline"
+          variant="dashed"
           size="sm"
           className="h-[30px] flex flex-row items-center justify-center"
         >

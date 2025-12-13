@@ -35,6 +35,15 @@ export const DayCard = ({
   const filteredEvents = events.filter(
     (event) => new Date(event.date).toDateString() === date.toDateString(),
   );
+
+  const truncatedEvents = filteredEvents.slice(0, 3);
+  const sortedEvents = truncatedEvents.sort((a: CalendarEvent, b: CalendarEvent) => {
+    if (!a.startTime && !b.startTime) return 0;
+    if (!a.startTime) return 1;
+    if (!b.startTime) return -1;
+    return a.startTime.localeCompare(b.startTime);
+  });
+
   return (
     <Card
       className={cn(
@@ -53,14 +62,14 @@ export const DayCard = ({
           {date.getDate()}
         </h1>
       </CardHeader>
-      {filteredEvents.length > 0 && (
+      {sortedEvents.length > 0 && (
         <CardContent className="space-y-1 w-full flex flex-col justify-center py-2 lg:px-0 px-2 pt-0">
-          {filteredEvents.slice(0, 3).map((event) => {
+          {sortedEvents.map((event) => {
             return <EventCard event={event} key={event.id} variant={variant} />;
           })}
-          {filteredEvents.length > 3 && (
+          {sortedEvents.length > 3 && (
             <p className="text-xs text-zinc-400 text-center">
-              +{filteredEvents.length - 3}
+              +{sortedEvents.length - 3}
             </p>
           )}
         </CardContent>

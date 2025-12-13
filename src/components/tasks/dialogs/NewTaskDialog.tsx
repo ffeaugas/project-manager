@@ -126,46 +126,45 @@ const NewTaskDialog = ({
 
             <DialogFooter className="flex flex-row justify-end gap-2">
               {data && deleteItem && archiveItem && !isArchived && (
-                <>
-                  <ConfirmDialog
-                    id={data.id}
-                    route="columns/tasks/archive"
-                    title="Archive this task ?"
-                    message="Are you sure you want to archive this task ? You will be able to find it in the archived tasks section."
-                    confirmLabel="Archive"
-                    action={archiveItem}
-                    onSuccess={() => {
-                      setIsOpen(false);
-                    }}
+                <ConfirmDialog
+                  id={data.id}
+                  route="columns/tasks/archive"
+                  title="Archive this task ?"
+                  message="Are you sure you want to archive this task ? You will be able to find it in the archived tasks section."
+                  confirmLabel="Archive"
+                  action={archiveItem}
+                  onSuccess={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <Button
+                    type="button"
+                    className="bg-transparent border-zinc-500/50 border-2 p-2 hover:bg-transparent hover:border-zinc-500"
                   >
-                    <Button
-                      type="button"
-                      className="bg-transparent border-zinc-500/50 border-2 p-2 hover:bg-transparent hover:border-zinc-500"
-                    >
-                      <Archive color="#737373" size={20} />
-                    </Button>
-                  </ConfirmDialog>
-                  <ConfirmDialog
-                    id={data.id}
-                    route="columns/tasks"
-                    title="Delete this task ?"
-                    message="Are you sure you want to delete this task ? This action cannot be undone."
-                    confirmLabel="Delete"
-                    action={deleteItem}
-                    onSuccess={() => {
-                      setIsOpen(false);
-                    }}
-                  >
-                    <Button
-                      type="button"
-                      className="bg-transparent border-red-900/50 border-2 p-2 hover:bg-transparent hover:border-red-900"
-                    >
-                      <Trash color="#AA0000" size={20} />
-                    </Button>
-                  </ConfirmDialog>
-                </>
+                    <Archive color="#737373" size={20} />
+                  </Button>
+                </ConfirmDialog>
               )}
-
+              {data && deleteItem && (
+                <ConfirmDialog
+                  id={data.id}
+                  route="columns/tasks"
+                  title="Delete this task ?"
+                  message="Are you sure you want to delete this task ? This action cannot be undone."
+                  confirmLabel="Delete"
+                  action={deleteItem}
+                  onSuccess={() => {
+                    setIsOpen(false);
+                  }}
+                >
+                  <Button
+                    type="button"
+                    className="bg-transparent border-red-900/50 border-2 p-2 hover:bg-transparent hover:border-red-900"
+                  >
+                    <Trash color="#AA0000" size={20} />
+                  </Button>
+                </ConfirmDialog>
+              )}
               {!isArchived && (
                 <Button type="button" onClick={() => setIsEditing(true)}>
                   <Edit size={16} className="mr-2" />
