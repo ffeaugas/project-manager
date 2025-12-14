@@ -113,11 +113,7 @@ const EventCard = ({ event, variant = 'fullPage' }: IEventCardProps) => {
       {event.startTime && (
         <p className="text-xs font-semibold text-foreground">{event.startTime}</p>
       )}
-      <p className="text-xs text-foreground truncate">
-        {event.description.length > 25
-          ? event.description.slice(0, 25) + '...'
-          : event.description}
-      </p>
+      <p className="text-xs text-foreground line-clamp-1">{event.description}</p>
     </Card>
   );
 

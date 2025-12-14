@@ -70,10 +70,8 @@ const ExtendedDayCard = ({ date, events, onEventClick }: IExtendedDayCardProps) 
                         )}
                       </p>
                     )}
-                    <p className="text-sm text-muted-foreground wrap-break-words">
-                      {event.description.length > 110
-                        ? event.description.slice(0, 110) + '...'
-                        : event.description}
+                    <p className="text-sm text-muted-foreground line-clamp-3 break-all">
+                      {event.description}
                     </p>
                   </div>
                 </div>
