@@ -21,7 +21,7 @@ export const s3 = new S3Client({
 
 async function generateLightVersion(buffer: Buffer): Promise<Buffer> {
   return await sharp(buffer)
-    .rotate(0)
+    .rotate()
     .resize({
       width: 50,
       height: 50,
@@ -34,7 +34,7 @@ async function generateLightVersion(buffer: Buffer): Promise<Buffer> {
 
 async function generateMediumVersion(buffer: Buffer): Promise<Buffer> {
   return await sharp(buffer)
-    .rotate(0)
+    .rotate()
     .resize({
       width: 400,
       height: 400,
