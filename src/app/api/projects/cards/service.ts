@@ -9,7 +9,7 @@ import {
 import { ProjectCardType, ProjectSelect } from '@/app/api/projects/cards/types';
 import { Image, ProjectCard, ProjectCategoryKey } from '@prisma/client';
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
-const USER_STORAGE_LIMIT = 100 * 1024 * 1024; // 100MB
+const USER_STORAGE_LIMIT = 100 * 1024 * 1024; // 200MB
 
 export async function getProjectWithCards(projectId: string, userId: string) {
   const project = await prisma.project.findUnique({
