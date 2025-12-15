@@ -15,9 +15,7 @@ export function NavigationBar() {
               width={32}
               height={32}
             />
-            <h1 className="text-xl font-bold font-serif">
-              {LANDING_PAGE_CONTENT.title}
-            </h1>
+            <h1 className="text-xl font-bold font-serif">{LANDING_PAGE_CONTENT.title}</h1>
           </div>
           <div className="flex items-center gap-2">
             <Button variant="ghost" asChild>
@@ -32,4 +30,3 @@ export function NavigationBar() {
     </nav>
   );
 }
-

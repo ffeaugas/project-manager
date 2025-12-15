@@ -4,7 +4,6 @@ import { getUser } from '@/lib/auth-server';
 import { NavigationBar } from '@/components/landing-page/NavigationBar';
 import { HeroSection } from '@/components/landing-page/HeroSection';
 import { FAQSection } from '@/components/landing-page/FAQSection';
-import { CTASection } from '@/components/landing-page/CTASection';
 import { FooterSection } from '@/components/landing-page/FooterSection';
 import { LANDING_PAGE_CONTENT } from '@/const/landing-page-content';
 
@@ -26,18 +25,11 @@ const HomePage = async () => {
   }
 
   return (
-    <div className="flex-1 w-full bg-lp overflow-y-auto">
-      <div className="min-h-full">
-        <NavigationBar />
-        <HeroSection />
-        <section className="py-20 sm:py-32">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <FAQSection questions={LANDING_PAGE_CONTENT.Questions} />
-          </div>
-        </section>
-        <CTASection />
-        <FooterSection />
-      </div>
+    <div className="flex-1 w-full bg-lp overflow-y-auto min-h-full">
+      <NavigationBar />
+      <HeroSection />
+      <FAQSection questions={LANDING_PAGE_CONTENT.Questions} />
+      <FooterSection />
     </div>
   );
 };
