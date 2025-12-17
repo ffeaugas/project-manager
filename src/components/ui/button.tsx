@@ -10,7 +10,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/90 text-sm',
+        default:
+          'bg-primary text-primary-foreground hover:bg-primary/90 text-xs md:text-sm',
         auth: 'bg-background text-muted-foreground hover:bg-zinc-700 text-xs leading-none',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
         outline:
@@ -63,7 +64,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
           props.children
         ) : (
           <>
-            {isSubmitting && <Spinner size="small" className="text-secondary-foreground" />}
+            {isSubmitting && (
+              <Spinner size="small" className="text-secondary-foreground" />
+            )}
             {props.children}
           </>
         )}

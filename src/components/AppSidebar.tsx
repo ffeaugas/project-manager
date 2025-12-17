@@ -111,7 +111,6 @@ const AppSidebar = ({ userData }: { userData: User }) => {
           variant="ghost"
           size="icon"
           onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-          suppressHydrationWarning
         >
           {mounted && resolvedTheme === 'dark' ? <SunIcon /> : <Moon />}
         </Button>

@@ -35,15 +35,20 @@ export default function ArchivesPage() {
   return (
     <div className="flex flex-col w-full h-dvh overflow-y-auto bg-dotted">
       <div className="flex flex-col-reverse md:flex-row">
-        <ResizablePanelGroup direction="horizontal" className="w-full flex bg-dotted">
-          <ResizablePanel minSize={60} defaultSize={80}>
+        <ResizablePanelGroup 
+          direction="horizontal" 
+          className="w-full flex bg-dotted"
+          id="archives-page-resizable-group"
+        >
+          <ResizablePanel minSize={60} defaultSize={80} id="archives-page-main-panel">
             <ArchivedTasksList breadcrumbs={breadcrumbs} />
           </ResizablePanel>
-          <ResizableHandle withHandle className="hidden md:flex" />
+          <ResizableHandle withHandle className="hidden md:flex" id="archives-page-resize-handle" />
           <ResizablePanel
             minSize={15}
             defaultSize={20}
             className="hidden md:block min-w-[200px]"
+            id="archives-page-side-panel"
           >
             <div className="w-full md:h-dvh border-l border-border md:flex flex-col gap-2 p-2 bg-card hidden">
               <CalendarSection />
