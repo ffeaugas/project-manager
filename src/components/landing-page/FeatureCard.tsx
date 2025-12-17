@@ -17,16 +17,16 @@ const FeatureCard = ({ index, className }: { index: number; className: string })
   return (
     <Card
       key={index}
-      className={cn('bg-primary absolute shadow-2xl border-2 border-white', className)}
+      className={cn('bg-primary absolute shadow-hard border-2 w-90', className)}
     >
-      <CardHeader>
-        <div className="w-12 h-12 rounded-lg bg-background/40 flex items-center justify-center mb-4">
+      <CardHeader className="flex flex-row items-center gap-4 p-4">
+        <div className="flex w-12 h-12 rounded-lg bg-background/40 items-center justify-center">
           <Icon className="h-6 w-6 text-background" />
         </div>
-        <CardTitle className="text-background">{data.title}</CardTitle>
+        <CardTitle className="text-background text-left text-xl">{data.title}</CardTitle>
       </CardHeader>
       <CardContent>
-        <CardDescription className="text-base text-background">
+        <CardDescription className="text-md text-background text-left">
           {data.description}
         </CardDescription>
       </CardContent>

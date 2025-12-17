@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Eye = () => {
   const [currentFrame, setCurrentFrame] = useState(0);
+  const isMobile = useIsMobile();
 
   const eyeFrames = [
     '/default-eye-white.png',
@@ -42,8 +44,8 @@ const Eye = () => {
     <Image
       src={eyeFrames[currentFrame]}
       alt="Project Manager Logo"
-      width={170}
-      height={170}
+      width={isMobile ? 100 : 170}
+      height={isMobile ? 100 : 170}
     />
   );
 };

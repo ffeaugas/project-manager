@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -5,14 +7,17 @@ import { LANDING_PAGE_CONTENT } from '@/const/landing-page-content';
 import { ArrowRight } from 'lucide-react';
 import Eye from '@/components/landing-page/eye';
 import FeatureCard from './FeatureCard';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export function HeroSection() {
+  const isMobile = useIsMobile();
+
   return (
     <section className="relative overflow-hidden bg-dotted-transparent">
       <div className="w-full text-center space-y-4 sm:py-32 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 justify-center translate-x-[-40px] flex-row">
+        <div className="flex items-center gap-2 justify-center flex-row">
           <Eye />
-          <h1 className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight font-cursive">
+          <h1 className="text-2xl sm:text-6xl lg:text-8xl font-bold tracking-tight font-cursive">
             {LANDING_PAGE_CONTENT.title}
           </h1>
         </div>
@@ -29,23 +34,23 @@ export function HeroSection() {
           <Button size="lg" variant="outline" asChild className="text-lg px-8">
             <Link href="/auth/signin">Sign in</Link>
           </Button>
-          <Image
-            src="/start-monster-white.png"
-            alt="Project Manager Logo"
-            width={180}
-            height={180}
-            className="absolute left-[200px] bottom-[-140px]"
-          />
         </div>
 
         {/* App Screenshot 1 */}
-        <div className="w-[80%] mt-40 mx-auto flex flex-col gap-4 relative">
+        <div className="xl:mx-40 lg:mx-30 md:mx-20 mx-10 mt-40 flex flex-col gap-4 relative">
+          <Image
+            src="/start-monster-white.png"
+            alt="Project Manager Logo"
+            width={isMobile ? 120 : 180}
+            height={isMobile ? 120 : 180}
+            className="absolute left-[10%] top-0 translate-y-[-110%]"
+          />
           <Image
             src="/transparent-monster-white.png"
             alt="Project Manager Logo"
-            width={170}
-            height={170}
-            className="absolute top-0 right-20 translate-y-[-100%]"
+            width={isMobile ? 110 : 170}
+            height={isMobile ? 110 : 170}
+            className="absolute top-0 right-[10%] translate-y-[-100%]"
           />
           <div className="rounded-xl border bg-card overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow border-white border-2">
             <Image
@@ -58,19 +63,16 @@ export function HeroSection() {
               unoptimized
             />
           </div>
-          <FeatureCard
-            index={0}
-            className="top-[10%] scale-50 left-1/2 translate-x-[40%]"
-          />
+          <FeatureCard index={0} className="top-1/2 right-0 translate-x-[10%] w-80" />
           <FeatureCard
             index={4}
-            className="scale-60 bottom-0 translate-x-[-30%] -translate-y-[-50%]"
+            className="bottom-0 translate-x-[-10%] translate-y-[10%] w-70"
           />
         </div>
       </div>
 
       {/* App Screenshot 2 */}
-      <div className="mt-40 bg-muted py-10 sm:py-32 px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
+      <div className="mt-40 bg-muted py-10 sm:py-32 xl:px-40 lg:px-30 md:px-20 px-10 flex flex-col gap-12">
         <div className="max-w-3xl mx-auto text-center space-y-8">
           <h2 className="text-4xl sm:text-3xl font-bold">
             Ready to get finally finish your projects ?
@@ -81,7 +83,7 @@ export function HeroSection() {
             today. It&apos;s free and takes less than a minute to get started.
           </p>
         </div>
-        <div className="max-w-6xl mx-auto flex flex-col gap-4 relative">
+        <div className="mx-auto flex flex-col gap-4 relative">
           <div className="rounded-xl border bg-card overflow-hidden shadow-2xl hover:shadow-3xl transition-shadow border-white border-2">
             <Image
               src="/lp-1.png"
@@ -93,18 +95,9 @@ export function HeroSection() {
               unoptimized
             />
           </div>
-          <FeatureCard
-            index={2}
-            className="top-[10%] scale-50 left-1/2 translate-x-[40%]"
-          />
-          <FeatureCard
-            index={3}
-            className="scale-60 bottom-0 translate-x-[-30%] -translate-y-[-50%]"
-          />
-          <FeatureCard
-            index={1}
-            className="bottom-0 scale-50 left-1/2 translate-x-[40%]"
-          />
+          <FeatureCard index={2} className="top-3/5 right-0 translate-x-[10%]" />
+          <FeatureCard index={3} className="bottom-2/5 translate-x-[-10%]" />
+          <FeatureCard index={1} className="bottom-[10%] left-2/5 w-70" />
         </div>
       </div>
     </section>

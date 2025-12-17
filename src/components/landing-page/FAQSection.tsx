@@ -18,7 +18,7 @@ interface FAQSectionProps {
 
 export function FAQSection({ questions }: FAQSectionProps) {
   return (
-    <section className="py-20 sm:py-32">
+    <section className="py-20 sm:py-32 bg-background">
       <div className="w-full max-w-3xl mx-auto space-y-4">
         <h2 className="text-3xl font-bold text-center mb-8">Questions and answers</h2>
         <Accordion type="single" collapsible defaultValue="item-0" className="space-y-2">

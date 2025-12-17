@@ -336,6 +336,10 @@ ol {
   box-shadow: 1px 13px 12px -1px color-mix(in srgb, var(--shadow-color) 40%, transparent);
 }
 
+.shadow-hard {
+  box-shadow: 10px 13px 14px 1px #000000;
+}
+
 .bg-gradient {
   background: linear-gradient(70deg in oklab, var(--background) 34%, var(--card));
 }
