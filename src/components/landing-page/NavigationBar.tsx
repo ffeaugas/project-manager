@@ -10,7 +10,7 @@ export function NavigationBar() {
         <div className="flex items-center justify-between h-16">
           <div className="flex flex-row items-center gap-2">
             <Image
-              src="/transparent-eye-white.png"
+              src="/default-eye-white.png"
               alt="Project Manager Logo"
               width={32}
               height={32}
