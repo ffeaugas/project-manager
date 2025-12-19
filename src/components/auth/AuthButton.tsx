@@ -52,7 +52,7 @@ const SignOutButton = () => {
       variant="auth"
       onClick={async () => {
         await signOut();
-        window.location.href = '/auth/signin';
+        window.location.href = '/';
       }}
       className="flex flex-row justify-between"
     >

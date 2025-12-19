@@ -39,14 +39,14 @@ export function HeroSection() {
         {/* App Screenshot 1 */}
         <div className="xl:mx-40 md:mx-10 mt-40 flex flex-col gap-4 relative mx-2">
           <Image
-            src="/start-monster-white.png"
+            src="/star-monster.svg"
             alt="Project Manager Logo"
             width={isMobile ? 120 : 180}
             height={isMobile ? 120 : 180}
             className="absolute left-5 lg:left-[10%] top-0 translate-y-[-110%]"
           />
           <Image
-            src="/transparent-monster-white.png"
+            src="/spikes-monster.svg"
             alt="Project Manager Logo"
             width={isMobile ? 110 : 170}
             height={isMobile ? 110 : 170}

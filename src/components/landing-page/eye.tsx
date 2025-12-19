@@ -9,16 +9,16 @@ const Eye = () => {
   const isMobile = useIsMobile();
 
   const eyeFrames = [
-    '/default-eye-white.png',
-    '/moving-eye-white.png',
-    '/moving-eye-white-2.png',
-    '/moving-eye-white-3.png',
-    '/moving-eye-white-4.png',
-    '/blinking-eye-white-2.png',
-    '/blinking-eye-white-3.png',
-    '/blinking-eye-white-4.png',
-    '/blinking-eye-white-5.png',
-    '/blinking-eye-white-3.png',
+    '/default-eye.svg',
+    '/moving-eye-1.svg',
+    '/moving-eye-2.svg',
+    '/moving-eye-3.svg',
+    '/moving-eye-4.svg',
+    '/blinking-eye-1.svg',
+    '/blinking-eye-2.svg',
+    '/blinking-eye-3.svg',
+    '/blinking-eye-4.svg',
+    '/blinking-eye-2.svg',
   ];
 
   useEffect(() => {
@@ -35,7 +35,7 @@ const Eye = () => {
       setTimeout(() => setCurrentFrame(8), 1510);
       setTimeout(() => setCurrentFrame(9), 1540);
       setTimeout(() => setCurrentFrame(0), 1570);
-    }, 4000);
+    }, 3000);
 
     return () => clearInterval(blinkInterval);
   }, []);
