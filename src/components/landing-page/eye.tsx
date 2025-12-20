@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const Eye = () => {
@@ -41,7 +40,7 @@ const Eye = () => {
   }, []);
 
   return (
-    <Image
+    <img
       src={eyeFrames[currentFrame]}
       alt="Project Manager Logo"
       width={isMobile ? 100 : 170}
